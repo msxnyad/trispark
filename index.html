@@ -3581,9 +3581,9 @@
         postureHtml += '</div>';
       });
       postureHtml += '</div>';
-      postureHtml += '<div style="display:flex;justify-content:center;gap:8px;margin-bottom:10px;">';
+      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">';
       postureItems.slice(3).forEach(function(item) {
-        postureHtml += '<div style="'+cellStyle+'">';
+        postureHtml += '<div style="background:'+postureCellBg+';border-radius:10px;padding:10px 12px;">';
         postureHtml += '<div style="font-size:11px;color:'+(isDark?'rgba(254,253,245,0.6)':rTxtMuted)+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
         postureHtml += '<div style="font-size:18px;font-weight:800;color:'+(isDark?'rgba(254,253,245,0.3)':rTxtMuted)+';"> -<span style="font-size:11px;font-weight:400;">회</span></div>';
         postureHtml += '</div>';
@@ -3601,9 +3601,9 @@
         postureHtml += '</div>';
       });
       postureHtml += '</div>';
-      postureHtml += '<div style="display:flex;justify-content:center;gap:8px;">';
+      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
       postureItems.slice(3).forEach(function(item) {
-        postureHtml += '<div style="'+cellStyle+'">';
+        postureHtml += '<div style="background:'+postureCellBg+';border-radius:10px;padding:10px 12px;">';
         postureHtml += '<div style="font-size:11px;color:'+labelColor+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
         postureHtml += '<div style="font-size:18px;font-weight:800;color:'+item.color+';">'+item.val+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
         postureHtml += '</div>';
