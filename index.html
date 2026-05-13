@@ -3551,9 +3551,11 @@
     var clrLean  = isDark ? '#FFF17F' : '#c8a84a';  /* 기대기 = 구부정과 동일 노란색 */
     var clrSleep = isDark ? '#FFA4A4' : '#c87a4a';  /* 졸음 = 기존 기대기 빨간색 계열 */
     var postureItems = [
-      {label:'거북목',  val:p.turtle,   color:clrGood,  emoji:'🐢'},
-      {label:'구부정',  val:p.bent,     color:clrSlch,  emoji:'🪑'},
-      {label:'졸음',    val:p.drowsy,   color:clrSleep, emoji:'😴'}
+      {label:'거북목',    val:p.turtle,   color:clrGood,  emoji:'🐢'},
+      {label:'구부정',    val:p.bent,     color:clrSlch,  emoji:'🪑'},
+      {label:'졸음',      val:p.drowsy,   color:clrSleep, emoji:'😴'},
+      {label:'기대기',    val:p.reclined, color:clrLean,  emoji:'↙️'},
+      {label:'얼굴 미감지', val:p.absent, color:clrSleep, emoji:'🌫️'}
     ];
     var postureHtml = '<div class="report-section"><div class="report-section-title">자세 상태별 기록</div>';
     if (isShowingExample) {
