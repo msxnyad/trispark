@@ -504,12 +504,11 @@
   body {
     font-family: 'Nanum Gothic', sans-serif;
     background: var(--bg-page);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 0;
-    overflow-x: hidden;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
   }
 
   /* 모바일 프레임 */
@@ -4314,6 +4313,26 @@
       if (!localStorage.getItem('lang_selected')) {
         document.getElementById('lang-popup').style.display = 'flex';
       }
+    })();
+
+    /* ── 화면 크기에 맞게 phone 프레임 자동 스케일 ── */
+    (function() {
+      var PHONE_W = 390;
+      var PHONE_H = 844;
+      function fitPhone() {
+        var phone = document.querySelector('.phone');
+        if (!phone) return;
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+        var scale = Math.min(vw / PHONE_W, vh / PHONE_H, 1);
+        phone.style.position = 'fixed';
+        phone.style.top  = '50%';
+        phone.style.left = '50%';
+        phone.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+        phone.style.transformOrigin = 'center center';
+      }
+      fitPhone();
+      window.addEventListener('resize', fitPhone);
     })();
   </script>
 </body>
