@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"/>
 <title>뽀모도로 앱</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
@@ -504,11 +504,12 @@
   body {
     font-family: 'Nanum Gothic', sans-serif;
     background: var(--bg-page);
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 0;
+    overflow: hidden;
+    touch-action: pan-x pan-y;
   }
 
   /* 모바일 프레임 */
@@ -1733,7 +1734,7 @@
   var exampleData = {
     daily: {
       immersion: 78, immersionLabel: '오늘 몰입 점수', peak: '10시',
-      posture: {turtle:55, bent:74, reclined:52, absent:28},
+      posture: {turtle:55, bent:74, reclined:52, absent:28, drowsy:18},
       cheer: '오늘 집중 정말 잘 했어요! 10시가 황금 집중 타임이네요 🌿',
       heatmap: [0,1,2,3,2,1,0], linePts: null,
       hours: [
@@ -1760,7 +1761,7 @@
     },
     weekly: {
       immersion: 72, immersionLabel: '이번 주 평균 몰입 점수', peak: '목요일',
-      posture: {turtle:83, bent:72, reclined:55, absent:30},
+      posture: {turtle:83, bent:72, reclined:55, absent:30, drowsy:22},
       cheer: '이번 주 목요일이 최고였어요! 주 중반 집중력을 유지하는 패턴이 보여요 💪',
       heatmap: [], days: [
         {label:'월',mins:55,score:68,immersion:55},{label:'화',mins:80,score:74,immersion:72},
@@ -1771,7 +1772,7 @@
     },
     monthly: {
       immersion: 69, immersionLabel: '이번 달 평균 몰입 점수', peak: '3주차',
-      posture: {turtle:310, bent:280, reclined:210, absent:90},
+      posture: {turtle:310, bent:280, reclined:210, absent:90, drowsy:75},
       cheer: '3주차에 최고 성과! 이번 달 꾸준히 기록하고 있어요 🐘',
       heatmap: [], weeks: [
         {label:'1주',mins:280,score:65,immersion:58},{label:'2주',mins:340,score:72,immersion:70},
@@ -2080,6 +2081,52 @@
   var DASHBOARD_URL = 'http://' + _piIp + ':5001/sync';
   function getStatusUrl() { return 'http://' + (localStorage.getItem('pi_ip') || '172.20.10.3') + ':5001/status'; }
 
+  /* 대시보드 데이터 → reportData 적용 (캐시/GitHub 공통) */
+  function _applyDashboardData(data) {
+    if (!data) return;
+    if (data.immersionScore !== undefined) reportData.daily.immersion = data.immersionScore;
+    if (data.timeScore !== undefined) reportData.daily.timeScore = data.timeScore;
+    if (data.postureScore !== undefined) reportData.daily.postureScore = data.postureScore;
+    if (data.postureStats) {
+      var ps = data.postureStats;
+      reportData.daily.posture.turtle   = ps.turtleCount   || 0;
+      reportData.daily.posture.bent     = ps.bentCount     || 0;
+      reportData.daily.posture.reclined = ps.reclinedCount || 0;
+      reportData.daily.posture.absent   = ps.absentCount   || 0;
+      reportData.daily.posture.drowsy   = ps.drowsyCount   || 0;
+    }
+    if (data.totalStudySec !== undefined) {
+      reportData.daily.totalMins = Math.round(data.totalStudySec / 60);
+      reportData.daily.totalStudySec = data.totalStudySec;
+    }
+    if (data.pomodoroCount !== undefined) reportData.daily.pomodoroCount = data.pomodoroCount;
+    if (!reportData.daily.hours) {
+      reportData.daily.hours = [];
+      for (var i = 0; i < 24; i++) reportData.daily.hours[i] = {hour:i, mins:0, segs:[]};
+    }
+    function _mH(hd) {
+      for (var hr=0;hr<24;hr++) {
+        var hs=hr.toString();
+        if (hd[hs] && reportData.daily.hours[hr]) {
+          reportData.daily.hours[hr].mins  = hd[hs].mins  || 0;
+          reportData.daily.hours[hr].score = hd[hs].score || 0;
+        }
+      }
+    }
+    function _mS(sd) {
+      for (var hr=0;hr<24;hr++) {
+        var hk=hr.toString();
+        if (!sd[hk]) continue;
+        var inc=sd[hk], ex=reportData.daily.hours[hr].segs||[], mg=[];
+        for (var s=0;s<12;s++) mg.push(inc[s]&&inc[s]!=='n'?inc[s]:(ex[s]||'n'));
+        reportData.daily.hours[hr].segs = mg;
+      }
+    }
+    if (data.hourlyData) _mH(data.hourlyData);
+    if (data.hourlySegments) _mS(data.hourlySegments);
+    try { renderReport('daily'); } catch(e) {}
+  }
+
   /* Pi IP 변경 함수 */
   window.setPiIp = function(ip) {
     ip = ip.trim();
@@ -2197,6 +2244,7 @@
                     reportData.daily.posture.bent     = ps.bentCount      || 0;
                     reportData.daily.posture.reclined = ps.reclinedCount  || 0;
                     reportData.daily.posture.absent   = ps.absentCount    || 0;
+                    reportData.daily.posture.drowsy   = ps.drowsyCount    || 0;
                 }
                 if (data.totalStudySec !== undefined) {
                     reportData.daily.totalMins = Math.round(data.totalStudySec / 60);
@@ -2292,61 +2340,43 @@
                 var cachedTime = localStorage.getItem(cacheKey + '_time') || '알 수 없음';
                 if (cached) {
                   try {
-                    var data = JSON.parse(cached);
-                    /* 오프라인 배너 표시 */
                     var offBanner = document.getElementById('offline-banner');
                     if (offBanner) {
                       offBanner.textContent = '📴 오프라인 — 마지막 저장: ' + cachedTime;
                       offBanner.style.display = 'block';
                     }
-                    /* 캐시 데이터로 리포트 채우기 */
-                    if (data.immersionScore !== undefined) reportData.daily.immersion = data.immersionScore;
-                    if (data.timeScore !== undefined) reportData.daily.timeScore = data.timeScore;
-                    if (data.postureScore !== undefined) reportData.daily.postureScore = data.postureScore;
-                    if (data.postureStats) {
-                      var ps = data.postureStats;
-                      reportData.daily.posture.turtle   = ps.turtleCount   || 0;
-                      reportData.daily.posture.bent     = ps.bentCount     || 0;
-                      reportData.daily.posture.reclined = ps.reclinedCount || 0;
-                      reportData.daily.posture.absent   = ps.absentCount   || 0;
-                    }
-                    if (data.totalStudySec !== undefined) {
-                      reportData.daily.totalMins = Math.round(data.totalStudySec / 60);
-                      reportData.daily.totalStudySec = data.totalStudySec;
-                    }
-                    if (data.pomodoroCount !== undefined) reportData.daily.pomodoroCount = data.pomodoroCount;
-                    if (!reportData.daily.hours) {
-                      reportData.daily.hours = [];
-                      for (var i = 0; i < 24; i++) reportData.daily.hours[i] = {hour:i, mins:0, segs:[]};
-                    }
-                    function _mergeH(hd) {
-                      for (var hr=0;hr<24;hr++) {
-                        var hs=hr.toString();
-                        if(hd[hs]&&reportData.daily.hours[hr]){
-                          reportData.daily.hours[hr].mins=hd[hs].mins||0;
-                          reportData.daily.hours[hr].score=hd[hs].score||0;
-                        }
-                      }
-                    }
-                    function _mergeS(sd) {
-                      for(var hr=0;hr<24;hr++){
-                        var hk=hr.toString();
-                        if(!sd[hk]) continue;
-                        var inc=sd[hk]; var ex=reportData.daily.hours[hr].segs||[]; var mg=[];
-                        for(var s=0;s<12;s++){mg.push(inc[s]!=='n'&&inc[s]?inc[s]:(ex[s]||'n'));}
-                        reportData.daily.hours[hr].segs=mg;
-                      }
-                    }
-                    if (data.hourlyData) _mergeH(data.hourlyData);
-                    if (data.hourlySegments) _mergeS(data.hourlySegments);
+                    _applyDashboardData(JSON.parse(cached));
                   } catch(e2) {}
+                  try { renderReport('daily'); } catch(e) {}
                 } else {
-                  /* 캐시도 없으면 안내 */
-                  var offBanner = document.getElementById('offline-banner');
-                  if (offBanner) {
-                    offBanner.textContent = '📴 오프라인 — 저장된 데이터 없음 (파이 켜진 상태에서 한 번 접속해야 해요)';
-                    offBanner.style.display = 'block';
-                  }
+                  /* 캐시 없으면 GitHub에서 직접 가져오기 */
+                  fetch('https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json?t=' + Date.now())
+                    .then(function(r){ return r.json(); })
+                    .then(function(shared) {
+                      var active = shared.activeUser || '';
+                      var data = (shared.users && active && shared.users[active]) ? shared.users[active] : {};
+                      if (Object.keys(data).length === 0) throw new Error('no data');
+                      var offBanner = document.getElementById('offline-banner');
+                      if (offBanner) {
+                        offBanner.textContent = '📴 오프라인 — GitHub 저장 데이터 표시 중';
+                        offBanner.style.display = 'block';
+                      }
+                      /* 캐시에도 저장 */
+                      try {
+                        var ck = 'dashboard_cache_' + (currentUser ? currentUser.id : 'guest');
+                        localStorage.setItem(ck, JSON.stringify(data));
+                      } catch(e2) {}
+                      _applyDashboardData(data);
+                    })
+                    .catch(function() {
+                      var offBanner = document.getElementById('offline-banner');
+                      if (offBanner) {
+                        offBanner.textContent = '📴 오프라인 — 저장된 데이터 없음 (파이 켜진 상태에서 한 번 접속해야 해요)';
+                        offBanner.style.display = 'block';
+                      }
+                      try { renderReport('daily'); } catch(e) {}
+                    });
+                  return;
                 }
                 try { renderReport('daily'); } catch(e) {}
             });
@@ -3062,7 +3092,7 @@
       peak: '',
       timeScore: 0,  // ★ 추가
       postureScore: 0,  // ★ 추가
-      posture: {turtle:0, bent:0, reclined:0, absent:0},
+      posture: {turtle:0, bent:0, reclined:0, absent:0, drowsy:0},
       cheer: '',
       heatmap: [],
       linePts: null,
@@ -3097,7 +3127,7 @@
       immersion: 0,
       immersionLabel: '이번 주 평균 몰입 점수',
       peak: '',
-      posture: {turtle:0, bent:0, reclined:0, absent:0},
+      posture: {turtle:0, bent:0, reclined:0, absent:0, drowsy:0},
       cheer: '',
       heatmap: [],
       days: [
@@ -3114,7 +3144,7 @@
       immersion: 0,
       immersionLabel: '이번 달 평균 몰입 점수',
       peak: '',
-      posture: {turtle:0, bent:0, reclined:0, absent:0},
+      posture: {turtle:0, bent:0, reclined:0, absent:0, drowsy:0},
       cheer: '',
       heatmap: [],
       weeks: [
@@ -3522,10 +3552,9 @@
     var clrLean  = isDark ? '#FFF17F' : '#c8a84a';  /* 기대기 = 구부정과 동일 노란색 */
     var clrSleep = isDark ? '#FFA4A4' : '#c87a4a';  /* 졸음 = 기존 기대기 빨간색 계열 */
     var postureItems = [
-      {label:'거북목',    val:p.turtle,   color:clrGood,  emoji:'🐢'},
-      {label:'구부정',       val:p.bent, color:clrSlch,  emoji:'🪑'},
-      {label:'기대기',       val:p.reclined,   color:clrLean,  emoji:'↙️'},
-      {label:'얼굴 미감지', val:p.absent,  color:clrSleep, emoji:'🌫️'}
+      {label:'거북목',  val:p.turtle,   color:clrGood,  emoji:'🐢'},
+      {label:'구부정',  val:p.bent,     color:clrSlch,  emoji:'🪑'},
+      {label:'졸음',    val:p.drowsy,   color:clrSleep, emoji:'😴'}
     ];
     var postureHtml = '<div class="report-section"><div class="report-section-title">자세 상태별 기록</div>';
     if (isShowingExample) {
@@ -3542,7 +3571,7 @@
     var postureCellBg = isDark ? '#808E7E' : '#f5faf5';
     var postureValColor = isDark ? '#FEFDF5' : null;
     if (!hasData) {
-      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">';
+      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">';
       postureItems.forEach(function(item) {
         postureHtml += '<div style="background:'+postureCellBg+';border-radius:10px;padding:10px 12px;">';
         postureHtml += '<div style="font-size:11px;color:'+(isDark?'rgba(254,253,245,0.6)':rTxtMuted)+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
@@ -3552,7 +3581,7 @@
       postureHtml += '</div>';
       postureHtml += '<div style="text-align:center;font-size:12px;color:'+rTxtMuted+';padding:4px 0;">공부하는 동안 자세가 기록돼요</div>';
     } else {
-      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">';
       postureItems.forEach(function(item) {
         var labelColor = isDark ? 'rgba(254,253,245,0.6)' : rTxtMuted;
         var valColor   = isDark ? item.color : item.color;
