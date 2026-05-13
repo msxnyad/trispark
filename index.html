@@ -3571,10 +3571,19 @@
     postureHtml += '<div class="report-card">';
     var postureCellBg = isDark ? '#808E7E' : '#f5faf5';
     var postureValColor = isDark ? '#FEFDF5' : null;
+    var cellStyle = 'background:'+postureCellBg+';border-radius:10px;padding:10px 12px;width:calc((100% - 16px) / 3);box-sizing:border-box;';
     if (!hasData) {
-      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">';
-      postureItems.forEach(function(item) {
+      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">';
+      postureItems.slice(0,3).forEach(function(item) {
         postureHtml += '<div style="background:'+postureCellBg+';border-radius:10px;padding:10px 12px;">';
+        postureHtml += '<div style="font-size:11px;color:'+(isDark?'rgba(254,253,245,0.6)':rTxtMuted)+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
+        postureHtml += '<div style="font-size:18px;font-weight:800;color:'+(isDark?'rgba(254,253,245,0.3)':rTxtMuted)+';"> -<span style="font-size:11px;font-weight:400;">회</span></div>';
+        postureHtml += '</div>';
+      });
+      postureHtml += '</div>';
+      postureHtml += '<div style="display:flex;justify-content:center;gap:8px;margin-bottom:10px;">';
+      postureItems.slice(3).forEach(function(item) {
+        postureHtml += '<div style="'+cellStyle+'">';
         postureHtml += '<div style="font-size:11px;color:'+(isDark?'rgba(254,253,245,0.6)':rTxtMuted)+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
         postureHtml += '<div style="font-size:18px;font-weight:800;color:'+(isDark?'rgba(254,253,245,0.3)':rTxtMuted)+';"> -<span style="font-size:11px;font-weight:400;">회</span></div>';
         postureHtml += '</div>';
@@ -3582,14 +3591,21 @@
       postureHtml += '</div>';
       postureHtml += '<div style="text-align:center;font-size:12px;color:'+rTxtMuted+';padding:4px 0;">공부하는 동안 자세가 기록돼요</div>';
     } else {
-      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">';
-      postureItems.forEach(function(item) {
-        var labelColor = isDark ? 'rgba(254,253,245,0.6)' : rTxtMuted;
-        var valColor   = isDark ? item.color : item.color;
-        var unitColor  = isDark ? 'rgba(254,253,245,0.6)' : rTxtMuted;
+      var labelColor = isDark ? 'rgba(254,253,245,0.6)' : rTxtMuted;
+      var unitColor  = isDark ? 'rgba(254,253,245,0.6)' : rTxtMuted;
+      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">';
+      postureItems.slice(0,3).forEach(function(item) {
         postureHtml += '<div style="background:'+postureCellBg+';border-radius:10px;padding:10px 12px;">';
         postureHtml += '<div style="font-size:11px;color:'+labelColor+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
-        postureHtml += '<div style="font-size:18px;font-weight:800;color:'+valColor+';">'+item.val+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
+        postureHtml += '<div style="font-size:18px;font-weight:800;color:'+item.color+';">'+item.val+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
+        postureHtml += '</div>';
+      });
+      postureHtml += '</div>';
+      postureHtml += '<div style="display:flex;justify-content:center;gap:8px;">';
+      postureItems.slice(3).forEach(function(item) {
+        postureHtml += '<div style="'+cellStyle+'">';
+        postureHtml += '<div style="font-size:11px;color:'+labelColor+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
+        postureHtml += '<div style="font-size:18px;font-weight:800;color:'+item.color+';">'+item.val+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
         postureHtml += '</div>';
       });
       postureHtml += '</div>';
