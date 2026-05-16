@@ -11,70 +11,39 @@
       ],
       "completedTasks": [],
       "pomodoroCount": 1,
-      "totalStudySec": 245,
+      "totalStudySec": 54,
       "hourlyData": {
-        "16": {
-          "mins": 4.3,
-          "score": 89
+        "17": {
+          "mins": 1.0,
+          "score": 0
         }
       },
       "hourlySegments": {
-        "16": [
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
+        "17": [
           "n",
           "n",
           "n",
           "n",
           "n",
           "g",
-          "g"
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n"
         ]
       },
       "dailySessionScores": [
-        81
+        18
       ],
-      "timeScore": 81,
+      "timeScore": 18,
       "postureScore": 0,
-      "immersionScore": 40.5,
-      "dailyPostureAccum": {
-        "drowsyCount": 5,
-        "bentCount": 1,
-        "turtleCount": 1,
-        "reclinedCount": 1,
-        "absentCount": 0,
-        "proneCount": 0,
-        "goodSec": 224.8,
-        "drowsySec": 3.5,
-        "bentSec": 8.6,
-        "reclinedSec": 8.5,
-        "absentSec": 0,
-        "turtleSec": 6.9,
-        "totalSec": 252.2
-      },
-      "postureStats": {
-        "postureRatio": 0,
-        "totalSec": 252.2,
-        "goodSec": 224.8,
-        "drowsySec": 3.5,
-        "bentSec": 8.6,
-        "reclinedSec": 8.5,
-        "absentSec": 0,
-        "turtleSec": 6.9,
-        "drowsyCount": 5,
-        "absentCount": 0,
-        "proneCount": 0,
-        "bentCount": 1,
-        "reclinedCount": 1,
-        "turtleCount": 1
-      },
-      "temp": 32.7,
-      "humidity": 41.5,
-      "currentSessionHourly": {},
-      "currentSessionSegments": {},
+      "immersionScore": 0,
+      "dailyPostureAccum": {},
+      "postureStats": {},
+      "temp": 29.1,
+      "humidity": 48.3,
       "lastSessionDate": "2026-05-16",
       "weeklyStudyData": {
         "weekStart": "2026-05-11",
@@ -105,8 +74,8 @@
             "sessions": 0
           },
           "Sat": {
-            "mins": 4,
-            "score": 81,
+            "mins": 1,
+            "score": 18,
             "sessions": 1
           },
           "Sun": {
@@ -115,7 +84,9 @@
             "sessions": 0
           }
         }
-      }
+      },
+      "currentSessionHourly": {},
+      "currentSessionSegments": {}
     }
   }
 }
