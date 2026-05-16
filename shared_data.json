@@ -4,18 +4,18 @@
     "test": {
       "pomodoroSeconds": 300,
       "memoWords": [],
-      "ddayLabel": "테스트",
-      "ddayCount": "D-1",
+      "ddayLabel": "test",
+      "ddayCount": "D-15",
       "urgentTasks": [
         "데이터 연동"
       ],
       "completedTasks": [],
       "pomodoroCount": 1,
-      "totalStudySec": 54,
+      "totalStudySec": 110,
       "hourlyData": {
         "17": {
-          "mins": 1.0,
-          "score": 0
+          "mins": 2.7,
+          "score": 72
         }
       },
       "hourlySegments": {
@@ -25,25 +25,56 @@
           "n",
           "n",
           "n",
+          "n",
+          "n",
+          "n",
+          "n",
           "g",
-          "n",
-          "n",
-          "n",
-          "n",
           "n",
           "n"
         ]
       },
       "dailySessionScores": [
-        18
+        36
       ],
-      "timeScore": 18,
-      "postureScore": 0,
-      "immersionScore": 0,
-      "dailyPostureAccum": {},
-      "postureStats": {},
-      "temp": 29.1,
-      "humidity": 48.3,
+      "timeScore": 36,
+      "postureScore": 64.3,
+      "immersionScore": 50.15,
+      "dailyPostureAccum": {
+        "drowsyCount": 0,
+        "bentCount": 2,
+        "turtleCount": 0,
+        "reclinedCount": 3,
+        "absentCount": 0,
+        "proneCount": 0,
+        "goodSec": 81.9,
+        "drowsySec": 0,
+        "bentSec": 18.8,
+        "reclinedSec": 26.5,
+        "absentSec": 0,
+        "turtleSec": 0,
+        "totalSec": 127.3
+      },
+      "postureStats": {
+        "postureRatio": 64.3,
+        "totalSec": 127.3,
+        "goodSec": 81.9,
+        "drowsySec": 0,
+        "bentSec": 18.8,
+        "reclinedSec": 26.5,
+        "absentSec": 0,
+        "turtleSec": 0,
+        "drowsyCount": 0,
+        "absentCount": 0,
+        "proneCount": 0,
+        "bentCount": 2,
+        "reclinedCount": 3,
+        "turtleCount": 0
+      },
+      "temp": 32.0,
+      "humidity": 43.5,
+      "currentSessionHourly": {},
+      "currentSessionSegments": {},
       "lastSessionDate": "2026-05-16",
       "weeklyStudyData": {
         "weekStart": "2026-05-11",
@@ -74,8 +105,8 @@
             "sessions": 0
           },
           "Sat": {
-            "mins": 1,
-            "score": 18,
+            "mins": 2,
+            "score": 36,
             "sessions": 1
           },
           "Sun": {
@@ -84,9 +115,7 @@
             "sessions": 0
           }
         }
-      },
-      "currentSessionHourly": {},
-      "currentSessionSegments": {}
+      }
     }
   }
 }
