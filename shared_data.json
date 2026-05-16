@@ -10,22 +10,22 @@
         "데이터 연동"
       ],
       "completedTasks": [],
-      "pomodoroCount": 2,
-      "totalStudySec": 250,
+      "pomodoroCount": 1,
+      "totalStudySec": 79,
       "hourlyData": {
         "18": {
-          "mins": 5.3,
-          "score": 76
+          "mins": 1.5,
+          "score": 78
         }
       },
       "hourlySegments": {
         "18": [
           "n",
+          "n",
+          "n",
+          "n",
+          "n",
           "g",
-          "g",
-          "n",
-          "n",
-          "n",
           "n",
           "n",
           "n",
@@ -35,45 +35,44 @@
         ]
       },
       "dailySessionScores": [
-        47,
-        35
+        26
       ],
-      "timeScore": 41,
-      "postureScore": 68.2,
-      "immersionScore": 57.6,
+      "timeScore": 26,
+      "postureScore": 68.3,
+      "immersionScore": 47.15,
       "dailyPostureAccum": {
         "drowsyCount": 0,
-        "bentCount": 2,
-        "turtleCount": 1,
-        "reclinedCount": 5,
+        "bentCount": 1,
+        "turtleCount": 0,
+        "reclinedCount": 1,
         "absentCount": 0,
         "proneCount": 0,
-        "goodSec": 169.0,
+        "goodSec": 42.6,
         "drowsySec": 0,
-        "bentSec": 11.799999999999999,
-        "reclinedSec": 46.400000000000006,
+        "bentSec": 8.6,
+        "reclinedSec": 11.2,
         "absentSec": 0,
-        "turtleSec": 16.7,
-        "totalSec": 243.79999999999998
+        "turtleSec": 0,
+        "totalSec": 62.4
       },
       "postureStats": {
-        "postureRatio": 68.2,
-        "totalSec": 224.1,
-        "goodSec": 152.8,
+        "postureRatio": 68.3,
+        "totalSec": 62.4,
+        "goodSec": 42.6,
         "drowsySec": 0,
-        "bentSec": 11.799999999999999,
-        "reclinedSec": 42.8,
+        "bentSec": 8.6,
+        "reclinedSec": 11.2,
         "absentSec": 0,
-        "turtleSec": 16.7,
+        "turtleSec": 0,
         "drowsyCount": 0,
         "absentCount": 0,
         "proneCount": 0,
-        "bentCount": 2,
-        "reclinedCount": 4,
-        "turtleCount": 1
+        "bentCount": 1,
+        "reclinedCount": 1,
+        "turtleCount": 0
       },
-      "temp": 33.5,
-      "humidity": 39.7,
+      "temp": 32.2,
+      "humidity": 42.6,
       "currentSessionHourly": {},
       "currentSessionSegments": {},
       "lastSessionDate": "2026-05-16",
@@ -106,9 +105,9 @@
             "sessions": 0
           },
           "Sat": {
-            "mins": 4,
-            "score": 41,
-            "sessions": 2
+            "mins": 1,
+            "score": 26,
+            "sessions": 1
           },
           "Sun": {
             "mins": 0,
