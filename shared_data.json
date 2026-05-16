@@ -11,47 +11,55 @@
       ],
       "completedTasks": [],
       "pomodoroCount": 1,
-      "totalStudySec": 300,
+      "totalStudySec": 182,
       "hourlyData": {
-        "13": {
-          "mins": 6.3,
-          "score": 85
+        "14": {
+          "mins": 3.1,
+          "score": 74
         }
       },
       "hourlySegments": {
-        "13": [
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
+        "14": [
           "n",
           "n",
           "g",
-          "g",
-          "g",
+          "y",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
           "n",
           "n"
         ]
       },
       "dailySessionScores": [
-        100
+        62
       ],
-      "timeScore": 100,
-      "postureScore": 88.7,
-      "immersionScore": 94.35,
-      "temp": 30.9,
-      "humidity": 40.5,
-      "postureStats": {
-        "postureRatio": 88.7,
-        "totalSec": 500.4,
-        "drowsyCount": 4,
-        "absentCount": 1,
-        "proneCount": 0,
-        "bentCount": 5,
+      "timeScore": 62,
+      "postureScore": 70.6,
+      "immersionScore": 66.3,
+      "dailyPostureAccum": {
+        "drowsyCount": 1,
+        "bentCount": 3,
+        "turtleCount": 0,
         "reclinedCount": 1,
-        "turtleCount": 4
+        "absentCount": 0,
+        "proneCount": 0
       },
+      "postureStats": {
+        "postureRatio": 70.6,
+        "totalSec": 166.4,
+        "drowsyCount": 2,
+        "absentCount": 0,
+        "proneCount": 0,
+        "bentCount": 6,
+        "reclinedCount": 2,
+        "turtleCount": 0
+      },
+      "temp": 30.9,
+      "humidity": 40.8,
       "currentSessionHourly": {},
       "currentSessionSegments": {},
       "lastSessionDate": "2026-05-16",
@@ -84,8 +92,8 @@
             "sessions": 0
           },
           "Sat": {
-            "mins": 5,
-            "score": 100,
+            "mins": 3,
+            "score": 62,
             "sessions": 1
           },
           "Sun": {
