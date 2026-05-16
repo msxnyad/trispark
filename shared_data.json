@@ -11,55 +11,61 @@
       ],
       "completedTasks": [],
       "pomodoroCount": 1,
-      "totalStudySec": 156,
+      "totalStudySec": 206,
       "hourlyData": {
-        "14": {
-          "mins": 2.7,
-          "score": 63
+        "15": {
+          "mins": 3.6,
+          "score": 64
         }
       },
       "hourlySegments": {
-        "14": [
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
+        "15": [
           "n",
           "g",
-          "y"
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n"
         ]
       },
       "dailySessionScores": [
-        54
+        72
       ],
-      "timeScore": 54,
+      "timeScore": 72,
       "postureScore": 0,
-      "immersionScore": 27.0,
+      "immersionScore": 36.0,
       "dailyPostureAccum": {
-        "drowsyCount": 1,
-        "bentCount": 1,
-        "turtleCount": 0,
-        "reclinedCount": 3,
-        "absentCount": 0,
+        "drowsyCount": 2,
+        "bentCount": 2,
+        "turtleCount": 1,
+        "reclinedCount": 2,
+        "absentCount": 1,
         "proneCount": 0
       },
       "postureStats": {
         "postureRatio": 0,
         "totalSec": 0,
-        "drowsyCount": 1,
-        "absentCount": 0,
+        "goodSec": 0,
+        "drowsySec": 0,
+        "bentSec": 0,
+        "reclinedSec": 0,
+        "absentSec": 0,
+        "turtleSec": 0,
+        "drowsyCount": 2,
+        "absentCount": 1,
         "proneCount": 0,
-        "bentCount": 1,
-        "reclinedCount": 3,
-        "turtleCount": 0
+        "bentCount": 2,
+        "reclinedCount": 2,
+        "turtleCount": 1
       },
-      "temp": 30.4,
-      "humidity": 42.8,
+      "temp": 31.4,
+      "humidity": 41.5,
       "currentSessionHourly": {},
       "currentSessionSegments": {},
       "lastSessionDate": "2026-05-16",
@@ -93,7 +99,7 @@
           },
           "Sat": {
             "mins": 3,
-            "score": 54,
+            "score": 72,
             "sessions": 1
           },
           "Sun": {
