@@ -11,55 +11,55 @@
       ],
       "completedTasks": [],
       "pomodoroCount": 1,
-      "totalStudySec": 182,
+      "totalStudySec": 156,
       "hourlyData": {
         "14": {
-          "mins": 3.1,
-          "score": 74
+          "mins": 2.7,
+          "score": 63
         }
       },
       "hourlySegments": {
         "14": [
           "n",
           "n",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
+          "n",
           "g",
-          "y",
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
-          "n"
+          "y"
         ]
       },
       "dailySessionScores": [
-        62
+        54
       ],
-      "timeScore": 62,
-      "postureScore": 70.6,
-      "immersionScore": 66.3,
+      "timeScore": 54,
+      "postureScore": 0,
+      "immersionScore": 27.0,
       "dailyPostureAccum": {
         "drowsyCount": 1,
-        "bentCount": 3,
+        "bentCount": 1,
         "turtleCount": 0,
-        "reclinedCount": 1,
+        "reclinedCount": 3,
         "absentCount": 0,
         "proneCount": 0
       },
       "postureStats": {
-        "postureRatio": 70.6,
-        "totalSec": 166.4,
-        "drowsyCount": 2,
+        "postureRatio": 0,
+        "totalSec": 0,
+        "drowsyCount": 1,
         "absentCount": 0,
         "proneCount": 0,
-        "bentCount": 6,
-        "reclinedCount": 2,
+        "bentCount": 1,
+        "reclinedCount": 3,
         "turtleCount": 0
       },
-      "temp": 30.9,
-      "humidity": 40.8,
+      "temp": 30.4,
+      "humidity": 42.8,
       "currentSessionHourly": {},
       "currentSessionSegments": {},
       "lastSessionDate": "2026-05-16",
@@ -93,7 +93,7 @@
           },
           "Sat": {
             "mins": 3,
-            "score": 62,
+            "score": 54,
             "sessions": 1
           },
           "Sun": {
