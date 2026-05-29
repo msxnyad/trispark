@@ -2,16 +2,7 @@
   "activeUser": "test",
   "users": {
     "test": {
-      "folderData": {
-        "그만하고싶다진심": [
-          "똑같은문제를 몇번을고치는지",
-          "이제그만 좀 .. 돼라"
-        ],
-        "테스트": [
-          "테스트하는중",
-          "데이터연동하는중"
-        ]
-      },
+      "folderData": {},
       "habits": [
         {
           "name": "오전 기상",
@@ -33,33 +24,17 @@
           }
         }
       ],
-      "ddayList": [
-        {
-          "name": "댕",
-          "date": "2026-05-31"
-        }
-      ],
+      "ddayList": [],
       "selectedDdayIdx": 0,
       "goalMinutes": 120,
-      "pomoMinutes": 5,
+      "pomoMinutes": 70,
       "eisenData": [
-        [
-          {
-            "text": "테스트하는중",
-            "done": false,
-            "pinned": true
-          },
-          {
-            "text": "제발좀 ...",
-            "done": false,
-            "pinned": true
-          }
-        ],
+        [],
         [],
         [],
         []
       ],
-      "lastOpenTime": "2026-05-29T17:38:03.317Z"
+      "lastOpenTime": "2026-05-29T17:45:54.256Z"
     }
   },
   "appUsers": {
