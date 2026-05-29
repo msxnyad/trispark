@@ -1595,6 +1595,17 @@
         </div>
         <div style="font-size:10px;color:var(--txt-muted);margin-top:6px;">파이 핫스팟 연결 시 자동 감지돼요. GitHub Pages에서 리포트를 볼 때 필요해요.</div>
       </div>
+      <!-- GitHub 토큰 설정 -->
+      <div style="margin-bottom:12px;background:var(--card);border-radius:14px;padding:14px;border:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:700;color:var(--txt-muted);margin-bottom:8px;">🔑 GitHub 토큰 (데이터 동기화용)</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="gh-token-input" type="password" placeholder="ghp_..."
+            style="flex:1;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--txt);font-size:13px;font-family:'Nanum Gothic',sans-serif;"
+            value="" />
+          <button onclick="saveGhToken()" style="padding:8px 14px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:700;cursor:pointer;">저장</button>
+        </div>
+        <div style="font-size:10px;color:var(--txt-muted);margin-top:6px;">토큰은 이 기기에만 저장돼요. GitHub → Settings → Developer settings → Personal access tokens에서 발급하세요.</div>
+      </div>
 
       <!-- 전체 데이터 초기화 -->
       <button onclick="resetAllData()" style="width:100%;padding:14px;border-radius:14px;border:1.5px solid #e8c84a;background:none;font-size:14px;font-family:'Nanum Gothic',sans-serif;font-weight:700;color:#b08a20;cursor:pointer;margin-bottom:8px;">🗑 전체 기록 초기화</button>
@@ -2097,6 +2108,8 @@
     reportData[tab] = JSON.parse(JSON.stringify(exampleData[tab]));
     renderReport(tab);
     document.getElementById('example-banner').style.display = 'flex';
+    var _ob = document.getElementById('offline-banner');
+    if (_ob) _ob.style.display = 'none';
   }
 
   function closeReportInfo() {
@@ -2124,6 +2137,14 @@
   }
   function saveUsers(users) {
     localStorage.setItem('app_users', JSON.stringify(users));
+    /* 계정 정보를 파이에도 동기화 (GitHub Pages에서 로그인 가능하도록) */
+    if (DASHBOARD_URL) {
+      fetch(DASHBOARD_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ _appUsers: users })
+      }).catch(function(){});
+    }
   }
   function getUserData(uid) {
     return JSON.parse(localStorage.getItem('app_data_' + uid) || '{}');
@@ -2428,6 +2449,26 @@
   var DASHBOARD_URL = _isGhPages ? _apiBase() + '/sync' : '/sync';
   function getStatusUrl() { return _apiBase() + '/status'; }
 
+  /* GitHub Pages: 페이지 로드 즉시 ngrok URL 가져오기 */
+  if (_isGhPages) {
+    (function() {
+      var _ghRaw = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
+      var _ctrl = new AbortController();
+      setTimeout(function(){ _ctrl.abort(); }, 5000);
+      fetch(_ghRaw + '?_=' + Date.now(), {signal: _ctrl.signal})
+        .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+        .then(function(d) {
+          if (d.ngrokUrl && d.ngrokUrl.startsWith('https://')) {
+            _piIp = d.ngrokUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            localStorage.setItem('pi_ip', _piIp);
+            DASHBOARD_URL = d.ngrokUrl.replace(/\/$/, '') + '/sync';
+            console.log('[init] ngrok URL 설정:', DASHBOARD_URL);
+          }
+        })
+        .catch(function(){});
+    })();
+  }
+
   /* 대시보드 데이터 → reportData 적용 (캐시/GitHub 공통) */
   function _applyDashboardData(data, skipWM) {
     if (!data) return;
@@ -2594,10 +2635,20 @@
     DASHBOARD_URL = _apiBase() + '/sync';
     alert('저장됐어요! 이제 GitHub Pages에서 파이 데이터를 볼 수 있어요.\n(' + ip + ')');
   };
-  /* 설정 화면 열릴 때 현재 IP 채워넣기 */
+  window.saveGhToken = function() {
+    var inp = document.getElementById('gh-token-input');
+    var token = inp ? inp.value.trim() : '';
+    if (!token) { alert('토큰을 입력해주세요.'); return; }
+    localStorage.setItem('gh_token', token);
+    alert('저장됐어요! 이제 데이터가 자동으로 GitHub에 동기화돼요.');
+  };
+
+  /* 설정 화면 열릴 때 현재 IP/토큰 채워넣기 */
   function _fillPiIpInput() {
     var inp = document.getElementById('pi-ip-input');
     if (inp) inp.value = localStorage.getItem('pi_ip') || '';
+    var ti = document.getElementById('gh-token-input');
+    if (ti && localStorage.getItem('gh_token')) ti.value = '••••••••••••••••';
   }
 
   function syncToDashboard() {
@@ -2638,7 +2689,54 @@
       body: JSON.stringify(payload)
     }).catch(function() {
       /* 대시보드 미연결 시 조용히 무시 */
+    }).finally(function() {
+      _pushUserDataToGitHub();
     });
+  }
+
+  /* 브라우저에서 직접 GitHub에 shared_data 업로드 */
+  var _ghPushTimer = null;
+  function _pushUserDataToGitHub() {
+    if (!currentUser) return;
+    /* 너무 자주 호출 방지 (30초 디바운스) */
+    if (_ghPushTimer) clearTimeout(_ghPushTimer);
+    _ghPushTimer = setTimeout(function() {
+      try {
+        var _ghToken = localStorage.getItem('gh_token') || '';
+        if (!_ghToken) return;
+        var _ghOwner = 'msxnyad';
+        var _ghRepo  = 'trispark';
+        var _ghFile  = 'shared_data.json';
+        var _apiUrl  = 'https://api.github.com/repos/' + _ghOwner + '/' + _ghRepo + '/contents/' + _ghFile;
+        var _headers = {
+          'Authorization': 'token ' + _ghToken,
+          'Content-Type': 'application/json'
+        };
+        /* 현재 파일의 SHA 가져오기 */
+        fetch(_apiUrl, {headers: _headers})
+          .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+          .then(function(meta) {
+            /* 기존 shared_data 읽기 → 유저 데이터 병합 후 업로드 */
+            var existing = {};
+            try { existing = JSON.parse(atob(meta.content.replace(/\n/g, ''))); } catch(e) {}
+            /* 현재 유저 데이터 병합 */
+            if (!existing.users) existing.users = {};
+            existing.users[currentUser.id] = getUserData(currentUser.id);
+            if (!existing.appUsers) existing.appUsers = {};
+            var localUsers = getUsers();
+            Object.assign(existing.appUsers, localUsers);
+            existing.activeUser = currentUser.id;
+            var _encoded = btoa(unescape(encodeURIComponent(JSON.stringify(existing, null, 2))));
+            return fetch(_apiUrl, {
+              method: 'PUT',
+              headers: _headers,
+              body: JSON.stringify({message: 'auto sync from browser', content: _encoded, sha: meta.sha})
+            });
+          })
+          .then(function(r){ if (r && r.ok) console.log('[GitHub] 브라우저 동기화 완료'); })
+          .catch(function(e){ console.log('[GitHub] 브라우저 동기화 실패:', e); });
+      } catch(e) {}
+    }, 30000);
   }
 
   /* 로그인 시 activeUser 알림 */
@@ -2683,7 +2781,7 @@
         try { renderReport('daily'); } catch(e) {}
 
         var _fetchCtrl = new AbortController();
-        var _fetchTimeout = setTimeout(function(){ _fetchCtrl.abort(); }, 3000);
+        var _fetchTimeout = setTimeout(function(){ _fetchCtrl.abort(); }, 2000);
         fetch(getStatusUrl(), {signal: _fetchCtrl.signal})
             .then(function(r){
                 clearTimeout(_fetchTimeout);
@@ -2698,18 +2796,18 @@
                 localStorage.setItem(cacheKey, JSON.stringify(data));
                 localStorage.setItem(cacheKey + '_time', new Date().toLocaleString('ko-KR'));
               } catch(e) {}
-              // ★ immersion, timeScore, postureScore 모두 업데이트
+              // 오늘 공부 시간이 0이면 점수도 0으로
+              var _noStudy = !data.totalStudySec || data.totalStudySec === 0;
               if (data.immersionScore !== undefined) {
-                  reportData.daily.immersion = data.immersionScore;
+                  reportData.daily.immersion = _noStudy ? 0 : data.immersionScore;
               } else if (data.postureScore !== undefined) {
-                  reportData.daily.immersion = data.postureScore;
+                  reportData.daily.immersion = _noStudy ? 0 : data.postureScore;
               }
-              // ★ API에서 받은 점수 저장
               if (data.timeScore !== undefined) {
-                  reportData.daily.timeScore = data.timeScore;
+                  reportData.daily.timeScore = _noStudy ? 0 : data.timeScore;
               }
               if (data.postureScore !== undefined) {
-                  reportData.daily.postureScore = data.postureScore;
+                  reportData.daily.postureScore = _noStudy ? 0 : data.postureScore;
               }
                 if (data.postureStats) {
                     var ps = data.postureStats;
@@ -2870,7 +2968,9 @@
             .catch(function(err){
                 /* 파이 꺼져있을 때 → GitHub shared_data.json 시도 (크로스 디바이스 동기화) */
                 var _ghRaw = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
-                fetch(_ghRaw + '?_=' + Date.now())
+                var _ghCtrl = new AbortController();
+                setTimeout(function(){ _ghCtrl.abort(); }, 4000);
+                fetch(_ghRaw + '?_=' + Date.now(), {signal: _ghCtrl.signal})
                   .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
                   .then(function(ghData) {
                     /* ngrok URL이 있으면 API 주소로 저장 */
@@ -2879,8 +2979,10 @@
                       localStorage.setItem('pi_ip', _piIp);
                       DASHBOARD_URL = ghData.ngrokUrl + '/sync';
                     }
-                    var uid = currentUser ? currentUser.id : (ghData.activeUser || '');
+                    if (!currentUser) return;
+                    var uid = currentUser.id;
                     var ud  = (ghData.users || {})[uid] || {};
+                    if (!ud || Object.keys(ud).length === 0) return;
                     /* shared_data 구조 → _applyDashboardData 포맷으로 변환 */
                     var mapped = {
                       activeUser:           uid,
@@ -2967,19 +3069,30 @@
   /* 이전 세션 자동 복원 */
   (function() {
     var saved = localStorage.getItem('app_current');
-    if (saved) {
-      var users = getUsers();
-      if (users[saved]) {
-        currentUser = { id: saved, nick: users[saved].nick };
-        loadUserData();
-        notifyLogin(saved);
-        syncToDashboard();
-        document.getElementById('home-greeting').innerHTML = currentUser.nick + (currentLang==='ko'?'<span>님</span>':'');
-        document.getElementById('nickname-display').textContent = currentUser.nick;
-        var _rt = sessionStorage.getItem('returnTo');
-        if (_rt) { sessionStorage.removeItem('returnTo'); goTo(_rt); }
-        else { goTo('screen-home'); }
-      }
+    var users = getUsers();
+    if (saved && users[saved]) {
+      currentUser = { id: saved, nick: users[saved].nick };
+      loadUserData();
+      notifyLogin(saved);
+      syncToDashboard();
+      document.getElementById('home-greeting').innerHTML = currentUser.nick + (currentLang==='ko'?'<span>님</span>':'');
+      document.getElementById('nickname-display').textContent = currentUser.nick;
+      var _rt = sessionStorage.getItem('returnTo');
+      if (_rt) { sessionStorage.removeItem('returnTo'); goTo(_rt); }
+      else { goTo('screen-home'); }
+    } else if (_isGhPages) {
+      /* GitHub Pages에서 로컬 계정 없으면 GitHub에서 계정 목록 가져오기 (자동로그인 X) */
+      var _ghRaw = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
+      fetch(_ghRaw + '?_=' + Date.now())
+        .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+        .then(function(ghData) {
+          if (!ghData.appUsers) return;
+          /* 계정 정보만 로컬에 저장 (로그인은 사용자가 직접) */
+          var _localUsers = getUsers();
+          var _merged = Object.assign({}, ghData.appUsers, _localUsers);
+          saveUsers(_merged);
+        })
+        .catch(function() {});
     }
   })();
 
@@ -3893,7 +4006,7 @@
       var _tsLiveA = _getLiveStudySec();
       var _tsLiveG = d.sessionActive
           ? ((d.totalPomodoroGoalSec || 0) + (d.pomodoroSeconds || 0)) || (goalMinutes * 60)
-          : d.totalPomodoroGoalSec || (d.pomodoroSeconds || (goalMinutes * 60));
+          : (d.totalPomodoroGoalSec || 0);
       tsComputed = (_tsLiveA > 0 && _tsLiveG > 0) ? Math.min(100, Math.round(_tsLiveA / _tsLiveG * 1000) / 10) : 0;
     }
     var imPct;
@@ -4080,12 +4193,14 @@
 
       /* postureSec 우선, 없으면 postureScore 폴백 */
       var psSec  = d.postureSec;
-      var psHasDetail = psSec && (psSec.total > 0 || psSec.turtle > 0 || psSec.bent > 0 || psSec.turtleExc !== undefined);
+      var _psTotal = psSec ? (psSec.total || 0) : 0;
+      if (!_psTotal && psSec) _psTotal = (psSec.turtle||0)+(psSec.bent||0)+(psSec.reclined||0)+(psSec.drowsy||0)+(psSec.absent||0)+(psSec.overlapTotal||0);
+      var psHasDetail = psSec && _psTotal > 0;
       var psGoodPct, psWarnPct, psBadPct, psAbsentPct, psOffPct;
       var psAbsentColor = isDark ? 'rgba(196,217,196,0.35)' : '#a8b8a8';
       var psOverlapPct = 0;
       if (psHasDetail) {
-        var psT = psSec.total;
+        var psT = _psTotal;
         /* combo_stats 기반 exclusive 시간 사용 → 합이 totalSec을 초과하지 않음 */
         var hasExc = (psSec.turtleExc !== undefined);
         if (hasExc) {
@@ -4293,7 +4408,7 @@
 
       if (!hasData) {
         /* 빈 상태 */
-        html += '<div style="height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">';
+        html += '<div style="height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:'+rCardBg+';border-radius:10px;">';
         html += '<div style="font-size:24px;">📚</div>';
         html += '<div style="font-size:13px;font-weight:700;color:'+rTxtMuted+';">공부를 시작해 봐요!</div>';
         html += '</div>';
