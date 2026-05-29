@@ -2405,6 +2405,15 @@
   }
 
   /* ── 대시보드 연동 ── */
+  /* QR 코드에 ?pi=IP 파라미터가 있으면 Pi IP 자동 저장 */
+  (function() {
+    var _urlPi = new URLSearchParams(window.location.search).get('pi');
+    if (_urlPi) {
+      localStorage.setItem('pi_ip', _urlPi);
+      /* URL에서 파라미터 제거 (깔끔하게) */
+      history.replaceState(null, '', window.location.pathname);
+    }
+  })();
   var _piIp = localStorage.getItem('pi_ip') || '172.20.10.3';
   var _isGhPages = window.location.hostname.endsWith('github.io') || window.location.hostname.endsWith('github.dev');
   function _apiBase() { return _isGhPages ? 'http://' + _piIp : ''; }
@@ -2851,23 +2860,64 @@
                 try { renderReport(currentReportTab || 'daily'); } catch(e) {}
             })
             .catch(function(err){
-                /* 파이 꺼져있을 때 → 캐시된 스냅샷 복원 시도 */
-                try {
-                  var _snapKey = 'report_snap_' + (currentUser ? currentUser.id : 'guest');
-                  var _snap = JSON.parse(localStorage.getItem(_snapKey) || 'null');
-                  if (_snap) {
-                    if (_snap.daily)      reportData['daily']   = _snap.daily;
-                    if (_snap.weekly)     reportData['weekly']  = _snap.weekly;
-                    if (_snap.rawMonthly) _rawMonthlyData       = _snap.rawMonthly;
+                /* 파이 꺼져있을 때 → GitHub shared_data.json 시도 (크로스 디바이스 동기화) */
+                var _ghRaw = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
+                fetch(_ghRaw + '?_=' + Date.now())
+                  .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+                  .then(function(ghData) {
+                    var uid = currentUser ? currentUser.id : (ghData.activeUser || '');
+                    var ud  = (ghData.users || {})[uid] || {};
+                    /* shared_data 구조 → _applyDashboardData 포맷으로 변환 */
+                    var mapped = {
+                      activeUser:           uid,
+                      totalStudySec:        ud.totalStudySec        || 0,
+                      pomodoroCount:        ud.pomodoroCount        || 0,
+                      timeScore:            ud.timeScore            || 0,
+                      immersionScore:       ud.immersionScore       || 0,
+                      postureScore:         ud.postureScore         || 0,
+                      postureStats:         ud.postureStats         || null,
+                      weeklyStudyData:      ud.weeklyStudyData      || null,
+                      monthlyData:          ud.monthlyData          || null,
+                      hourlyData:           ud.hourlyData           || {},
+                      hourlySegments:       ud.hourlySegments       || {},
+                    };
+                    _applyDashboardData(mapped, false);
+                    /* 이 데이터로 스냅샷 갱신 */
+                    try {
+                      var _snapKey = 'report_snap_' + (currentUser ? currentUser.id : 'guest');
+                      localStorage.setItem(_snapKey, JSON.stringify({
+                        daily: reportData.daily, weekly: reportData['weekly'],
+                        rawMonthly: _rawMonthlyData,
+                        ts: new Date().toLocaleString('ko-KR') + ' (GitHub)'
+                      }));
+                    } catch(e3) {}
                     var _ob = document.getElementById('offline-banner');
                     if (_ob) {
                       _ob.style.display = 'flex';
                       var _ot = document.getElementById('offline-banner-time');
-                      if (_ot) _ot.textContent = _snap.ts ? '마지막 업데이트: ' + _snap.ts : '';
+                      if (_ot) _ot.textContent = 'GitHub 데이터 (파이 미연결)';
                     }
-                  }
-                } catch(e2) {}
-                try { renderReport(currentReportTab || 'daily'); } catch(e) {}
+                    try { renderReport(currentReportTab || 'daily'); } catch(e) {}
+                  })
+                  .catch(function() {
+                    /* GitHub도 실패 → localStorage 스냅샷 폴백 */
+                    try {
+                      var _snapKey = 'report_snap_' + (currentUser ? currentUser.id : 'guest');
+                      var _snap = JSON.parse(localStorage.getItem(_snapKey) || 'null');
+                      if (_snap) {
+                        if (_snap.daily)      reportData['daily']   = _snap.daily;
+                        if (_snap.weekly)     reportData['weekly']  = _snap.weekly;
+                        if (_snap.rawMonthly) _rawMonthlyData       = _snap.rawMonthly;
+                        var _ob = document.getElementById('offline-banner');
+                        if (_ob) {
+                          _ob.style.display = 'flex';
+                          var _ot = document.getElementById('offline-banner-time');
+                          if (_ot) _ot.textContent = _snap.ts ? '마지막 업데이트: ' + _snap.ts : '';
+                        }
+                      }
+                    } catch(e2) {}
+                    try { renderReport(currentReportTab || 'daily'); } catch(e) {}
+                  });
             });
     }
     /* 뽀모도로 화면 진입 시 저장된 시간값 복원 */
