@@ -1591,19 +1591,16 @@
           <input id="pi-ip-input" type="text" placeholder="예: 172.20.10.3"
             style="flex:1;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--txt);font-size:13px;font-family:'Nanum Gothic',sans-serif;"
             value="" />
-          <button onclick="savePiIp()" style="padding:8px 14px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:700;cursor:pointer;">저장</button>
+          <button onclick="savePiIp()" style="padding:8px 14px;border-radius:10px;border:none;background:#4a7a4a;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">저장</button>
         </div>
         <div style="font-size:10px;color:var(--txt-muted);margin-top:6px;">파이 핫스팟 연결 시 자동 감지돼요. GitHub Pages에서 리포트를 볼 때 필요해요.</div>
       </div>
       <!-- GitHub 토큰 설정 -->
       <div style="margin-bottom:12px;background:var(--card);border-radius:14px;padding:14px;border:1px solid var(--border);">
         <div style="font-size:12px;font-weight:700;color:var(--txt-muted);margin-bottom:8px;">🔑 GitHub 토큰 (데이터 동기화용)</div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input id="gh-token-input" type="password" placeholder="ghp_..."
-            style="flex:1;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--txt);font-size:13px;font-family:'Nanum Gothic',sans-serif;"
-            value="" />
-          <button onclick="saveGhToken()" style="padding:8px 14px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:700;cursor:pointer;">저장</button>
-        </div>
+        <input id="gh-token-input" type="password" placeholder="ghp_..."
+          style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--txt);font-size:13px;font-family:'Nanum Gothic',sans-serif;margin-bottom:8px;" />
+        <button onclick="saveGhToken()" style="width:100%;padding:10px;border-radius:10px;border:none;background:#4a7a4a;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">저장</button>
         <div style="font-size:10px;color:var(--txt-muted);margin-top:6px;">토큰은 이 기기에만 저장돼요. GitHub → Settings → Developer settings → Personal access tokens에서 발급하세요.</div>
       </div>
 
