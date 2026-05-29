@@ -2416,7 +2416,15 @@
   })();
   var _piIp = localStorage.getItem('pi_ip') || '172.20.10.3';
   var _isGhPages = window.location.hostname.endsWith('github.io') || window.location.hostname.endsWith('github.dev');
-  function _apiBase() { return _isGhPages ? 'http://' + _piIp : ''; }
+  function _apiBase() {
+    if (!_isGhPages) return '';
+    /* ngrok 등 전체 도메인이 저장된 경우 (슬래시 없이 host만) */
+    if (_piIp.includes('.ngrok') || _piIp.includes('.loca.lt') || _piIp.startsWith('https://')) {
+      var base = _piIp.replace(/^https?:\/\//, '').replace(/\/$/, '');
+      return 'https://' + base;
+    }
+    return 'http://' + _piIp;
+  }
   var DASHBOARD_URL = _isGhPages ? _apiBase() + '/sync' : '/sync';
   function getStatusUrl() { return _apiBase() + '/status'; }
 
@@ -2865,6 +2873,12 @@
                 fetch(_ghRaw + '?_=' + Date.now())
                   .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
                   .then(function(ghData) {
+                    /* ngrok URL이 있으면 API 주소로 저장 */
+                    if (ghData.ngrokUrl && ghData.ngrokUrl.startsWith('https://')) {
+                      _piIp = ghData.ngrokUrl.replace('https://', '');
+                      localStorage.setItem('pi_ip', _piIp);
+                      DASHBOARD_URL = ghData.ngrokUrl + '/sync';
+                    }
                     var uid = currentUser ? currentUser.id : (ghData.activeUser || '');
                     var ud  = (ghData.users || {})[uid] || {};
                     /* shared_data 구조 → _applyDashboardData 포맷으로 변환 */
