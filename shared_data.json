@@ -2,120 +2,68 @@
   "activeUser": "test",
   "users": {
     "test": {
-      "pomodoroSeconds": 300,
-      "memoWords": [],
-      "ddayLabel": "test",
-      "ddayCount": "D-15",
-      "urgentTasks": [
-        "데이터 연동"
-      ],
-      "completedTasks": [],
-      "pomodoroCount": 1,
-      "totalStudySec": 79,
-      "hourlyData": {
-        "18": {
-          "mins": 1.5,
-          "score": 78
-        }
-      },
-      "hourlySegments": {
-        "18": [
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
-          "g",
-          "n",
-          "n",
-          "n",
-          "n",
-          "n",
-          "n"
+      "folderData": {
+        "테스트": [
+          "테스트하는중",
+          "데이터연동하는중"
         ]
       },
-      "dailySessionScores": [
-        26
-      ],
-      "timeScore": 26,
-      "postureScore": 68.3,
-      "immersionScore": 47.15,
-      "dailyPostureAccum": {
-        "drowsyCount": 0,
-        "bentCount": 1,
-        "turtleCount": 0,
-        "reclinedCount": 1,
-        "absentCount": 0,
-        "proneCount": 0,
-        "goodSec": 42.6,
-        "drowsySec": 0,
-        "bentSec": 8.6,
-        "reclinedSec": 11.2,
-        "absentSec": 0,
-        "turtleSec": 0,
-        "totalSec": 62.4
-      },
-      "postureStats": {
-        "postureRatio": 68.3,
-        "totalSec": 62.4,
-        "goodSec": 42.6,
-        "drowsySec": 0,
-        "bentSec": 8.6,
-        "reclinedSec": 11.2,
-        "absentSec": 0,
-        "turtleSec": 0,
-        "drowsyCount": 0,
-        "absentCount": 0,
-        "proneCount": 0,
-        "bentCount": 1,
-        "reclinedCount": 1,
-        "turtleCount": 0
-      },
-      "temp": 32.2,
-      "humidity": 42.6,
-      "currentSessionHourly": {},
-      "currentSessionSegments": {},
-      "lastSessionDate": "2026-05-16",
-      "weeklyStudyData": {
-        "weekStart": "2026-05-11",
-        "days": {
-          "Mon": {
-            "mins": 0,
-            "score": 0,
-            "sessions": 0
-          },
-          "Tue": {
-            "mins": 0,
-            "score": 0,
-            "sessions": 0
-          },
-          "Wed": {
-            "mins": 0,
-            "score": 0,
-            "sessions": 0
-          },
-          "Thu": {
-            "mins": 0,
-            "score": 0,
-            "sessions": 0
-          },
-          "Fri": {
-            "mins": 0,
-            "score": 0,
-            "sessions": 0
-          },
-          "Sat": {
-            "mins": 1,
-            "score": 26,
-            "sessions": 1
-          },
-          "Sun": {
-            "mins": 0,
-            "score": 0,
-            "sessions": 0
+      "habits": [
+        {
+          "name": "오전 기상",
+          "records": {
+            "2026-05-04": false,
+            "2026-05-11": true,
+            "2026-05-18": true,
+            "2026-05-25": true,
+            "2026-05-05": false,
+            "2026-05-12": true,
+            "2026-05-19": true,
+            "2026-05-26": true,
+            "2026-05-06": false,
+            "2026-05-13": true,
+            "2026-05-27": true,
+            "2026-05-20": true,
+            "2026-05-08": false,
+            "2026-05-15": true,
+            "2026-05-22": true,
+            "2026-05-29": true
           }
         }
-      }
+      ],
+      "ddayList": [
+        {
+          "name": "댕",
+          "date": "2026-05-31"
+        }
+      ],
+      "selectedDdayIdx": 0,
+      "goalMinutes": 120,
+      "pomoMinutes": 5,
+      "eisenData": [
+        [
+          {
+            "text": "테스트하고잇어요",
+            "done": false,
+            "pinned": true
+          },
+          {
+            "text": "그만하고파 ~",
+            "done": false,
+            "pinned": true
+          }
+        ],
+        [],
+        [],
+        []
+      ],
+      "lastOpenTime": "2026-05-29T16:33:02.897Z"
+    }
+  },
+  "appUsers": {
+    "test": {
+      "pw": "101010",
+      "nick": "test"
     }
   }
 }
