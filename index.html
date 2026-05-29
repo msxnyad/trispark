@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, viewport-fit=cover"/>
 <title>뽀모도로 앱</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
@@ -523,6 +523,23 @@
     flex-shrink: 0;
   }
 
+  @media (max-width: 768px) {
+    body { overflow: hidden; background: var(--bg-surface); }
+    .phone {
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .home-container { padding: 7rem 1rem 2rem; }
+    .grid { gap: 10px; }
+    .card { padding: 1.75rem 1rem; }
+    .report-container { padding: 4rem 1rem 3rem; }
+    .settings-container { padding: 4rem 1rem 3rem; }
+    .memo-container { padding: 4rem 1rem 4rem; }
+    .folder-inner-container { padding: 4rem 1rem 4rem; }
+    .habit-container { padding: 4rem 1rem 4rem; }
+    .habit-week-container { padding: 4rem 1rem 4rem; }
+  }
+
   /* 스크린 */
   .screen {
     display: none;
@@ -853,9 +870,9 @@
   .memo-container { position: relative; z-index: 10; padding: 5rem 1.5rem 6rem; }
   .memo-title { font-size: 36px; font-weight: 800; color: var(--txt-primary); letter-spacing: -0.02em; margin-bottom: 1.5rem; }
   .search-bar { display: flex; margin-bottom: 1.75rem; border-radius: 12px; overflow: hidden; }
-  .search-bar input { flex: 1; padding: 14px 16px; border: none; background: var(--bg-card2); font-size: 14px; font-family: 'Nanum Gothic', sans-serif; color: var(--txt-input); outline: none; }
+  .search-bar input { flex: 1; padding: 14px 16px; border: none; background: var(--bg-card2); font-size: 14px; font-family: 'Nanum Gothic', sans-serif; color: var(--txt-input); outline: none; line-height: 1; }
   .search-bar input::placeholder { color: var(--txt-hint); }
-  .search-bar button { padding: 14px 18px; background: var(--bg-btn); border: none; font-size: 14px; font-family: 'Nanum Gothic', sans-serif; font-weight: 700; color: #3A4A3A; cursor: pointer; white-space: nowrap; text-align: center; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .search-bar button { padding: 14px 19px 14px 17px; background: var(--bg-btn); border: none; font-size: 14px; font-family: 'Nanum Gothic', sans-serif; font-weight: 700; color: #3A4A3A; cursor: pointer; white-space: nowrap; flex-shrink: 0; -webkit-appearance: none; appearance: none; display: grid; place-items: center; line-height: 1; }
   .search-bar button:hover { background: var(--bg-btn-hover); }
   .folder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 14px; padding-top: 16px; }
   .folder-card.drag-over { outline: 2px dashed #4a7a4a; outline-offset: 2px; opacity: 0.7; }
@@ -984,6 +1001,12 @@
     background: rgba(20,35,20,0.82); z-index: 200;
     border-radius: 48px;
   }
+  .info-desc-box {
+    background: #4a5a4a;
+  }
+  html.dark .info-desc-box {
+    background: #3d4d3d;
+  }
   .info-overlay.open { display: block; }
   .info-close {
     position: absolute; top: 1.25rem; right: 1.25rem;
@@ -1064,7 +1087,7 @@
     <div class="login-container">
       <h1 data-i18n="signup-title">회원가입</h1>
       <div style="display:flex;flex-direction:column;gap:8px;width:100%;">
-        <input class="input-field" type="text" placeholder="아이디 (영문+숫자, 4자 이상)" data-i18n="signup-id" data-i18n-attr="placeholder" id="signup-id"/>
+        <input class="input-field" type="text" placeholder="아이디 (4자 이상)" data-i18n="signup-id" data-i18n-attr="placeholder" id="signup-id"/>
         <input class="input-field" type="text" placeholder="닉네임" data-i18n="signup-nick" data-i18n-attr="placeholder" id="signup-nick"/>
         <input class="input-field" type="password" placeholder="비밀번호 (6자 이상)" data-i18n="signup-pw" data-i18n-attr="placeholder" id="signup-pw"/>
         <input class="input-field" type="password" placeholder="비밀번호 확인" data-i18n="signup-pw2" data-i18n-attr="placeholder" id="signup-pw2" onkeydown="if(event.key==='Enter')doSignup()"/>
@@ -1137,57 +1160,53 @@
     <button class="info-btn" onclick="openInfo('pomo-info')">i</button>
 
     <!-- 뽀모도로 인포 오버레이 -->
-    <div class="info-overlay" id="pomo-info" onclick="closeInfo('pomo-info')" style="background:rgba(100,140,100,0.88);border-radius:48px;">
+    <div class="info-overlay" id="pomo-info" onclick="closeInfo('pomo-info')" style="background:rgba(108,128,108,0.88);border-radius:48px;">
       <button class="info-close" onclick="closeInfo('pomo-info')" style="background:#3a6a3a;color:#fff;font-size:18px;font-weight:800;width:48px;height:48px;">✕</button>
 
       <!-- ▲ 버튼 설명 (1) -->
-      <div style="position:absolute;top:24%;right:13%;display:flex;align-items:center;gap:6px;">
+      <div id="pomo-lbl-1" style="position:absolute;top:0;right:13%;display:flex;align-items:center;gap:6px;">
         <div style="width:22px;height:1.5px;background:#fff;flex-shrink:0;"></div>
         <div style="font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.5;">이 버튼을 누르면<br>5분씩 늘어나요</div>
       </div>
 
       <!-- 숫자 박스 설명 (2) -->
-      <div style="position:absolute;top:36%;left:50%;transform:translateX(-50%);text-align:center;font-size:13px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.7;white-space:nowrap;">
+      <div id="pomo-lbl-2" style="position:absolute;top:0;left:50%;transform:translateX(-50%);text-align:center;font-size:13px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.7;white-space:nowrap;">
         여기 있는 숫자를 누르면<br>키패드로 직접 입력 가능해요<br><span style="font-size:12px;">(설정 범위: 5분 ~ 90분)</span>
       </div>
 
       <!-- ▼ 버튼 설명 (3) -->
-      <div style="position:absolute;top:51.5%;right:13%;display:flex;align-items:center;gap:6px;">
+      <div id="pomo-lbl-3" style="position:absolute;top:0;right:13%;display:flex;align-items:center;gap:6px;">
         <div style="width:22px;height:1.5px;background:#fff;flex-shrink:0;"></div>
         <div style="font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.5;">이 버튼을 누르면<br>5분씩 줄어요</div>
       </div>
 
       <!-- 프리셋 설명 (4) -->
-      <div style="position:absolute;top:65%;left:18%;font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.5;">
+      <div id="pomo-lbl-4" style="position:absolute;top:0;left:18%;font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.5;">
         └ 이 숫자를 누르면 자동으로 입력돼요
       </div>
 
-      <!-- 일일 목표 설명 (5) -->
-      <div style="position:absolute;top:73%;left:18%;font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.6;">
-        └ 일일 목표 집중시간을 정할 수 있어요<br>&nbsp;&nbsp;&nbsp;&nbsp;(30분 ~ 600분(10시간))
-      </div>
     </div>
     <div class="pomo-container">
       <div class="title-area">
         <h1 data-i18n="pomo-title">뽀모도로</h1>
         <p data-i18n="pomo-sub">집중 시간 설정</p>
       </div>
-      <button class="circle-btn" onclick="changeTime(5)">
+      <button id="pomo-btn-up" class="circle-btn" onclick="changeTime(5)">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M6 15L12 9L18 15" stroke="#3a5a3a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <div class="input-box">
+      <div id="pomo-input-box" class="input-box">
         <input id="time-input" type="number" value="25" min="5" max="90"
           oninput="handleTimeInput(this)" onblur="handleTimeBlur(this)" onfocus="clearPresetActive()"/>
         <span class="unit">분</span>
       </div>
-      <button class="circle-btn" onclick="changeTime(-5)">
+      <button id="pomo-btn-down" class="circle-btn" onclick="changeTime(-5)">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M6 9L12 15L18 9" stroke="#3a5a3a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <div class="presets">
+      <div id="pomo-presets" class="presets">
         <button class="preset-btn active" onclick="setPreset(25,this)">25분</button>
         <button class="preset-btn" onclick="setPreset(30,this)">30분</button>
         <button class="preset-btn" onclick="setPreset(45,this)">45분</button>
@@ -1221,18 +1240,18 @@
     <button class="info-btn" onclick="openInfo('eisen-info')">i</button>
 
     <!-- 아이젠하워 인포 오버레이 -->
-    <div class="info-overlay" id="eisen-info" onclick="closeInfo('eisen-info')" style="background:rgba(100,140,100,0.88);border-radius:48px;">
+    <div class="info-overlay" id="eisen-info" onclick="closeInfo('eisen-info')" style="background:rgba(108,128,108,0.88);border-radius:48px;">
       <button class="info-close" onclick="closeInfo('eisen-info')" style="background:#3a6a3a;color:#fff;font-size:18px;font-weight:800;width:48px;height:48px;">✕</button>
-      <div style="position:absolute;top:43%;left:12%;width:40%;text-align:center;font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.6;">
+      <div id="eisen-lbl-0" style="position:absolute;top:0;left:calc(12% - 3px);width:40%;text-align:center;font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.6;">
         오늘 반드시<br>처리해야 하는 일<br><span style="opacity:0.85;font-size:11px;">ex. 과제</span>
       </div>
-      <div style="position:absolute;top:43%;right:8%;width:40%;text-align:center;font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.6;">
+      <div id="eisen-lbl-1" style="position:absolute;top:0;right:calc(8% + 3px);width:40%;text-align:center;font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.6;">
         위임하거나<br>축소해야하는 일<br><span style="opacity:0.85;font-size:11px;">ex. 잡다한 업무</span>
       </div>
-      <div style="position:absolute;top:63%;left:12%;width:40%;text-align:center;font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.6;">
+      <div id="eisen-lbl-2" style="position:absolute;top:0;left:calc(12% - 3px);width:40%;text-align:center;font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.6;">
         성장과 변화를<br>만드는 일<br><span style="opacity:0.85;font-size:11px;">ex. 독서, 운동</span>
       </div>
-      <div style="position:absolute;top:63%;right:8%;width:40%;text-align:center;font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.6;">
+      <div id="eisen-lbl-3" style="position:absolute;top:0;right:calc(8% + 3px);width:40%;text-align:center;font-size:12px;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:700;line-height:1.6;">
         제거하거나<br>줄여야하는 일<br><span style="opacity:0.85;font-size:11px;">ex. 유튜브, 게임</span>
       </div>
     </div>
@@ -1243,22 +1262,22 @@
       </div>
       <div class="matrix-wrapper" style="justify-content:center;">
         <div class="matrix">
-          <div class="cell">
+          <div id="eisen-cell-0" class="cell">
             <div class="cell-label" data-i18n="eisen-q0">긴급하고 중요한 일</div>
             <div class="task-list" id="list-0"></div>
             <button class="add-btn" onclick="openModal(0)">+</button>
           </div>
-          <div class="cell">
+          <div id="eisen-cell-1" class="cell">
             <div class="cell-label" data-i18n="eisen-q1">긴급하지만 중요하지 않은 일</div>
             <div class="task-list" id="list-1"></div>
             <button class="add-btn" onclick="openModal(1)">+</button>
           </div>
-          <div class="cell">
+          <div id="eisen-cell-2" class="cell">
             <div class="cell-label" data-i18n="eisen-q2">긴급하진 않지만 중요한 일</div>
             <div class="task-list" id="list-2"></div>
             <button class="add-btn" onclick="openModal(2)">+</button>
           </div>
-          <div class="cell">
+          <div id="eisen-cell-3" class="cell">
             <div class="cell-label" data-i18n="eisen-q3">긴급하지도 중요하지도 않은 일</div>
             <div class="task-list" id="list-3"></div>
             <button class="add-btn" onclick="openModal(3)">+</button>
@@ -1303,11 +1322,11 @@
 
 
     <!-- 암기 안내 오버레이 -->
-    <div class="info-overlay" id="memo-info" onclick="closeInfo('memo-info')" style="background:rgba(100,140,100,0.88);border-radius:48px;">
+    <div class="info-overlay" id="memo-info" onclick="closeInfo('memo-info')" style="background:rgba(108,128,108,0.88);border-radius:48px;">
       <button class="info-close" onclick="closeInfo('memo-info')" style="background:#3a6a3a;color:#fff;font-size:18px;font-weight:800;width:48px;height:48px;">✕</button>
       <div style="position:absolute;top:20%;left:50%;transform:translateX(-50%);width:82%;text-align:center;">
         <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:18px;">📚 암기 사용법</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.92);line-height:1.9;text-align:left;background:rgba(255,255,255,0.12);border-radius:16px;padding:16px 18px;">
+        <div class="info-desc-box" style="font-size:13px;color:rgba(255,255,255,0.92);line-height:1.9;text-align:left;border-radius:16px;padding:16px 18px;">
           <div style="margin-bottom:8px;">📁 <b>+ 버튼</b>으로 폴더 생성</div>
           <div style="margin-bottom:8px;">📝 폴더를 눌러 <b>암기 항목 추가</b></div>
           <div style="margin-bottom:8px;">🔍 <b>검색창</b>으로 폴더 찾기</div>
@@ -1381,11 +1400,11 @@
 
 
     <!-- 해빗트래커 안내 오버레이 -->
-    <div class="info-overlay" id="habit-info" onclick="closeInfo('habit-info')" style="background:rgba(100,140,100,0.88);border-radius:48px;">
+    <div class="info-overlay" id="habit-info" onclick="closeInfo('habit-info')" style="background:rgba(108,128,108,0.88);border-radius:48px;">
       <button class="info-close" onclick="closeInfo('habit-info')" style="background:#3a6a3a;color:#fff;font-size:18px;font-weight:800;width:48px;height:48px;">✕</button>
       <div style="position:absolute;top:20%;left:50%;transform:translateX(-50%);width:82%;text-align:center;">
         <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:18px;">📋 해빗트래커 사용법</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.92);line-height:1.9;text-align:left;background:rgba(255,255,255,0.12);border-radius:16px;padding:16px 18px;">
+        <div class="info-desc-box" style="font-size:13px;color:rgba(255,255,255,0.92);line-height:1.9;text-align:left;border-radius:16px;padding:16px 18px;">
           <div style="margin-bottom:8px;">➕ <b>+ 버튼</b>으로 새 해빗 추가</div>
           <div style="margin-bottom:8px;">✅ <b>체크 버튼</b>으로 오늘 완료 표시</div>
           <div style="margin-bottom:8px;">📅 <b>해빗 이름</b>을 누르면 주별/월별 기록 확인</div>
@@ -1471,31 +1490,6 @@
     <button class="back-btn" onclick="goTo('screen-home')">‹</button>
     <button class="info-btn" onclick="openReportInfo()">i</button>
 
-    <!-- 오프라인 배너 -->
-    <div id="offline-banner" style="display:none;position:sticky;top:0;left:0;right:0;z-index:15;background:#b05a20;color:#fff;font-size:12px;font-weight:700;padding:10px 60px;text-align:center;"></div>
-
-    <!-- Pi IP 설정 버튼 -->
-    <div style="position:absolute;top:14px;right:52px;z-index:60;">
-      <button onclick="document.getElementById('pi-ip-input').value=localStorage.getItem('pi_ip')||'172.20.10.3';document.getElementById('pi-ip-popup').style.display='flex'"
-        style="background:transparent;border:none;font-size:18px;cursor:pointer;opacity:0.5;" title="라즈베리파이 IP 설정">📡</button>
-    </div>
-    <!-- Pi IP 설정 팝업 -->
-    <div id="pi-ip-popup" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
-      <div style="background:#fff;border-radius:20px;padding:28px 24px;width:88%;max-width:360px;text-align:center;">
-        <div style="font-weight:800;font-size:16px;margin-bottom:6px;">📡 라즈베리파이 IP 설정</div>
-        <div style="font-size:12px;color:#888;margin-bottom:16px;">파이 켜져있을 때 접속하면 데이터가 저장돼요.<br>꺼져있을 때는 저장된 데이터를 볼 수 있어요.</div>
-        <input id="pi-ip-input" type="text" placeholder="예: 192.168.0.10"
-          style="width:100%;padding:10px 14px;border:1.5px solid #C4D9C4;border-radius:12px;font-size:15px;margin-bottom:14px;text-align:center;"
-          value="" />
-        <div style="display:flex;gap:10px;justify-content:center;">
-          <button onclick="document.getElementById('pi-ip-popup').style.display='none'"
-            style="flex:1;padding:10px;border:1.5px solid #C4D9C4;border-radius:12px;background:#fff;font-weight:700;cursor:pointer;">취소</button>
-          <button onclick="setPiIp(document.getElementById('pi-ip-input').value);document.getElementById('pi-ip-popup').style.display='none';"
-            style="flex:1;padding:10px;border:none;border-radius:12px;background:#4a7a4a;color:#fff;font-weight:700;cursor:pointer;">저장</button>
-        </div>
-      </div>
-    </div>
-
     <!-- 예시 데이터 배너 -->
     <div id="example-banner" style="display:none;position:absolute;top:0;left:0;right:0;z-index:50;background:#4a7a4a;padding:18px 16px;align-items:center;justify-content:space-between;gap:8px;min-height:60px;">
       <div>
@@ -1512,9 +1506,15 @@
         <button class="report-tab" onclick="switchReportTab('weekly',this)">주별</button>
         <button class="report-tab" onclick="switchReportTab('monthly',this)">월별</button>
       </div>
+      <!-- 오프라인 캐시 알림 -->
+      <div id="offline-banner" style="display:none;background:#7a8e7a;border-radius:10px;margin:6px 0 2px 0;padding:8px 12px;align-items:center;gap:8px;">
+        <span style="font-size:13px;">📴</span>
+        <div>
+          <div style="font-size:11px;font-weight:800;color:#fff;">오프라인 — 마지막으로 저장된 데이터예요</div>
+          <div id="offline-banner-time" style="font-size:10px;color:rgba(255,255,255,0.8);"></div>
+        </div>
+      </div>
       <div id="report-content"></div>
-      <!-- 디버깅용 임시 박스 (테스트 후 삭제) -->
-      <div id="debug-output" style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:10px;margin:10px;font-size:11px;word-break:break-all;line-height:1.8;">데이터 로딩 중...</div>
     </div>
   </div>
 
@@ -1584,6 +1584,21 @@
         </div>
       </div>
 
+      <!-- Pi IP 설정 (GitHub Pages 오프라인 접속용) -->
+      <div style="margin-bottom:12px;background:var(--card);border-radius:14px;padding:14px;border:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:700;color:var(--txt-muted);margin-bottom:8px;">📡 파이 IP 주소 (오프라인 접속용)</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="pi-ip-input" type="text" placeholder="예: 172.20.10.3"
+            style="flex:1;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--txt);font-size:13px;font-family:'Nanum Gothic',sans-serif;"
+            value="" />
+          <button onclick="savePiIp()" style="padding:8px 14px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:700;cursor:pointer;">저장</button>
+        </div>
+        <div style="font-size:10px;color:var(--txt-muted);margin-top:6px;">파이 핫스팟 연결 시 자동 감지돼요. GitHub Pages에서 리포트를 볼 때 필요해요.</div>
+      </div>
+
+      <!-- 전체 데이터 초기화 -->
+      <button onclick="resetAllData()" style="width:100%;padding:14px;border-radius:14px;border:1.5px solid #e8c84a;background:none;font-size:14px;font-family:'Nanum Gothic',sans-serif;font-weight:700;color:#b08a20;cursor:pointer;margin-bottom:8px;">🗑 전체 기록 초기화</button>
+
       <!-- 로그아웃 -->
       <button class="logout-btn" onclick="doLogout()" data-i18n="s-logout">로그아웃</button>
 
@@ -1624,7 +1639,7 @@
     ko: {
       'login-hello':'안녕하세요!','login-id':'아이디','login-pw':'비밀번호',
       'login-btn':'로그인','signup-link':'회원가입','signup-title':'회원가입',
-      'signup-id':'아이디 (영문+숫자, 4자 이상)','signup-nick':'닉네임',
+      'signup-id':'아이디 (4자 이상)','signup-nick':'닉네임',
       'signup-pw':'비밀번호 (6자 이상)','signup-pw2':'비밀번호 확인',
       'signup-btn':'가입하기','login-link':'이미 계정이 있어요',
       'home-pomo':'뽀모도로','home-eisen':'아이젠하워<br>매트릭스',
@@ -1726,64 +1741,343 @@
     if (s) s.style.overflow = '';
   }
 
-  function openInfo(id) { document.getElementById(id).classList.add('open'); }
+  function openInfo(id) {
+    document.getElementById(id).classList.add('open');
+    /* 50ms 후 실제 요소 좌표로 라벨 위치 재계산 (iOS Safari 레이아웃 완료 대기) */
+    setTimeout(function() {
+      if (id === 'pomo-info')  _positionPomoInfo();
+      if (id === 'eisen-info') _positionEisenInfo();
+    }, 50);
+  }
   function closeInfo(id) { document.getElementById(id).classList.remove('open'); }
+
+  /* 뽀모도로 인포 라벨: 실제 버튼·입력창 중심에 수직 정렬 */
+  function _positionPomoInfo() {
+    var overlay = document.getElementById('pomo-info');
+    if (!overlay) return;
+    var oR = overlay.getBoundingClientRect();
+
+    function align(labelId, anchorId) {
+      var anchor = document.getElementById(anchorId);
+      var label  = document.getElementById(labelId);
+      if (!anchor || !label) return;
+      var aR = anchor.getBoundingClientRect();
+      var centerY = aR.top + aR.height / 2 - oR.top;
+      /* getBoundingClientRect().height 우선, 0이면 offsetHeight, 그래도 0이면 36px 기본값 */
+      var lH = label.getBoundingClientRect().height || label.offsetHeight || 36;
+      label.style.top    = Math.round(centerY - lH / 2) + 'px';
+      label.style.bottom = 'auto';
+    }
+
+    align('pomo-lbl-1', 'pomo-btn-up');
+    align('pomo-lbl-2', 'pomo-input-box');
+    align('pomo-lbl-3', 'pomo-btn-down');
+    align('pomo-lbl-4', 'pomo-presets');
+  }
+
+  /* 아이젠하워 인포 라벨: 각 셀 중심에 수직 정렬 */
+  function _positionEisenInfo() {
+    var overlay = document.getElementById('eisen-info');
+    if (!overlay) return;
+    var oR = overlay.getBoundingClientRect();
+
+    for (var i = 0; i < 4; i++) {
+      var cell  = document.getElementById('eisen-cell-' + i);
+      var label = document.getElementById('eisen-lbl-' + i);
+      if (!cell || !label) continue;
+      var cR = cell.getBoundingClientRect();
+      var centerY = cR.top + cR.height / 2 - oR.top;
+      var lH = label.getBoundingClientRect().height || label.offsetHeight || 60;
+      label.style.top    = Math.round(centerY - lH / 2) + 'px';
+      label.style.bottom = 'auto';
+    }
+  }
 
   /* ── 예시 데이터 ── */
   var exampleData = {
     daily: {
-      immersion: 78, immersionLabel: '오늘 몰입 점수', peak: '10시',
-      posture: {turtle:55, bent:74, reclined:52, absent:28, drowsy:18},
-      cheer: '오늘 집중 정말 잘 했어요! 10시가 황금 집중 타임이네요 🌿',
+      immersion: 79, immersionLabel: '오늘 몰입 점수', peak: '16시',
+      /*
+       * 세션: 15:00-15:52(52m) / 16:00-17:12(1h12m) / 17:29-18:03(34m)
+       *       20:40-21:02(22m) / 21:05-21:44(39m) / 23:15-23:35(20m)
+       *       23:42-00:34(52m) / 00:38-00:42(4m) / 01:00-02:23(1h23m11s)
+       * totalStudySec = 22691 (6h 18m 11s)
+       *
+       * 시간점수: 22691/26700 ≈ 85%
+       *
+       * 시간대별 공부 분량:
+       *   15시: 52분, 16시: 60분, 17시: 43분, 18시: 3분
+       *   20시: 20분, 21시: 41분
+       *   23시: 38분, 00시: 38분, 01시: 60분, 02시: 23분  합계 378분
+       *
+       * 뽀모도로 설정: 60m / 80m / 35m / 25m / 50m / 20m / 60m / 25m / 90m
+       *               합계 445분 = 26700초
+       *
+       * posturePct (exc 기준, 분모=22691초):
+       *   warn(y)   (turtleExc 2125 + reclinedExc 1241)/22691 → 14.8%
+       *   bad(r)    (bentExc 1512 + drowsyExc 264)/22691 → 7.8%
+       *   absent    370/22691 → 1.6%
+       *   overlap   443/22691 → 1.9%
+       *   good   = 100−14.8−7.8−1.6−1.9 = 73.9%
+       * postureScore = 100−(5955/22691)×100 = 73.756% → 73.8점
+       * timeScore    = 22691/26700×100 = 84.982% → 85.0점
+       * immersion    = round((73.8+85.0)/2) = round(79.4) = 79점
+       */
+      postureScore: 73.8,
+      posturePct: {good:73.8, warn:14.8, bad:7.8, absent:1.6, overlap:2.0},
+      postureSec: {
+        total: 22691,
+        /* exclusive — 자세 바 % 계산용 */
+        turtleExc:   2125, bentExc:      1512,
+        reclinedExc: 1241, drowsyExc:    264,
+        absentExc:   370,  overlapTotal: 443,
+        /* total (중복 포함) — 자세 상태별 기록 표시용 */
+        turtle:   2568, bent:     1955,
+        reclined: 1241, drowsy:   264,
+        absent:    370,
+        /* 항목별 중복 시간 — "(중복 Xm)" 표시용 */
+        turtleOverlap: 443, bentOverlap: 443,
+        reclinedOverlap: 0, drowsyOverlap: 0
+      },
+      posture: {turtle:18, bent:12, reclined:9, absent:4, drowsy:5},
+      totalStudySec: 22691,
+      timeScore: 85,
+      totalPomodoroGoalSec: 26700,   
+      pomodoroSeconds: 1500,         /* 25분/세션 */
+      pomodoroCount: 9,             
+      cheer: '오늘 6시간 넘게 집중했어요! 🌿',
       heatmap: [0,1,2,3,2,1,0], linePts: null,
+      /*
+       * segs 형식: 'g'/'y'/'r'/'n' (전체 채움) 또는 ['색', 비율0~1] (부분 채움)
+       * 비율은 5개 서브셀 중 몇 개 채울지 결정 (0.2=1칸, 0.4=2칸, 0.6=3칸, 0.8=4칸, 1=5칸)
+       */
       hours: [
-        {hr:0,score:0,mins:0,segs:[]},{hr:1,score:0,mins:0,segs:[]},{hr:2,score:0,mins:0,segs:[]},
-        {hr:3,score:0,mins:0,segs:[]},{hr:4,score:0,mins:0,segs:[]},{hr:5,score:0,mins:0,segs:[]},
-        {hr:6,score:20,mins:10,segs:['g','y','n','n','n','n','n','n','n','n','n','n']},
-        {hr:7,score:45,mins:30,segs:['g','y','y','g','y','n','n','n','n','n','n','n']},
-        {hr:8,score:70,mins:55,segs:['g','g','g','g','g','g','g','g','g','y','g','n']},
-        {hr:9,score:90,mins:60,segs:['g','g','g','g','g','g','g','g','g','g','y','g']},
-        {hr:10,score:88,mins:60,segs:['g','g','g','g','g','g','g','g','y','g','g','g']},
-        {hr:11,score:75,mins:50,segs:['g','g','g','g','g','g','g','y','g','y','n','n']},
-        {hr:12,score:30,mins:20,segs:['y','r','y','n','n','n','n','n','n','n','n','n']},
-        {hr:13,score:20,mins:10,segs:['y','r','n','n','n','n','n','n','n','n','n','n']},
-        {hr:14,score:80,mins:50,segs:['g','g','g','g','g','g','g','y','g','g','n','n']},
-        {hr:15,score:78,mins:55,segs:['g','g','g','g','g','g','g','g','y','g','y','n']},
-        {hr:16,score:60,mins:40,segs:['g','y','g','g','y','g','y','n','n','n','n','n']},
-        {hr:17,score:55,mins:35,segs:['g','y','g','y','g','y','y','n','n','n','n','n']},
-        {hr:18,score:40,mins:25,segs:['y','g','y','y','y','n','n','n','n','n','n','n']},
-        {hr:19,score:50,mins:35,segs:['g','y','g','y','g','y','y','n','n','n','n','n']},
-        {hr:20,score:45,mins:30,segs:['y','g','y','y','g','y','n','n','n','n','n','n']},
-        {hr:21,score:30,mins:15,segs:['y','r','y','n','n','n','n','n','n','n','n','n']},
-        {hr:22,score:0,mins:0,segs:[]},{hr:23,score:0,mins:0,segs:[]}
+        /*
+         * segs 3요소 형식: [color, ratio, offset]
+         *   ratio  = numFilled/5 (채울 서브셀 수)
+         *   offset = 슬롯 안에서 시작 위치 (m=0 첫분, m=4 끝분)
+         *   fill 조건: m >= offset && m < offset+numFilled
+         */
+        /* 0시: 00:00-00:34(세션7계속), 00:38-00:42(세션8) — 38분 */
+        {hr:0, score:61, mins:38.0167, segs:[
+          'g',                     // 00:00-04
+          'y',                     // 00:05-09 (주의자세)
+          'g',                     // 00:10-14
+          'g',                     // 00:15-19
+          'r',                     // 00:20-24 (위험자세)
+          'y',                     // 00:25-29 (주의자세)
+          ['g', 0.8, 0],           // 00:30-34: 4분 후 00:34 종료
+          ['g', 0.4, 3],           // 00:35-39: 00:38 재개 → 2분(offset=3)
+          ['g', 0.4, 0],           // 00:40-44: 2분 후 00:42 종료
+          'n','n','n'
+        ]},
+        /* 1시: 01:00-02:00 (60분) */
+        {hr:1, score:73, mins:60, segs:[
+          'g','g','g','r','g','g',
+          'y',                     // 01:30-34 (주의자세)
+          'g','g','g',
+          'r',                     // 01:50-54 (위험자세)
+          'g'
+        ]},
+        /* 2시: 02:00-02:23 (23분 2초) */
+        {hr:2, score:66, mins:23.0333, segs:[
+          'g',                     // 02:00-04
+          'g',                     // 02:05-09
+          'y',                     // 02:10-14 (주의자세)
+          'r',                     // 02:15-19 (위험자세)
+          ['g', 0.6, 0],           // 02:20-24: 3분 후 02:23 종료
+          'n','n','n','n','n','n','n'
+        ]},
+        {hr:3,score:0,mins:0,segs:[]},{hr:4,score:0,mins:0,segs:[]},
+        {hr:5,score:0,mins:0,segs:[]},{hr:6,score:0,mins:0,segs:[]},
+        {hr:7,score:0,mins:0,segs:[]},{hr:8,score:0,mins:0,segs:[]},
+        {hr:9,score:0,mins:0,segs:[]},{hr:10,score:0,mins:0,segs:[]},
+        {hr:11,score:0,mins:0,segs:[]},{hr:12,score:0,mins:0,segs:[]},
+        {hr:13,score:0,mins:0,segs:[]},{hr:14,score:0,mins:0,segs:[]},
+        /* 15시: 15:00-15:52 (52분) — 오후 시작, 워밍업 */
+        {hr:15, score:94, mins:52.05, segs:[
+          'g',                     // 15:00-04
+          'g',                     // 15:05-09
+          'g',                     // 15:10-14
+          'y',                     // 15:15-19
+          'g',                     // 15:20-24
+          'g',                     // 15:25-29
+          'g',                     // 15:30-34
+          'g',                     // 15:35-39
+          'g',                     // 15:40-44
+          'g',                     // 15:45-49
+          ['g', 0.4, 0],           // 15:50-54: 2분 후 15:52 종료
+          'n'
+        ]},
+        /* 16시: 16:00-17:00 (60분) — 피크 집중 */
+        {hr:16, score:85, mins:60, segs:[
+          'g','g','g','y','g','g','g','g','g','y','g','g'
+        ]},
+        /* 17시: 17:00-17:12, 17:29-18:00 (43분) — 휴식 후 재개 */
+        {hr:17, score:88, mins:43.0333, segs:[
+          'g',                     // 17:00-04
+          'g',                     // 17:05-09
+          ['g', 0.4, 0],           // 17:10-14: 2분 후 17:12 종료
+          'n',                     // 17:15-19 (휴식)
+          'n',                     // 17:20-24 (휴식)
+          ['g', 0.2, 4],           // 17:25-29: 17:29 재개 → 1분(offset=4)
+          'g',                     // 17:30-34
+          'g',                     // 17:35-39
+          'y',                     // 17:40-44
+          'g',                     // 17:45-49
+          'g',                     // 17:50-54
+          'g'                      // 17:55-59
+        ]},
+        /* 18시: 18:00-18:03 (3분) — 세션 마무리 */
+        {hr:18, score:100, mins:3, segs:[
+          ['g', 0.6, 0],           // 18:00-04: 3분 후 18:03 종료
+          'n','n','n','n','n','n','n','n','n','n','n'
+        ]},
+        {hr:19,score:0,mins:0,segs:[]},
+        /* 20시: 20:40-21:00 (20분) — 야간 재개 */
+        {hr:20, score:83, mins:20, segs:[
+          'n','n','n','n','n','n','n','n',
+          'g',                     // 20:40-44
+          'g',                     // 20:45-49
+          'y',                     // 20:50-54 (주의자세)
+          'g'                      // 20:55-59
+        ]},
+        /* 21시: 21:00-21:02, 21:05-21:44 (41분) — 연속 세션 */
+        {hr:21, score:45, mins:41.0167, segs:[
+          ['g', 0.4, 0],           // 21:00-04: 2분 후 21:02 종료
+          'g',                     // 21:05-09
+          'r',                     // 21:10-14 (위험자세)
+          'g',                     // 21:15-19
+          'y',                     // 21:20-24 (주의자세)
+          'g',                     // 21:25-29
+          'y',                     // 21:30-34 (주의자세)
+          'r',                     // 21:35-39 (위험자세)
+          ['g', 0.8, 0],           // 21:40-44: 4분 후 21:44 종료
+          'n','n','n'
+        ]},
+        {hr:22,score:0,mins:0,segs:[]},
+        /* 23시: 23:15-23:35, 23:42-23:49 (28분) — 심야 세션 */
+        {hr:23, score:45, mins:28.0333, segs:[
+          'n','n','n',
+          'g',                     // 23:15-19
+          'g',                     // 23:20-24
+          'y',                     // 23:25-29 (주의자세)
+          'r',                     // 23:30-34 (위험자세)
+          'n',                     // 23:35-39 (휴식)
+          ['g', 0.6, 2],           // 23:40-44: 23:42 재개 → 3분(offset=2)
+          'r',                     // 23:45-49 (위험자세)
+          'n',                     // 23:50-54
+          'n'                      // 23:55-59
+        ]}
       ]
     },
     weekly: {
-      immersion: 72, immersionLabel: '이번 주 평균 몰입 점수', peak: '목요일',
-      posture: {turtle:83, bent:72, reclined:55, absent:30, drowsy:22},
-      cheer: '이번 주 목요일이 최고였어요! 주 중반 집중력을 유지하는 패턴이 보여요 💪',
-      heatmap: [], days: [
-        {label:'월',mins:55,score:68,immersion:55},{label:'화',mins:80,score:74,immersion:72},
-        {label:'수',mins:45,score:62,immersion:48},{label:'목',mins:110,score:85,immersion:88},
-        {label:'금',mins:70,score:78,immersion:70},{label:'토',mins:30,score:55,immersion:35},
-        {label:'일',mins:20,score:40,immersion:22}
+      /*
+       * 4주(6/15-21): 73737s(20h28m57s) / 목표91800s(25h30m)
+       * timeScore=80.3 / postureScore=73.3 / immersion=77
+       * 화요일(6/16) 휴식
+       */
+      immersion: 77, immersionLabel: '이번 주 평균 몰입 점수', peak: '월요일',
+      postureScore: 73.3,
+      posture: {turtle:42, bent:33, reclined:21, absent:11, drowsy:8},
+      avgPosturePct: {good:73.3, warn:15.6, bad:8.5, absent:1.3, overlap:1.3},
+      totalGoalSec: 91800,
+      totalStudySec: 73737,
+      postureSec: {turtle:7435, bent:5414, reclined:4055, absent:966, drowsy:838, overlapTotal:983},
+      cheer: '이번 주 월요일이 최고였어요! 꾸준하게 마무리했네요 🌿',
+      heatmap: [],
+      weekStart: '2026-6-15',
+      days: [
+        /* 4주 Mon 6/15: 18855s, 시간84.9, 자세73.0, 몰입79 */
+        {label:'월', mins:314.25, secs:18855, score:73.0, immersion:79, timeScore:84.9, goalSec:22200,
+         posturePct:{good:73.0,warn:17.5,bad:7.5,absent:1.3,overlap:0.7}},
+        /* 4주 Tue 6/16: 휴식 */
+        {label:'화', mins:0, secs:0, score:0, immersion:0, timeScore:0, goalSec:0,
+         posturePct:{good:0,warn:0,bad:0,absent:0,overlap:0}},
+        /* 4주 Wed 6/17: 9766s, 시간81.4, 자세74.4, 몰입78 */
+        {label:'수', mins:162.77, secs:9766, score:74.4, immersion:78, timeScore:81.4, goalSec:12000,
+         posturePct:{good:74.4,warn:16.5,bad:7.1,absent:1.3,overlap:0.7}},
+        /* 4주 Thu 6/18: 22691s, 시간84.0, 자세73.8, 몰입79 */
+        {label:'목', mins:378.18, secs:22691, score:73.8, immersion:79, timeScore:84.0, goalSec:27000,
+         posturePct:{good:73.8,warn:17.0,bad:7.2,absent:1.3,overlap:0.7}},
+        /* 4주 Fri 6/19: 7901s, 시간77.5, 자세72.2, 몰입75 */
+        {label:'금', mins:131.68, secs:7901, score:72.2, immersion:75, timeScore:77.5, goalSec:10200,
+         posturePct:{good:72.2,warn:18.5,bad:7.3,absent:1.3,overlap:0.7}},
+        /* 4주 Sat 6/20: 3354s, 시간69.9, 자세72.1, 몰입71 */
+        {label:'토', mins:55.90, secs:3354, score:72.1, immersion:71, timeScore:69.9, goalSec:4800,
+         posturePct:{good:72.1,warn:18.5,bad:7.4,absent:1.3,overlap:0.7}},
+        /* 4주 Sun 6/21: 11170s, 시간71.6, 자세73.1, 몰입72 */
+        {label:'일', mins:186.17, secs:11170, score:73.1, immersion:72, timeScore:71.6, goalSec:15600,
+         posturePct:{good:73.1,warn:17.5,bad:7.4,absent:1.3,overlap:0.7}}
       ]
     },
     monthly: {
-      immersion: 69, immersionLabel: '이번 달 평균 몰입 점수', peak: '3주차',
-      posture: {turtle:310, bent:280, reclined:210, absent:90, drowsy:75},
-      cheer: '3주차에 최고 성과! 이번 달 꾸준히 기록하고 있어요 🐘',
-      heatmap: [], weeks: [
-        {label:'1주',mins:280,score:65,immersion:58},{label:'2주',mins:340,score:72,immersion:70},
-        {label:'3주',mins:410,score:82,immersion:85},{label:'4주',mins:310,score:70,immersion:65}
+      /*
+       * 예시 기간: 5월 25일(1주) ~ 6월 21일(4주) — hwpx 검증 데이터 기준
+       * 합계: 371632s(103h13m52s) / 목표424800s(118h) / 시간점수87.5 / 자세점수73.8 / 몰입81
+       * 달력: 5월(1~31) + 6월(1~30) 월별 객체 구조
+       *   5월: 25~28일 데이터, 나머지 빈값
+       *   6월: 1~21일 중 공부일만 데이터, 22~30 빈값
+       */
+      immersion: 81, immersionLabel: '이번 달 평균 몰입 점수', peak: '2주차',
+      postureScore: 73.8,
+      posture: {turtle:221, bent:174, reclined:108, absent:58, drowsy:38},
+      avgPosturePct: {good:73.8, warn:15.1, bad:8.5, absent:1.3, overlap:1.3},
+      totalGoalSec: 424800,
+      totalStudySec: 371632,
+      postureSec: {
+        turtle:36620, reclined:19441, bent:27600,
+        drowsy:4122,  absent:4890, overlapTotal:4880
+      },
+      cheer: '2주차 집중력이 최고였어요! 4주 내내 꾸준하게 달렸네요 🌿',
+      heatmap: [],
+      weeks: [
+        /* 1주(5/25-31): 93711s, 시간93.0, 자세74.6, 몰입84 */
+        {label:'1주', mins:1561.85, secs:93711,  score:74.6, immersion:84, timeScore:93.0},
+        /* 2주(6/1-7):  89291s, 시간97.3, 자세74.4, 몰입86 */
+        {label:'2주', mins:1488.18, secs:89291,  score:74.4, immersion:86, timeScore:97.3},
+        /* 3주(6/8-14): 114893s, 시간81.8, 자세72.9, 몰입77 */
+        {label:'3주', mins:1914.88, secs:114893, score:72.9, immersion:77, timeScore:81.8},
+        /* 4주(6/15-21): 73737s, 시간80.3, 자세73.3, 몰입77 */
+        {label:'4주', mins:1228.95, secs:73737,  score:73.3, immersion:77, timeScore:80.3}
       ],
       calDays: (function() {
-        var scores=[0,20,30,45,55,80,60,25,70,85,65,30,10,15,75,80,72,40,55,60,12,58,78,20,30,55,82,45,88,60,15];
-        var mins=[0,10,20,35,50,70,45,15,55,75,50,20,0,8,60,70,60,30,45,50,5,40,65,10,20,45,80,35,90,50,0];
-        var imm=[0,18,28,42,52,75,55,22,65,82,60,28,0,12,70,78,68,38,50,55,10,52,72,18,28,50,80,42,85,55,0];
-        var d=[null];
-        for(var i=1;i<=31;i++) d.push({score:scores[i]||0,mins:mins[i]||0,immersion:imm[i]||0});
-        return d;
+        var E = {score:0,mins:0,secs:0,immersion:0,postureScore:0};
+        /* 5월 달력 (31일): 1~24 빈값, 25~28 데이터, 29~31 빈값 */
+        var may = [null];
+        for (var i=1; i<=24; i++) may.push(E);
+        may.push({score:93.7, mins:449.82, secs:26989, immersion:88, postureScore:82.5}); /* 5/25 Mon */
+        may.push({score:93.6, mins:393.27, secs:23596, immersion:80, postureScore:65.4}); /* 5/26 Tue */
+        may.push({score:90.7, mins:516.90, secs:31014, immersion:84, postureScore:78.2}); /* 5/27 Wed */
+        may.push({score:96.1, mins:201.87, secs:12112, immersion:84, postureScore:72.3}); /* 5/28 Thu */
+        may.push(E); /* 5/29 Fri (오늘) */
+        may.push(E); /* 5/30 Sat */
+        may.push(E); /* 5/31 Sun */
+        /* 6월 달력 (30일): 2주(1~7), 3주(8~14), 4주(15~21), 22~30 빈값 */
+        var jun = [null];
+        jun.push({score:79.8, mins:31.93,  secs:1916,  immersion:82, postureScore:85.0}); /* 6/1  Mon */
+        jun.push({score:98.5, mins:339.75, secs:20385, immersion:83, postureScore:68.2}); /* 6/2  Tue */
+        jun.push(E);                                                                        /* 6/3  Wed */
+        jun.push(E);                                                                        /* 6/4  Thu */
+        jun.push({score:96.8, mins:217.82, secs:13069, immersion:88, postureScore:79.4}); /* 6/5  Fri */
+        jun.push({score:98.5, mins:541.85, secs:32511, immersion:83, postureScore:66.5}); /* 6/6  Sat */
+        jun.push({score:96.4, mins:356.83, secs:21410, immersion:85, postureScore:73.0}); /* 6/7  Sun */
+        jun.push(E);                                                                        /* 6/8  Mon */
+        jun.push({score:75.1, mins:202.70, secs:12162, immersion:80, postureScore:84.1}); /* 6/9  Tue */
+        jun.push({score:75.1, mins:157.80, secs:9468,  immersion:78, postureScore:80.5}); /* 6/10 Wed */
+        jun.push({score:83.3, mins:49.95,  secs:2997,  immersion:79, postureScore:75.0}); /* 6/11 Thu */
+        jun.push({score:66.8, mins:240.65, secs:14439, immersion:70, postureScore:72.2}); /* 6/12 Fri */
+        jun.push({score:87.5, mins:603.70, secs:36222, immersion:77, postureScore:65.8}); /* 6/13 Sat */
+        jun.push({score:88.0, mins:660.08, secs:39605, immersion:76, postureScore:64.0}); /* 6/14 Sun */
+        jun.push({score:84.9, mins:314.25, secs:18855, immersion:79, postureScore:73.0}); /* 6/15 Mon */
+        jun.push(E);                                                                        /* 6/16 Tue */
+        jun.push({score:81.4, mins:162.77, secs:9766,  immersion:78, postureScore:74.4}); /* 6/17 Wed */
+        jun.push({score:84.0, mins:378.18, secs:22691, immersion:79, postureScore:73.8}); /* 6/18 Thu */
+        jun.push({score:77.5, mins:131.68, secs:7901,  immersion:75, postureScore:72.2}); /* 6/19 Fri */
+        jun.push({score:69.9, mins:55.90,  secs:3354,  immersion:71, postureScore:72.1}); /* 6/20 Sat */
+        jun.push({score:71.6, mins:186.17, secs:11170, immersion:72, postureScore:73.1}); /* 6/21 Sun */
+        for (var j=22; j<=30; j++) jun.push(E);                                            /* 6/22~30 빈값 */
+        return {5: may, 6: jun};
       })()
     }
   };
@@ -1800,7 +2094,7 @@
     };
     isShowingExample = true;
     var tab = currentReportTab || 'daily';
-    reportData[tab] = exampleData[tab];
+    reportData[tab] = JSON.parse(JSON.stringify(exampleData[tab]));
     renderReport(tab);
     document.getElementById('example-banner').style.display = 'flex';
   }
@@ -1847,7 +2141,7 @@
     var okEl  = document.getElementById('signup-ok');
     errEl.textContent = ''; okEl.textContent = '';
 
-    if (!/^[a-zA-Z0-9]{4,}$/.test(id))  { errEl.textContent = '아이디는 영문+숫자 4자 이상이어야 해요'; return; }
+    if (id.length < 4)                    { errEl.textContent = '아이디는 4자 이상이어야 해요'; return; }
     if (!nick)                             { errEl.textContent = '닉네임을 입력해주세요'; return; }
     if (pw.length < 6)                     { errEl.textContent = '비밀번호는 6자 이상이어야 해요'; return; }
     if (pw !== pw2)                        { errEl.textContent = '비밀번호가 일치하지 않아요'; return; }
@@ -1905,6 +2199,36 @@
     goTo('screen-home');
   }
 
+  function resetTodayData() {
+    if (!confirm('오늘 공부 기록(시간·자세 점수, 세션 기록)을 모두 초기화할까요?')) return;
+    fetch(_apiBase() + '/reset-today', { method: 'POST' })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.ok) {
+          alert('초기화 완료! 새로고침 후 반영돼요.');
+          location.reload();
+        } else {
+          alert('초기화 실패: ' + (d.error || '알 수 없는 오류'));
+        }
+      })
+      .catch(function() { alert('서버 연결 실패. 대시보드가 켜져 있는지 확인해줘.'); });
+  }
+
+  function resetAllData() {
+    if (!confirm('전체 공부 기록을 초기화할까요?\n(주별·월별 데이터가 모두 삭제돼요)')) return;
+    fetch(_apiBase() + '/reset-all', { method: 'POST' })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.ok) {
+          alert('초기화 완료!');
+          location.reload();
+        } else {
+          alert('초기화 실패: ' + (data.error || '알 수 없는 오류'));
+        }
+      })
+      .catch(function() { alert('서버 연결 실패'); });
+  }
+
   function deleteAccount() {
     if (!currentUser) return;
     if (!confirm('"' + currentUser.nick + '" 계정을 삭제할까요?\n모든 데이터가 영구적으로 삭제돼요.')) return;
@@ -1958,14 +2282,19 @@
         /* "리셋 기준일" = resetTime 날짜 (마지막 접속이 속했던 날) */
         /* lastOpen이 있으면 그 날, 없으면 어제 */
         var archiveDate = lastOpen ? new Date(lastOpen) : new Date(now);
+        /* 새벽 3시 이전이면 전날로 처리 (1시=당일 아직 전날 기준) */
+        if (archiveDate.getHours() < 3) archiveDate.setDate(archiveDate.getDate() - 1);
         archiveDate.setHours(0, 0, 0, 0);
         var archiveKey = archiveDate.getFullYear() + '-' +
           String(archiveDate.getMonth() + 1).padStart(2, '0') + '-' +
           String(archiveDate.getDate()).padStart(2, '0');
 
-        var todayKey = now.getFullYear() + '-' +
-          String(now.getMonth() + 1).padStart(2, '0') + '-' +
-          String(now.getDate()).padStart(2, '0');
+        /* 3시 기준 오늘 날짜 */
+        var _today3am = new Date(now);
+        if (_today3am.getHours() < 3) _today3am.setDate(_today3am.getDate() - 1);
+        var todayKey = _today3am.getFullYear() + '-' +
+          String(_today3am.getMonth() + 1).padStart(2, '0') + '-' +
+          String(_today3am.getDate()).padStart(2, '0');
 
         d.habits = d.habits.map(function(h) {
           var recs = h.records || {};
@@ -2077,12 +2406,15 @@
 
   /* ── 대시보드 연동 ── */
   var _piIp = localStorage.getItem('pi_ip') || '172.20.10.3';
-  var DASHBOARD_URL = 'http://' + _piIp + ':5001/sync';
-  function getStatusUrl() { return 'http://' + (localStorage.getItem('pi_ip') || '172.20.10.3') + ':5001/status'; }
+  var _isGhPages = window.location.hostname.endsWith('github.io') || window.location.hostname.endsWith('github.dev');
+  function _apiBase() { return _isGhPages ? 'http://' + _piIp : ''; }
+  var DASHBOARD_URL = _isGhPages ? _apiBase() + '/sync' : '/sync';
+  function getStatusUrl() { return _apiBase() + '/status'; }
 
   /* 대시보드 데이터 → reportData 적용 (캐시/GitHub 공통) */
-  function _applyDashboardData(data) {
+  function _applyDashboardData(data, skipWM) {
     if (!data) return;
+    if (isShowingExample) return;  /* 예시 모드 중엔 실제 데이터로 덮어쓰기 금지 */
     if (data.immersionScore !== undefined) reportData.daily.immersion = data.immersionScore;
     if (data.timeScore !== undefined) reportData.daily.timeScore = data.timeScore;
     if (data.postureScore !== undefined) reportData.daily.postureScore = data.postureScore;
@@ -2093,12 +2425,41 @@
       reportData.daily.posture.reclined = ps.reclinedCount || 0;
       reportData.daily.posture.absent   = ps.absentCount   || 0;
       reportData.daily.posture.drowsy   = ps.drowsyCount   || 0;
+      reportData.daily.postureSec = {
+        good:            ps.goodSec          || 0,
+        drowsy:          ps.drowsySec        || 0,
+        bent:            ps.bentSec          || 0,
+        reclined:        ps.reclinedSec      || 0,
+        absent:          ps.absentSec        || 0,
+        turtle:          ps.turtleSec        || 0,
+        total:           ps.totalSec         || 0,
+        turtleExc:       ps.turtleExcSec     || 0,
+        bentExc:         ps.bentExcSec       || 0,
+        reclinedExc:     ps.reclinedExcSec   || 0,
+        drowsyExc:       ps.drowsyExcSec     || 0,
+        absentExc:       ps.absentExcSec     || 0,
+        overlapTotal:    ps.overlapTotalSec  || 0,
+        drowsyOverlap:   ps.drowsyOverlapSec || 0,
+        bentOverlap:     ps.bentOverlapSec   || 0,
+        reclinedOverlap: ps.reclinedOverlapSec || 0,
+        turtleOverlap:   ps.turtleOverlapSec || 0,
+      };
     }
     if (data.totalStudySec !== undefined) {
       reportData.daily.totalMins = Math.round(data.totalStudySec / 60);
       reportData.daily.totalStudySec = data.totalStudySec;
     }
     if (data.pomodoroCount !== undefined) reportData.daily.pomodoroCount = data.pomodoroCount;
+    if (data.pomodoroSeconds !== undefined) reportData.daily.pomodoroSeconds = data.pomodoroSeconds;
+    if (data.totalPomodoroGoalSec !== undefined) reportData.daily.totalPomodoroGoalSec = data.totalPomodoroGoalSec;
+    if (data.sessionActive !== undefined) reportData.daily.sessionActive = data.sessionActive;
+    /* 보간 기준값 갱신 */
+    if (data.sessionActive && data.totalStudySec !== undefined) {
+      _liveStudyBase = data.totalStudySec;
+      _liveStudyBaseTs = Date.now();
+    } else if (data.sessionActive === false) {
+      _liveStudyBaseTs = 0;
+    }
     if (!reportData.daily.hours) {
       reportData.daily.hours = [];
       for (var i = 0; i < 24; i++) reportData.daily.hours[i] = {hour:i, mins:0, segs:[]};
@@ -2108,6 +2469,7 @@
         var hs=hr.toString();
         if (hd[hs] && reportData.daily.hours[hr]) {
           reportData.daily.hours[hr].mins  = hd[hs].mins  || 0;
+          reportData.daily.hours[hr].secs  = hd[hs].secs  || 0;
           reportData.daily.hours[hr].score = hd[hs].score || 0;
         }
       }
@@ -2117,13 +2479,84 @@
         var hk=hr.toString();
         if (!sd[hk]) continue;
         var inc=sd[hk], ex=reportData.daily.hours[hr].segs||[], mg=[];
-        for (var s=0;s<12;s++) mg.push(inc[s]&&inc[s]!=='n'?inc[s]:(ex[s]||'n'));
+        for (var s=0;s<12;s++) {
+          var iv=inc[s], ev=ex[s]||'n';
+          mg.push(_segColor(iv)!=='n' ? iv : ev);
+        }
         reportData.daily.hours[hr].segs = mg;
       }
     }
     if (data.hourlyData) _mH(data.hourlyData);
     if (data.hourlySegments) _mS(data.hourlySegments);
-    try { renderReport('daily'); } catch(e) {}
+
+    /* ── 주별/월별 데이터 매핑 (skipWM=true일 때 건너뜀) ── */
+    if (!skipWM && data.weeklyStudyData) {
+      var wd = data.weeklyStudyData;
+      var _dkOrder  = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      var _dkLabels = ['월','화','수','목','금','토','일'];
+      if (wd.days) {
+        reportData['weekly'].days = _dkOrder.map(function(dk, i) {
+          var day = wd.days[dk] || {};
+          return {
+            label:      _dkLabels[i],
+            mins:       day.mins        || 0,
+            secs:       day.secs        || Math.round((day.mins||0)*60),
+            score:      day.postureScore || 0,
+            immersion:  day.immersion   || 0,
+            timeScore:  day.score       || 0,
+            goalSec:    day.goalSec     || 0,
+            posturePct: day.posturePct  || null
+          };
+        });
+      }
+      if (wd.avgImmersion    !== undefined) reportData['weekly'].immersion    = wd.avgImmersion;
+      if (wd.avgTimeScore    !== undefined) reportData['weekly'].timeScore    = wd.avgTimeScore;
+      if (wd.avgPostureScore !== undefined) reportData['weekly'].postureScore = wd.avgPostureScore;
+      if (wd.totalGoalSec    !== undefined) reportData['weekly'].totalGoalSec  = wd.totalGoalSec;
+      if (wd.avgPosturePct   !== undefined) reportData['weekly'].avgPosturePct = wd.avgPosturePct;
+      if (wd.weekStart       !== undefined) reportData['weekly'].weekStart      = wd.weekStart;
+      if (wd.totalPostureSec !== undefined) reportData['weekly'].postureSec     = wd.totalPostureSec;
+      /* 오늘 자세 점수를 daily 실시간 값으로 동기화 (주별은 세션 종료 시에만 저장되므로) */
+      if (data.postureScore !== undefined && reportData['weekly'].days) {
+        var _todayWI = (new Date().getDay() + 6) % 7; /* 0=Mon */
+        var _todayDay = reportData['weekly'].days[_todayWI];
+        if (_todayDay && _todayDay.mins > 0 && data.postureScore > 0) {
+          _todayDay.score = Math.round(data.postureScore * 10) / 10;
+          var _wkActive = reportData['weekly'].days.filter(function(d){ return d.mins > 0; });
+          reportData['weekly'].postureScore = Math.round(_wkActive.reduce(function(s,d){ return s+(d.score||0); }, 0) / _wkActive.length * 10) / 10;
+        }
+      }
+      if (wd.totalPosture) {
+        reportData['weekly'].posture = {
+          turtle:   wd.totalPosture.turtle   || 0,
+          bent:     wd.totalPosture.bent     || 0,
+          reclined: wd.totalPosture.reclined || 0,
+          absent:   wd.totalPosture.absent   || 0,
+          drowsy:   wd.totalPosture.drowsy   || 0
+        };
+      }
+    }
+
+    /* ── 월별 원본 데이터 저장 (렌더 시 오프셋 반영) ── */
+    if (!skipWM && data.monthlyData) {
+      _rawMonthlyData = data.monthlyData;
+    }
+
+    /* ── 오프라인 복원용 스냅샷 저장 ── */
+    try {
+      var _snapKey = 'report_snap_' + (currentUser ? currentUser.id : 'guest');
+      var _prevSnap = JSON.parse(localStorage.getItem(_snapKey) || '{}');
+      localStorage.setItem(_snapKey, JSON.stringify({
+        daily:      reportData.daily,
+        weekly:     !skipWM ? reportData['weekly']  : (_prevSnap.weekly     || reportData['weekly']),
+        rawMonthly: !skipWM ? _rawMonthlyData        : (_prevSnap.rawMonthly || _rawMonthlyData),
+        ts: new Date().toLocaleString('ko-KR')
+      }));
+      var _ob = document.getElementById('offline-banner');
+      if (_ob) _ob.style.display = 'none';
+    } catch(e) {}
+
+    try { renderReport(currentReportTab || 'daily'); } catch(e) {}
   }
 
   /* Pi IP 변경 함수 */
@@ -2132,9 +2565,23 @@
     if (!ip) return;
     localStorage.setItem('pi_ip', ip);
     _piIp = ip;
-    DASHBOARD_URL = 'http://' + ip + ':5001/sync';
+    DASHBOARD_URL = _apiBase() + '/sync';
     alert('저장됐어요! (' + ip + ')');
   };
+  window.savePiIp = function() {
+    var inp = document.getElementById('pi-ip-input');
+    var ip = inp ? inp.value.trim() : '';
+    if (!ip) { alert('IP를 입력해주세요.'); return; }
+    localStorage.setItem('pi_ip', ip);
+    _piIp = ip;
+    DASHBOARD_URL = _apiBase() + '/sync';
+    alert('저장됐어요! 이제 GitHub Pages에서 파이 데이터를 볼 수 있어요.\n(' + ip + ')');
+  };
+  /* 설정 화면 열릴 때 현재 IP 채워넣기 */
+  function _fillPiIpInput() {
+    var inp = document.getElementById('pi-ip-input');
+    if (inp) inp.value = localStorage.getItem('pi_ip') || '';
+  }
 
   function syncToDashboard() {
     if (!currentUser) return;
@@ -2192,6 +2639,8 @@
     document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
     document.getElementById(id).classList.add('active');
     document.getElementById(id).scrollTop = 0;
+    /* 설정 화면 진입 시 Pi IP 필드 채우기 */
+    if (id === 'screen-settings') _fillPiIpInput();
     /* 암기 화면 진입 시 검색창 초기화 */
     if (id === 'screen-memo') {
       var inp = document.getElementById('folder-search');
@@ -2204,12 +2653,23 @@
         calWeekOffset = 0;
         isShowingExample = false;
         document.getElementById('example-banner').style.display = 'none';
+        var _offBanner = document.getElementById('offline-banner');
+        if (_offBanner) _offBanner.style.display = 'none';
         document.querySelectorAll('.report-tab').forEach(function(b){ b.classList.remove('active'); });
         var firstTab = document.querySelector('.report-tab');
         if (firstTab) firstTab.classList.add('active');
 
-        fetch(getStatusUrl())
+        // 일별/주별/월별 모두 빈 데이터로 시작 (서버 응답 후 반영)
+        reportData['daily']  = JSON.parse(JSON.stringify(emptyData['daily']));
+        reportData['weekly'] = JSON.parse(JSON.stringify(emptyData['weekly']));
+        _rawMonthlyData = {};
+        try { renderReport('daily'); } catch(e) {}
+
+        var _fetchCtrl = new AbortController();
+        var _fetchTimeout = setTimeout(function(){ _fetchCtrl.abort(); }, 3000);
+        fetch(getStatusUrl(), {signal: _fetchCtrl.signal})
             .then(function(r){
+                clearTimeout(_fetchTimeout);
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
             })
@@ -2221,9 +2681,6 @@
                 localStorage.setItem(cacheKey, JSON.stringify(data));
                 localStorage.setItem(cacheKey + '_time', new Date().toLocaleString('ko-KR'));
               } catch(e) {}
-              /* 오프라인 배너 숨기기 */
-              var offBanner = document.getElementById('offline-banner');
-              if (offBanner) offBanner.style.display = 'none';
               // ★ immersion, timeScore, postureScore 모두 업데이트
               if (data.immersionScore !== undefined) {
                   reportData.daily.immersion = data.immersionScore;
@@ -2244,6 +2701,25 @@
                     reportData.daily.posture.reclined = ps.reclinedCount  || 0;
                     reportData.daily.posture.absent   = ps.absentCount    || 0;
                     reportData.daily.posture.drowsy   = ps.drowsyCount    || 0;
+                    reportData.daily.postureSec = {
+                        good:            ps.goodSec          || 0,
+                        drowsy:          ps.drowsySec        || 0,
+                        bent:            ps.bentSec          || 0,
+                        reclined:        ps.reclinedSec      || 0,
+                        absent:          ps.absentSec        || 0,
+                        turtle:          ps.turtleSec        || 0,
+                        total:           ps.totalSec         || 0,
+                        turtleExc:       ps.turtleExcSec     || 0,
+                        bentExc:         ps.bentExcSec       || 0,
+                        reclinedExc:     ps.reclinedExcSec   || 0,
+                        drowsyExc:       ps.drowsyExcSec     || 0,
+                        absentExc:       ps.absentExcSec     || 0,
+                        overlapTotal:    ps.overlapTotalSec  || 0,
+                        drowsyOverlap:   ps.drowsyOverlapSec || 0,
+                        bentOverlap:     ps.bentOverlapSec   || 0,
+                        reclinedOverlap: ps.reclinedOverlapSec || 0,
+                        turtleOverlap:   ps.turtleOverlapSec || 0,
+                    };
                 }
                 if (data.totalStudySec !== undefined) {
                     reportData.daily.totalMins = Math.round(data.totalStudySec / 60);
@@ -2261,9 +2737,24 @@
                     }
                 }
 
-                // 뽀모도로 횟수
+                // 뽀모도로 횟수 + 타이머 설정
                 if (data.pomodoroCount !== undefined) {
                     reportData.daily.pomodoroCount = data.pomodoroCount;
+                }
+                if (data.pomodoroSeconds !== undefined) {
+                    reportData.daily.pomodoroSeconds = data.pomodoroSeconds;
+                }
+                if (data.totalPomodoroGoalSec !== undefined) {
+                    reportData.daily.totalPomodoroGoalSec = data.totalPomodoroGoalSec;
+                }
+                if (data.sessionActive !== undefined) {
+                    reportData.daily.sessionActive = data.sessionActive;
+                    if (data.sessionActive && data.totalStudySec !== undefined) {
+                        _liveStudyBase = data.totalStudySec;
+                        _liveStudyBaseTs = Date.now();
+                    } else if (!data.sessionActive) {
+                        _liveStudyBaseTs = 0;
+                    }
                 }
                 // 시간대별 공부시간 + 자세점수 처리
                 // hourlyData: 완료된 세션 누적 | currentSessionHourly: 진행 중 세션 실시간
@@ -2271,29 +2762,56 @@
                     for (var hour = 0; hour < 24; hour++) {
                         var hourStr = hour.toString();
                         if (hData[hourStr] && reportData.daily.hours[hour]) {
-                            var newMins  = hData[hourStr].mins || 0;
+                            var newMins  = hData[hourStr].mins  || 0;
+                            var newSecs  = hData[hourStr].secs  || 0;
                             var newScore = hData[hourStr].score || 0;
-                            var oldMins  = reportData.daily.hours[hour].mins || 0;
+                            var oldMins  = reportData.daily.hours[hour].mins  || 0;
+                            var oldSecs  = reportData.daily.hours[hour].secs  || 0;
                             var oldScore = reportData.daily.hours[hour].score || 0;
                             if (oldMins > 0) {
                                 var total = oldMins + newMins;
                                 reportData.daily.hours[hour].score = total > 0
-                                    ? Math.round((oldScore * oldMins + newScore * newMins) / total) : 0;
+                                    ? Math.round((oldScore * oldMins + newScore * newMins) / total * 10) / 10 : 0;
                                 reportData.daily.hours[hour].mins  = Math.round(total * 10) / 10;
+                                reportData.daily.hours[hour].secs  = oldSecs + newSecs;
                             } else {
                                 reportData.daily.hours[hour].mins  = newMins;
+                                reportData.daily.hours[hour].secs  = newSecs;
                                 reportData.daily.hours[hour].score = newScore;
                             }
                         }
                     }
                 }
+                // 캐시로 미리 채워진 값 초기화 후 신선 데이터로 덮어쓰기 (이중합산 방지)
+                for (var _hi = 0; _hi < 24; _hi++) {
+                    reportData.daily.hours[_hi].mins  = 0;
+                    reportData.daily.hours[_hi].secs  = 0;
+                    reportData.daily.hours[_hi].score = 0;
+                    reportData.daily.hours[_hi].segs  = [];
+                }
                 if (data.hourlyData && Object.keys(data.hourlyData).length > 0) {
                     mergeHourlyIntoReport(data.hourlyData);
                 }
                 if (data.currentSessionHourly && Object.keys(data.currentSessionHourly).length > 0) {
-                    mergeHourlyIntoReport(data.currentSessionHourly);
+                    // 라이브 세션 시간대: 꺾은선 점수는 현재 세션 점수로 덮어쓰기
+                    // (이전 완료 세션과 가중 평균하면 현재 자세가 희석되어 오해 발생)
+                    var csh = data.currentSessionHourly;
+                    for (var _csh_hr = 0; _csh_hr < 24; _csh_hr++) {
+                        var _csh_key = _csh_hr.toString();
+                        if (!csh[_csh_key]) continue;
+                        var _csh_d = csh[_csh_key];
+                        var _ex = reportData.daily.hours[_csh_hr];
+                        if (_ex) {
+                            // 시간(mins/secs)은 기존에 더하되, 점수는 현재 세션 값으로 덮어씀
+                            _ex.mins  = Math.round(((_ex.mins || 0) + (_csh_d.mins || 0)) * 10) / 10;
+                            _ex.secs  = (_ex.secs || 0) + (_csh_d.secs || 0);
+                            _ex.score = _csh_d.score || 0;  // ← 현재 세션 per-hour 점수 우선
+                        }
+                    }
                 }
-                if (!data.hourlyData && !data.currentSessionHourly && data.totalStudySec > 0) {
+                var _noHourly = !data.hourlyData || Object.keys(data.hourlyData).length === 0;
+                var _noSession = !data.currentSessionHourly || Object.keys(data.currentSessionHourly).length === 0;
+                if (_noHourly && _noSession && data.totalStudySec > 0) {
                     // 시간대 데이터 없을 때만 현재 시간대에 총 공부시간 표시
                     var currentHour = new Date().getHours();
                     reportData.daily.hours[currentHour].mins = Math.round(data.totalStudySec / 60);
@@ -2309,7 +2827,7 @@
                         for (var s = 0; s < 12; s++) {
                             var e = existing[s] || 'n';
                             var inc = incoming[s] || 'n';
-                            merged.push(inc !== 'n' ? inc : e);
+                            merged.push(_segColor(inc) !== 'n' ? inc : e);
                         }
                         reportData.daily.hours[hour].segs = merged;
                     }
@@ -2330,54 +2848,26 @@
                         '<b>totalMins:</b> ' + reportData.daily.totalMins + '<br>' +
                         '<b>받은 data keys:</b> ' + Object.keys(data).join(', ');
                 }
-                try { renderReport('daily'); } catch(e) {}
+                try { renderReport(currentReportTab || 'daily'); } catch(e) {}
             })
             .catch(function(err){
-                /* ★ 파이 꺼져있을 때 → 캐시 데이터로 대체 */
-                var cacheKey = 'dashboard_cache_' + (currentUser ? currentUser.id : 'guest');
-                var cached = localStorage.getItem(cacheKey);
-                var cachedTime = localStorage.getItem(cacheKey + '_time') || '알 수 없음';
-                if (cached) {
-                  try {
-                    var offBanner = document.getElementById('offline-banner');
-                    if (offBanner) {
-                      offBanner.textContent = '📴 오프라인 — 마지막 저장: ' + cachedTime;
-                      offBanner.style.display = 'block';
+                /* 파이 꺼져있을 때 → 캐시된 스냅샷 복원 시도 */
+                try {
+                  var _snapKey = 'report_snap_' + (currentUser ? currentUser.id : 'guest');
+                  var _snap = JSON.parse(localStorage.getItem(_snapKey) || 'null');
+                  if (_snap) {
+                    if (_snap.daily)      reportData['daily']   = _snap.daily;
+                    if (_snap.weekly)     reportData['weekly']  = _snap.weekly;
+                    if (_snap.rawMonthly) _rawMonthlyData       = _snap.rawMonthly;
+                    var _ob = document.getElementById('offline-banner');
+                    if (_ob) {
+                      _ob.style.display = 'flex';
+                      var _ot = document.getElementById('offline-banner-time');
+                      if (_ot) _ot.textContent = _snap.ts ? '마지막 업데이트: ' + _snap.ts : '';
                     }
-                    _applyDashboardData(JSON.parse(cached));
-                  } catch(e2) {}
-                  try { renderReport('daily'); } catch(e) {}
-                } else {
-                  /* 캐시 없으면 GitHub에서 직접 가져오기 */
-                  fetch('https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json?t=' + Date.now())
-                    .then(function(r){ return r.json(); })
-                    .then(function(shared) {
-                      var active = shared.activeUser || '';
-                      var data = (shared.users && active && shared.users[active]) ? shared.users[active] : {};
-                      if (Object.keys(data).length === 0) throw new Error('no data');
-                      var offBanner = document.getElementById('offline-banner');
-                      if (offBanner) {
-                        offBanner.textContent = '📴 오프라인 — GitHub 저장 데이터 표시 중';
-                        offBanner.style.display = 'block';
-                      }
-                      /* 캐시에도 저장 */
-                      try {
-                        var ck = 'dashboard_cache_' + (currentUser ? currentUser.id : 'guest');
-                        localStorage.setItem(ck, JSON.stringify(data));
-                      } catch(e2) {}
-                      _applyDashboardData(data);
-                    })
-                    .catch(function() {
-                      var offBanner = document.getElementById('offline-banner');
-                      if (offBanner) {
-                        offBanner.textContent = '📴 오프라인 — 저장된 데이터 없음 (파이 켜진 상태에서 한 번 접속해야 해요)';
-                        offBanner.style.display = 'block';
-                      }
-                      try { renderReport('daily'); } catch(e) {}
-                    });
-                  return;
-                }
-                try { renderReport('daily'); } catch(e) {}
+                  }
+                } catch(e2) {}
+                try { renderReport(currentReportTab || 'daily'); } catch(e) {}
             });
     }
     /* 뽀모도로 화면 진입 시 저장된 시간값 복원 */
@@ -2395,6 +2885,16 @@
   var selectedDdayIdx = 0;
   var goalMinutes = 120;
   var eisenData = [[],[],[],[]];
+  /* 실시간 공부시간 보간: 서버 30초 주기 → JS로 초당 부드럽게 표시 */
+  var _liveStudyBase = 0;
+  var _liveStudyBaseTs = 0;
+  function _getLiveStudySec() {
+    var d = reportData && reportData['daily'];
+    if (d && d.sessionActive && _liveStudyBaseTs > 0) {
+      return Math.round(_liveStudyBase + (Date.now() - _liveStudyBaseTs) / 1000);
+    }
+    return (d && d.totalStudySec) || 0;
+  }
   var folderData = {};
   var currentFolder = '';
   /* ── 해빗트래커 ── */
@@ -2717,7 +3217,7 @@
   /* Sortable.js CDN 로드 */
   (function() {
     var script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js';
+    script.src = 'sortable.min.js';
     script.onload = function() { initSortable(); };
     document.head.appendChild(script);
   })();
@@ -2756,6 +3256,13 @@
     document.getElementById(id).classList.toggle('open');
   }
   document.addEventListener('click', function(){ document.querySelectorAll('.ctx-menu').forEach(function(m){ m.classList.remove('open'); }); });
+
+  // 페이지 열리면 폰 시각으로 라즈베리파이 시간 동기화
+  fetch(_apiBase() + '/sync-time', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ timestamp: Date.now() })
+  }).catch(function() {});
 
   function editFolder(e, oldName) {
     e.stopPropagation();
@@ -3167,6 +3674,93 @@
   var calMonthOffset = 0;
   var calWeekOffset = 0;
   var currentReportTab = 'daily';
+  var _rawMonthlyData = {};
+
+  function _applyMonthlyOffset() {
+    if (!_rawMonthlyData || Object.keys(_rawMonthlyData).length === 0) return;
+    var now = new Date();
+    var cy = now.getFullYear(), cm = now.getMonth() + calMonthOffset;
+    while (cm > 11) { cm -= 12; cy++; } while (cm < 0) { cm += 12; cy--; }
+    var monthKey = cy + '-' + String(cm + 1).padStart(2, '0');
+    var mData = _rawMonthlyData[monthKey] || {};
+    var dim = new Date(cy, cm + 1, 0).getDate();
+
+    var calDaysNew = [null];
+    for (var i = 1; i <= 31; i++) {
+      var e = mData[String(i)] || {};
+      calDaysNew.push({mins: e.mins||0, secs: e.secs||Math.round((e.mins||0)*60), score: e.score||0, postureScore: e.postureScore||0, immersion: e.immersion||0});
+    }
+    reportData['monthly'].calDays = calDaysNew;
+
+    // 월 이동 시 달력(공부 기록)만 변경 — 상단 데이터는 현재 달 고정
+    if (calMonthOffset !== 0) return;
+
+    var firstDow = new Date(cy, cm, 1).getDay(); // 0=Sun,1=Mon,...,6=Sat
+    var daysToMon = (firstDow === 1) ? 0 : (firstDow === 0) ? 6 : (firstDow - 1);
+    var firstWeekEnd = (firstDow === 0) ? 1 : (firstDow === 1) ? 7 : (8 - firstDow);
+    var firstMondayDate = new Date(cy, cm, 1 - daysToMon);
+    function _fmd(d) { return (d.getMonth()+1) + '/' + d.getDate(); }
+    var weekRanges = [], weekLabels = [];
+    var wStart = 1;
+    while (wStart <= dim) {
+      var wEnd = (wStart === 1) ? Math.min(firstWeekEnd, dim) : Math.min(wStart + 6, dim);
+      weekRanges.push([wStart, wEnd]);
+      var monDate = (wStart === 1) ? firstMondayDate : new Date(cy, cm, wStart);
+      var sunDate = new Date(monDate.getFullYear(), monDate.getMonth(), monDate.getDate() + 6);
+      if (monDate.getMonth() === sunDate.getMonth()) {
+        weekLabels.push(_fmd(monDate) + '~' + sunDate.getDate());
+      } else {
+        weekLabels.push(_fmd(monDate) + '~' + _fmd(sunDate));
+      }
+      wStart = wEnd + 1;
+    }
+    reportData['monthly'].weeks = weekRanges.map(function(r, wi) {
+      var wDays = [];
+      for (var d = r[0]; d <= Math.min(r[1], dim); d++) {
+        var ed = mData[String(d)];
+        if (ed && ed.mins > 0) wDays.push(ed);
+      }
+      var wSecs = wDays.reduce(function(s, ed){ return s + (ed.secs || Math.round((ed.mins||0)*60)); }, 0);
+      var wMins = wSecs / 60;
+      var wImm  = wDays.length ? Math.round(wDays.reduce(function(s,ed){return s+(ed.immersion||0);},0)/wDays.length) : 0;
+      var wPs   = wDays.length ? Math.round(wDays.reduce(function(s,ed){return s+(ed.postureScore||0);},0)/wDays.length*10)/10 : 0;
+      var wTs   = wDays.length ? Math.round(wDays.reduce(function(s,ed){return s+(ed.score||0);},0)/wDays.length*10)/10 : 0;
+      return {label: weekLabels[wi], mins: wMins, secs: wSecs, score: wPs, immersion: wImm, timeScore: wTs};
+    });
+
+    var allDays = Object.keys(mData).map(function(k){ return mData[k]; }).filter(function(e){ return e.mins > 0; });
+    reportData['monthly'].immersion    = allDays.length ? Math.round(allDays.reduce(function(s,e){return s+(e.immersion||0);},0)/allDays.length) : 0;
+    reportData['monthly'].postureScore = allDays.length ? Math.round(allDays.reduce(function(s,e){return s+(e.postureScore||0);},0)/allDays.length*10)/10 : 0;
+    reportData['monthly'].totalGoalSec  = allDays.reduce(function(s,e){ return s+(e.goalSec||0); }, 0);
+    reportData['monthly'].totalStudySec = allDays.reduce(function(s,e){ return s+(e.secs||Math.round(e.mins*60)); }, 0);
+
+    var daysWithPct = allDays.filter(function(e){ var p=e.posturePct; return p && (p.good>0||p.warn>0||p.bad>0||p.absent>0||p.overlap>0); });
+    if (daysWithPct.length > 0) {
+      var _mpk = ['warn','bad','absent','overlap'];
+      var _mavg = {};
+      _mpk.forEach(function(k) {
+        _mavg[k] = Math.round(daysWithPct.reduce(function(s,e){ return s+((e.posturePct||{})[k]||0); }, 0) / daysWithPct.length * 10) / 10;
+      });
+      _mavg.good = Math.round(daysWithPct.reduce(function(s,e){ return s+((e.posturePct||{}).good||0); }, 0) / daysWithPct.length * 10) / 10;
+      reportData['monthly'].avgPosturePct = _mavg;
+    }
+
+    var posKeys = ['turtle','bent','reclined','absent','drowsy'];
+    reportData['monthly'].posture = {};
+    posKeys.forEach(function(k) {
+      reportData['monthly'].posture[k] = Object.keys(mData).reduce(function(s, dk){
+        return s + ((mData[dk].posture||{})[k]||0);
+      }, 0);
+    });
+    var posSecKeys = ['turtle','bent','reclined','absent','drowsy','overlapTotal'];
+    var mPosSecSum = {};
+    posSecKeys.forEach(function(k) {
+      mPosSecSum[k] = Object.keys(mData).reduce(function(s, dk){
+        return s + ((mData[dk].postureSec||{})[k]||0);
+      }, 0);
+    });
+    reportData['monthly'].postureSec = mPosSecSum;
+  }
 
   function switchReportTab(tab, btn) {
     currentReportTab = tab;
@@ -3175,7 +3769,7 @@
     calMonthOffset = 0;
     calWeekOffset = 0;
     if (isShowingExample) {
-      reportData[tab] = exampleData[tab];
+      reportData[tab] = JSON.parse(JSON.stringify(exampleData[tab]));
     }
     renderReport(tab);
   }
@@ -3183,6 +3777,7 @@
   function renderReport(tab) {
     try {
     tab = tab || currentReportTab || 'daily';
+    if (tab === 'monthly' && !isShowingExample) _applyMonthlyOffset();
     var d = reportData[tab];
     if (!d) { tab = 'daily'; d = reportData['daily']; }
     if (!d) return;
@@ -3203,15 +3798,55 @@
     /* 데이터 유무 체크 */
     var hasData = false;
     if (tab === 'daily') {
-        hasData = (d.hours && d.hours.some(function(h){ return h.mins > 0; })) || d.immersion > 0;
+        hasData = (d.hours && d.hours.some(function(h){ return h.mins > 0; })) || d.immersion > 0 || !!d.sessionActive;
     } else if (tab === 'weekly') {
       hasData = d.days && d.days.some(function(x){ return x.mins > 0; });
     } else if (tab === 'monthly') {
       hasData = d.weeks && d.weeks.some(function(x){ return x.mins > 0; });
     }
 
+    /* ── daily/weekly 점수 사전 계산 (몰입 공식·서브바 공용) ── */
+    var _dailyPsGood = 0;
+    var _weeklyPsGood = 0;
+    var _weeklyImPct = 0;
+    if (tab === 'weekly' && hasData) {
+      var _wPreSec  = d.totalStudySec || (d.days||[]).reduce(function(s,x){return s+(x.secs||Math.round(x.mins*60));},0);
+      var _wPreGoal = d.totalGoalSec  || 0;
+      var _wPreTs   = (_wPreGoal > 0) ? Math.min(100, Math.round(_wPreSec / _wPreGoal * 1000) / 10) : 0;
+      _weeklyPsGood = (d.avgPosturePct && d.avgPosturePct.good !== undefined) ? d.avgPosturePct.good : (d.postureScore || 0);
+      _weeklyImPct  = Math.round((_wPreTs + _weeklyPsGood) / 2);
+    }
+    if (tab === 'daily' && hasData) {
+      /* 상단 자세점수 = API의 postureScore (기록 기반 나쁜 구간 빼기 방식, compute_session_score 결과)
+         postureSec 카운터 방식은 알고리즘이 달라 패널/전체 점수와 불일치 → 사용 안 함 */
+      _dailyPsGood = d.postureScore !== undefined ? Math.round((d.postureScore||0)*10)/10 : 0;
+    }
+
     /* ── ① 몰입 게이지 ── */
-    var imPct = hasData ? Math.round(d.immersion) : 0;
+    /* 실시간 시간점수를 imPct보다 먼저 계산 (imPct가 tsComputed를 참조하므로) */
+    var tsComputed = 0;
+    if (tab === 'daily' && hasData) {
+      var _tsLiveA = _getLiveStudySec();
+      var _tsLiveG = d.sessionActive
+          ? ((d.totalPomodoroGoalSec || 0) + (d.pomodoroSeconds || 0)) || (goalMinutes * 60)
+          : d.totalPomodoroGoalSec || (d.pomodoroSeconds || (goalMinutes * 60));
+      tsComputed = (_tsLiveA > 0 && _tsLiveG > 0) ? Math.min(100, Math.round(_tsLiveA / _tsLiveG * 1000) / 10) : 0;
+    }
+    var imPct;
+    if (tab === 'daily' && hasData) {
+      if (d.sessionActive) {
+        /* 세션 진행 중: 실시간 계산 */
+        imPct = Math.round((tsComputed + _dailyPsGood) / 2);
+      } else {
+        /* 세션 종료 후: 저장된 값 사용 → 주별/월별과 일치 */
+        imPct = (d.immersion > 0) ? Math.round(d.immersion) : Math.round((tsComputed + _dailyPsGood) / 2);
+      }
+    } else if (tab === 'weekly' && hasData) {
+      /* 저장된 avgImmersion 우선 (요약 카드와 일치) → 없으면 재계산 */
+      imPct = (d.immersion > 0) ? Math.round(d.immersion) : _weeklyImPct;
+    } else {
+      imPct = hasData ? Math.round(d.immersion) : 0;
+    }
     var imColorLight = imPct >= 80 ? '#4a7a4a' : imPct >= 60 ? '#7aaa7a' : imPct >= 40 ? '#c8a84a' : '#e07a6a';
     var imColor = isDark ? '#C4D9C4' : imColorLight;
     var imEmoji = imPct >= 80 ? '🌲' : imPct >= 60 ? '🌿' : imPct >= 40 ? '🌱' : '💤';
@@ -3222,31 +3857,78 @@
     var barColorAtt  = isDark ? '#C4D9C4' : '#4a7a4a';
     var pomoGoalMins = (d.pomodoroSeconds ? d.pomodoroSeconds / 60 : goalMinutes);
     if (tab === 'daily') {
-      var totalStudyMins = d.totalMins !== undefined ? d.totalMins : (d.hours ? d.hours.reduce(function(s,h){return s+h.mins;},0) : 0);
+      /* 시간 점수: totalStudySec ÷ 목표시간 으로 계산
+         세션 진행 중(sessionActive)엔 이전 완료 목표 + 현재 세션 목표를 합산 */
+      var tsActualSec  = _getLiveStudySec();
+      var tsGoalSec = d.sessionActive
+          ? ((d.totalPomodoroGoalSec || 0) + (d.pomodoroSeconds || 0)) || (goalMinutes * 60)
+          : d.totalPomodoroGoalSec || (d.pomodoroSeconds || (goalMinutes * 60));
+      var tsComputed   = (hasData && tsActualSec > 0 && tsGoalSec > 0) ? Math.min(100, Math.round(tsActualSec / tsGoalSec * 1000) / 10) : 0;
+      /* 세션 종료 후엔 저장된 점수 사용 → 게이지 숫자와 항목 바 일치 */
+      var _subTs = d.sessionActive ? tsComputed : (d.timeScore > 0 ? d.timeScore : tsComputed);
+      var _subPs = hasData ? _dailyPsGood : 0;
       subItems = [
-        // ★ API에서 받은 timeScore와 postureScore 직접 사용
-        {label:'시간 점수', val: hasData && d.timeScore !== undefined ? d.timeScore : (hasData ? Math.min(100, Math.round(totalStudyMins/pomoGoalMins*100)) : 0), color:barColorTime},
-        {label:'자세 점수', val: hasData && d.postureScore !== undefined ? Math.round(d.postureScore) : (hasData ? Math.round(imPct*0.9) : 0), color:barColorAtt}
+        {label:'시간 점수', val: _subTs, color:barColorTime},
+        {label:'자세 점수', val: _subPs, color:barColorAtt}
       ];
     } else if (tab === 'weekly') {
       var wDays = d.days || [];
-      var wTotalMins = wDays.reduce(function(s,x){return s+x.mins;},0);
-      var wGoal = pomoGoalMins * 7;
+      var _wDaysSec = wDays.reduce(function(s,x){return s+(x.secs||Math.round(x.mins*60));},0);
+      var wTotalSec = d.totalStudySec || _wDaysSec;
+      var wTotalMins = wTotalSec / 60;
+      var wGoalSec = d.totalGoalSec || 0;
+      var wTs = (hasData && wGoalSec > 0) ? Math.min(100, Math.round(wTotalSec / wGoalSec * 1000) / 10) : 0;
       subItems = [
-        // ★ API에서 받은 값 우선 사용 (없으면 계산)
-        {label:'시간 점수', val: hasData && d.timeScore !== undefined ? d.timeScore : (hasData ? Math.min(100, Math.round(wTotalMins/wGoal*100)) : 0), color:barColorTime},
-        {label:'자세 점수', val: hasData && d.postureScore !== undefined ? Math.round(d.postureScore) : (hasData ? Math.round(imPct*0.9) : 0), color:barColorAtt}
+        {label:'시간 점수', val: wTs, color:barColorTime,
+         totalSec: wTotalSec, goalSec: wGoalSec},
+        {label:'자세 점수', val: hasData ? _weeklyPsGood : 0, color:barColorAtt,
+         posturePct: hasData ? (d.avgPosturePct || null) : null}
       ];
     } else if (tab === 'monthly') {
       var mWeeks = d.weeks || [];
-      var mTotalMins = mWeeks.reduce(function(s,x){return s+x.mins;},0);
-      var mGoal = pomoGoalMins * 28;
+      var mTotalSec = d.totalStudySec || mWeeks.reduce(function(s,x){return s+Math.round(x.mins*60);},0);
+      var mTotalMins = mTotalSec / 60;
+      var mGoalSec = d.totalGoalSec || 0;
+      var mTs = (hasData && mGoalSec > 0) ? Math.min(100, Math.round(mTotalSec / mGoalSec * 1000) / 10) : 0;
       subItems = [
-        // ★ API에서 받은 값 우선 사용 (없으면 계산)
-        {label:'시간 점수', val: hasData && d.timeScore !== undefined ? d.timeScore : (hasData ? Math.min(100, Math.round(mTotalMins/mGoal*100)) : 0), color:barColorTime},
-        {label:'자세 점수', val: hasData && d.postureScore !== undefined ? Math.round(d.postureScore) : (hasData ? Math.round(imPct*0.9) : 0), color:barColorAtt}
+        {label:'시간 점수', val: mTs, color:barColorTime,
+         totalSec: mTotalSec, goalSec: mGoalSec},
+        {label:'자세 점수', val: hasData ? Math.round((d.postureScore || 0)*10)/10 : 0, color:barColorAtt,
+         posturePct: hasData ? (d.avgPosturePct || null) : null}
       ];
     }
+
+    /* ── 날짜 표시 ── */
+    (function() {
+      var _now = new Date();
+      var _wday = ['일','월','화','수','목','금','토'];
+      var _dateTxt = '';
+      if (tab === 'daily') {
+        /* 새벽 3시 이전이면 전날 날짜로 표시 */
+        var _dailyDate = new Date(_now);
+        if (_dailyDate.getHours() < 3) _dailyDate.setDate(_dailyDate.getDate() - 1);
+        _dateTxt = _dailyDate.getFullYear()+'년 '+(_dailyDate.getMonth()+1)+'월 '+_dailyDate.getDate()+'일 ('+_wday[_dailyDate.getDay()]+')';
+      } else if (tab === 'weekly') {
+        var _ws = d.weekStart;
+        if (_ws) {
+          var _wsParts = _ws.split('-');
+          var _wsDate = new Date(+_wsParts[0], +_wsParts[1]-1, +_wsParts[2]);
+          var _weDate = new Date(_wsDate); _weDate.setDate(_weDate.getDate()+6);
+          _dateTxt = (_wsDate.getMonth()+1)+'월 '+_wsDate.getDate()+'일 ('+_wday[_wsDate.getDay()]+') ~ '
+                   + (_weDate.getMonth()+1)+'월 '+_weDate.getDate()+'일 ('+_wday[_weDate.getDay()]+')';
+        } else {
+          var _mon = new Date(_now); _mon.setDate(_now.getDate() - ((_now.getDay()+6)%7));
+          var _sun = new Date(_mon); _sun.setDate(_mon.getDate()+6);
+          _dateTxt = (_mon.getMonth()+1)+'월 '+_mon.getDate()+'일 ('+_wday[_mon.getDay()]+') ~ '
+                   + (_sun.getMonth()+1)+'월 '+_sun.getDate()+'일 ('+_wday[_sun.getDay()]+')';
+        }
+      } else if (tab === 'monthly') {
+        _dateTxt = _now.getFullYear()+'년 '+(_now.getMonth()+1)+'월';
+      }
+      if (_dateTxt && !isShowingExample) {
+        html += '<div style="text-align:center;font-size:11px;font-weight:600;color:'+rTxtMuted+';margin-bottom:10px;letter-spacing:0.02em;">'+_dateTxt+'</div>';
+      }
+    })();
 
     html += '<div class="report-section"><div class="report-section-title">몰입 게이지</div>';
     /* 예시 모드 설명 */
@@ -3265,42 +3947,236 @@
     var rEmptyTxt  = isDark ? '#808E7E' : '#aabcaa';
     var rEmptyBar  = isDark ? '#808E7E' : '#c8ddc8';
 
-    html += '<div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">';
-    var r = 30, circ = Math.round(2 * 3.14159 * r);
-    var dash = Math.round(circ * imPct / 100);
-    html += '<div style="flex-shrink:0;position:relative;width:76px;height:76px;">';
-    html += '<svg width="76" height="76" viewBox="0 0 80 80">';
-    html += '<circle cx="40" cy="40" r="'+r+'" fill="none" stroke="'+(hasData?rAccent:rEmptyBar)+'" stroke-width="8"/>';
-    if (hasData) html += '<circle cx="40" cy="40" r="'+r+'" fill="none" stroke="'+imColor+'" stroke-width="8" stroke-dasharray="'+dash+' '+circ+'" stroke-linecap="round" transform="rotate(-90 40 40)"/>';
+    html += '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:14px;">';
+    html += '<div style="font-size:11px;color:'+rTxtMuted+';">'+d.immersionLabel+'</div>';
+    /* 반원 게이지 — 호 길이: π×r = π×54 ≈ 170 */
+    var semiR = 54, semiArc = Math.round(3.14159 * semiR);
+    var semiDash = hasData ? Math.round(semiArc * imPct / 100) : 0;
+    html += '<div style="position:relative;width:150px;height:88px;">';
+    html += '<svg width="150" height="82" viewBox="0 0 150 82" style="overflow:visible;">';
+    /* 트랙 */
+    html += '<path d="M12,76 A63,63 0 0,1 138,76" fill="none" stroke="'+(hasData?rAccent:rEmptyBar)+'" stroke-width="11" stroke-linecap="round"/>';
+    /* 채움 */
+    if (hasData) html += '<path d="M12,76 A63,63 0 0,1 138,76" fill="none" stroke="'+imColor+'" stroke-width="11" stroke-linecap="round" stroke-dasharray="'+semiDash+' '+semiArc+'"/>';
     html += '</svg>';
-    html += '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">';
+    /* 숫자 — 반원 중심 위쪽에 배치 */
+    html += '<div style="position:absolute;bottom:18px;left:0;right:0;text-align:center;">';
     if (hasData) {
-      html += '<span style="font-size:17px;font-weight:800;color:'+rTxt+';line-height:1;">'+imPct+'</span>';
-      html += '<span style="font-size:8px;color:'+rTxtMuted+';">점</span>';
+      html += '<span style="font-size:26px;font-weight:900;color:'+rTxt+';line-height:1;">'+imPct+'</span>';
+      html += '<span style="font-size:10px;color:'+rTxtMuted+';"> 점</span>';
     } else {
-      html += '<span style="font-size:20px;font-weight:800;color:'+rEmptyTxt+';">-</span>';
+      html += '<span style="font-size:26px;font-weight:900;color:'+rEmptyTxt+';">-</span>';
     }
     html += '</div></div>';
-    html += '<div style="flex:1;">';
-    if (hasData) {
-      html += '<div style="font-size:11px;color:'+rTxtMuted+';margin-bottom:2px;">'+d.immersionLabel+'</div>';
-      html += '<div style="font-size:20px;font-weight:800;color:'+rTxt+';line-height:1.2;">'+imEmoji+' '+imLabel+'</div>';
-    } else {
-      html += '<div style="font-size:12px;color:'+rTxtMuted+';margin-bottom:4px;">'+d.immersionLabel+'</div>';
-      html += '<div style="font-size:13px;color:'+rEmptyTxt+';">뽀모도로를 시작하면 나타나요</div>';
-    }
-    html += '</div></div>';
-    if (subItems) {
-      subItems.forEach(function(item) {
-        html += '<div style="margin-bottom:8px;">';
-        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">';
-        html += '<span style="font-size:11px;font-weight:700;color:'+rTxtMuted+';">'+item.label+'</span>';
-        html += '<span style="font-size:11px;font-weight:800;color:'+(hasData?item.color:rEmptyTxt)+';">'+item.val+'점</span>';
+    if (!hasData) html += '<div style="font-size:12px;color:'+rEmptyTxt+';margin-top:6px;">뽀모도로를 시작하면 나타나요</div>';
+    html += '</div>';
+    if (tab === 'daily' && subItems) {
+      /* ── 시간 점수 ── */
+      var tsVal = subItems[0].val;
+      /* 세션 진행 중엔 완료 목표 + 현재 세션 목표 합산, 아니면 완료 목표 기준 */
+      var totalGoalSec = d.sessionActive
+          ? ((d.totalPomodoroGoalSec || 0) + (d.pomodoroSeconds || 0)) || (goalMinutes * 60)
+          : d.totalPomodoroGoalSec || (d.pomodoroSeconds || (goalMinutes * 60));
+      var actualSec = _getLiveStudySec();
+      function _fmtDur(s, showSec) {
+        s = Math.round(s);
+        var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sc = s % 60;
+        var str = '';
+        if (h > 0) str += h + '시간 ';
+        if (m > 0) str += m + '분';
+        if (showSec && sc > 0) str += (str ? ' ' : '') + sc + '초';
+        return str.trim() || '0초';
+      }
+      var totalGoalStr = _fmtDur(totalGoalSec, false);
+      var actualStr    = _fmtDur(actualSec,    true);
+      var tsFill = (hasData && totalGoalSec > 0) ? Math.min(100, (actualSec / totalGoalSec) * 100) : 0;
+      var tsColor = isDark ? '#C4D9C4' : '#4a7a4a';
+      var tsTrack = isDark ? '#808E7E' : '#c8ddc8';
+
+      html += '<div style="margin-bottom:10px;">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">';
+      html += '<span style="font-size:11px;font-weight:700;color:'+rTxtMuted+';">⏱ 시간 점수</span>';
+      html += '<span style="font-size:13px;font-weight:800;color:'+(hasData?tsColor:rEmptyTxt)+';">'+(typeof tsVal==='number'?tsVal.toFixed(1):tsVal)+'점</span>';
+      html += '</div>';
+      if (hasData && actualSec > 0) {
+        html += '<div style="font-size:10px;color:'+rTxtMuted+';margin-bottom:5px;"><b style="color:'+rTxt+';">'+totalGoalStr+'</b> 중 <b style="color:'+tsColor+';">'+actualStr+'</b> 공부</div>';
+      } else if (hasData) {
+        html += '<div style="font-size:10px;color:'+rTxtMuted+';margin-bottom:5px;"><b style="color:'+rTxt+';">'+totalGoalStr+'</b> 중 <b style="color:'+tsColor+';">0초</b> 공부</div>';
+      }
+      html += '<div style="background:'+tsTrack+';border-radius:20px;height:7px;overflow:hidden;">';
+      html += '<div style="background:'+(hasData?tsColor:tsTrack)+';height:100%;width:'+tsFill.toFixed(1)+'%;border-radius:20px;transition:width 0.6s;"></div>';
+      html += '</div></div>';
+
+      /* ── 자세 점수 (스택 바) ── */
+      var psVal = subItems[1].val;
+      var psColors = isDark
+        ? {good:'#A2E69F', warn:'#FFF17F', bad:'#FFA4A4', off:'rgba(196,217,196,0.18)'}
+        : {good:'#4a7a4a', warn:'#e8c84a', bad:'#e07a6a', off:'#d8e8d8'};
+      var psColor = isDark ? '#C4D9C4' : '#4a7a4a';
+
+      /* postureSec 우선, 없으면 postureScore 폴백 */
+      var psSec  = d.postureSec;
+      var psHasDetail = psSec && (psSec.total > 0 || psSec.turtle > 0 || psSec.bent > 0 || psSec.turtleExc !== undefined);
+      var psGoodPct, psWarnPct, psBadPct, psAbsentPct, psOffPct;
+      var psAbsentColor = isDark ? 'rgba(196,217,196,0.35)' : '#a8b8a8';
+      var psOverlapPct = 0;
+      if (psHasDetail) {
+        var psT = psSec.total;
+        /* combo_stats 기반 exclusive 시간 사용 → 합이 totalSec을 초과하지 않음 */
+        var hasExc = (psSec.turtleExc !== undefined);
+        if (hasExc) {
+          /* 신규: exclusive 시간 직접 사용 */
+          var rawWarn   = (psSec.turtleExc   || 0) + (psSec.reclinedExc || 0);
+          var rawBad    = (psSec.bentExc     || 0) + (psSec.drowsyExc   || 0);
+          var rawAbsent = (psSec.absentExc   || 0);
+          var rawOv     = (psSec.overlapTotal || 0);
+          psWarnPct   = Math.round(rawWarn   / psT * 1000) / 10;
+          psBadPct    = Math.round(rawBad    / psT * 1000) / 10;
+          psAbsentPct = Math.round(rawAbsent / psT * 1000) / 10;
+          psOverlapPct= Math.round(rawOv     / psT * 1000) / 10;
+          psGoodPct   = Math.round((100 - psWarnPct - psBadPct - psAbsentPct - psOverlapPct) * 10) / 10;
+        } else {
+          /* 구버전 폴백: overlap 차감 후 비례 보정 */
+          var rawWarn   = (psSec.turtle + psSec.reclined);
+          var rawBad    = (psSec.bent   + psSec.drowsy);
+          var rawAbsent = (psSec.absent || 0);
+          var warnOv = (psSec.turtleOverlap || 0) + (psSec.reclinedOverlap || 0);
+          var badOv  = (psSec.bentOverlap   || 0) + (psSec.drowsyOverlap   || 0);
+          rawWarn = Math.max(0, rawWarn - warnOv);
+          rawBad  = Math.max(0, rawBad  - badOv);
+          var rawSum = rawWarn + rawBad + rawAbsent;
+          var scale = rawSum > psT ? psT / rawSum : 1;
+          psWarnPct   = Math.round(rawWarn   * scale / psT * 1000) / 10;
+          psBadPct    = Math.round(rawBad    * scale / psT * 1000) / 10;
+          psAbsentPct = Math.round(rawAbsent * scale / psT * 1000) / 10;
+          psGoodPct   = Math.round((100 - psWarnPct - psBadPct - psAbsentPct) * 10) / 10;
+        }
+        psOffPct = 0;
+      }
+
+      /* 점수 표시값: 항상 API의 postureScore 사용 (compute_session_score 기반, 카운터 방식 재계산 금지) */
+      var psValDisplay = (Math.round((d.postureScore || 0) * 10) / 10).toFixed(1);
+
+      html += '<div>';
+      html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">';
+      html += '<span style="font-size:11px;font-weight:700;color:'+rTxtMuted+';">🧍 자세 점수</span>';
+      html += '<span style="font-size:13px;font-weight:800;color:'+(hasData?psColor:rEmptyTxt)+';">'+psValDisplay+'점</span>';
+      html += '</div>';
+      if (hasData && psHasDetail) {
+        var psOverlapColor = isDark ? 'rgba(180,160,255,0.7)' : '#9b7fd4';
+        /* 텍스트·바: 모두 postureSec 기반 계산값 사용 (합=100 보장) */
+        html += '<div style="font-size:8.5px;color:'+rTxtMuted+';margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">바른 자세 <b style="color:'+psColors.good+';">'+psGoodPct.toFixed(1)+'%</b>';
+        if (psWarnPct)    html += ' · 주의 <b style="color:'+(isDark?'#FFF17F':'#b08a20')+';">'+psWarnPct.toFixed(1)+'%</b>';
+        if (psBadPct)     html += ' · 위험 <b style="color:'+psColors.bad+';">'+psBadPct.toFixed(1)+'%</b>';
+        if (psAbsentPct)  html += ' · 미감지 <b style="color:'+psAbsentColor+';">'+psAbsentPct.toFixed(1)+'%</b>';
+        if (psOverlapPct) html += ' · 중복 <b style="color:'+psOverlapColor+';">'+psOverlapPct.toFixed(1)+'%</b>';
         html += '</div>';
-        html += '<div style="background:'+rEmptyBar+';border-radius:20px;height:7px;overflow:hidden;">';
-        html += '<div style="background:'+(hasData?item.color:rEmptyBar)+';height:100%;width:'+item.val+'%;border-radius:20px;transition:width 0.6s;"></div>';
-        html += '</div></div>';
-      });
+        html += '<div style="display:flex;height:7px;border-radius:20px;overflow:hidden;gap:1px;">';
+        if (psGoodPct    > 0) html += '<div style="flex:'+psGoodPct+';background:'+psColors.good+'"></div>';
+        if (psWarnPct    > 0) html += '<div style="flex:'+psWarnPct+';background:'+psColors.warn+'"></div>';
+        if (psBadPct     > 0) html += '<div style="flex:'+psBadPct+';background:'+psColors.bad+'"></div>';
+        if (psAbsentPct  > 0) html += '<div style="flex:'+psAbsentPct+';background:'+psAbsentColor+'"></div>';
+        if (psOverlapPct > 0) html += '<div style="flex:'+psOverlapPct+';background:'+psOverlapColor+'"></div>';
+        html += '</div>';
+      } else if (hasData && psVal > 0) {
+        var psValFb = (Math.round((d.postureScore || 0) * 10) / 10).toFixed(1);
+        var psBadFb = (100 - (d.postureScore || 0)).toFixed(1);
+        html += '<div style="font-size:10px;color:'+rTxtMuted+';margin-bottom:5px;">바른 자세 <b style="color:'+psColors.good+';">'+psValFb+'%</b> · 나머지 '+psBadFb+'%</div>';
+        html += '<div style="display:flex;height:7px;border-radius:20px;overflow:hidden;gap:1px;">';
+        html += '<div style="flex:'+psVal+';background:'+psColors.good+'"></div>';
+        if (psBadFb > 0) html += '<div style="flex:'+(100-psVal)+';background:'+psColors.off+'"></div>';
+        html += '</div>';
+      } else {
+        html += '<div style="background:'+rEmptyBar+';border-radius:20px;height:7px;"></div>';
+      }
+      html += '</div>';
+    } else if (subItems) {
+      /* ── 시간 점수 (주별/월별 누적) ── */
+      var _ts = subItems[0];
+      var _tsColor = isDark ? '#C4D9C4' : '#4a7a4a';
+      var _tsTrack = isDark ? '#808E7E' : '#c8ddc8';
+      var _tsSec  = _ts.totalSec || 0;
+      var _tsGoal = _ts.goalSec  || 0;
+      var _tsFill = (_tsGoal > 0) ? Math.min(100, _tsSec / _tsGoal * 100) : Math.min(100, _ts.val);
+      var _tsH = Math.floor(_tsSec / 3600), _tsM = Math.floor((_tsSec % 3600) / 60), _tsS = _tsSec % 60;
+      var _tsStr = _tsSec > 0 ? (
+        _tsH > 0 ? _tsH + '시간' + (_tsM > 0 ? ' ' + _tsM + '분' : '') + (_tsS > 0 ? ' ' + _tsS + '초' : '') :
+        (_tsM > 0 ? _tsM + '분' + (_tsS > 0 ? ' ' + _tsS + '초' : '') : _tsS + '초')
+      ) : '0초';
+      var _tsGoalH = Math.floor(_tsGoal / 3600), _tsGoalM = Math.floor((_tsGoal % 3600) / 60);
+      var _tsGoalStr = _tsGoalH > 0 ? _tsGoalH + '시간' + (_tsGoalM > 0 ? ' ' + _tsGoalM + '분' : '') : _tsGoalM + '분';
+
+      html += '<div style="margin-bottom:10px;">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">';
+      html += '<span style="font-size:11px;font-weight:700;color:'+rTxtMuted+';">⏱ 시간 점수</span>';
+      html += '<span style="font-size:13px;font-weight:800;color:'+(hasData?_tsColor:rEmptyTxt)+';">'+(Math.round((_ts.val||0)*10)/10).toFixed(1)+'점</span>';
+      html += '</div>';
+      if (hasData) {
+        html += '<div style="font-size:10px;color:'+rTxtMuted+';margin-bottom:5px;"><b style="color:'+rTxt+';">'+_tsGoalStr+'</b> 중 <b style="color:'+_tsColor+';">'+_tsStr+'</b> 공부</div>';
+      }
+      html += '<div style="background:'+_tsTrack+';border-radius:20px;height:7px;overflow:hidden;">';
+      html += '<div style="background:'+(hasData?_tsColor:_tsTrack)+';height:100%;width:'+_tsFill.toFixed(1)+'%;border-radius:20px;transition:width 0.6s;"></div>';
+      html += '</div></div>';
+
+      /* ── 자세 점수 (카테고리별 분류) ── */
+      var _ps = subItems[1];
+      var _psColor = isDark ? '#C4D9C4' : '#4a7a4a';
+      var _psColors = isDark
+        ? {good:'#A2E69F', warn:'#FFF17F', bad:'#FFA4A4', off:'rgba(196,217,196,0.18)'}
+        : {good:'#4a7a4a', warn:'#e8c84a', bad:'#e07a6a', off:'#d8e8d8'};
+      var _psAbsentC = isDark ? 'rgba(196,217,196,0.35)' : '#a8b8a8';
+      var _psScore = hasData ? (_ps.val || _ps.postureScore || 0) : 0;
+
+      /* posturePct 직접 사용 (없으면 count 기반 fallback) */
+      var _psWarnPct = 0, _psBadPct2 = 0, _psAbsPct = 0, _psOvPct = 0, _psGoodFinal = 0;
+      var _pctSrc = _ps.posturePct;
+      if (_pctSrc && hasData) {
+        _psWarnPct   = Math.round((_pctSrc.warn    || 0) * 10) / 10;
+        _psBadPct2   = Math.round((_pctSrc.bad     || 0) * 10) / 10;
+        _psAbsPct    = Math.round((_pctSrc.absent  || 0) * 10) / 10;
+        _psOvPct     = Math.round((_pctSrc.overlap || 0) * 10) / 10;
+      } else {
+        var _pt = d.posture || {};
+        var _ptWarnRaw = (_pt.turtle || 0) + (_pt.reclined || 0);
+        var _ptBadRaw  = (_pt.bent   || 0) + (_pt.drowsy   || 0);
+        var _ptAbsRaw  = (_pt.absent || 0);
+        var _ptTotal   = _ptWarnRaw + _ptBadRaw + _ptAbsRaw;
+        var _psBadTotal = Math.max(0, 100 - _psScore);
+        if (_ptTotal > 0 && _psBadTotal > 0) {
+          _psWarnPct = Math.round(_psBadTotal * _ptWarnRaw / _ptTotal * 10) / 10;
+          _psBadPct2 = Math.round(_psBadTotal * _ptBadRaw  / _ptTotal * 10) / 10;
+          _psAbsPct  = Math.round((_psBadTotal - _psWarnPct - _psBadPct2) * 10) / 10;
+        } else if (_psBadTotal > 0) {
+          _psAbsPct = _psBadTotal;
+        }
+      }
+      /* 합=100 보장: good은 항상 나머지로 계산 */
+      _psGoodFinal = Math.max(0, Math.round((100 - _psWarnPct - _psBadPct2 - _psAbsPct - _psOvPct) * 10) / 10);
+
+      html += '<div>';
+      html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">';
+      html += '<span style="font-size:11px;font-weight:700;color:'+rTxtMuted+';">🧍 자세 점수</span>';
+      html += '<span style="font-size:13px;font-weight:800;color:'+(hasData?_psColor:rEmptyTxt)+';"> '+(Math.round((_psScore||0)*10)/10).toFixed(1)+'점</span>';
+      html += '</div>';
+      if (hasData && _psScore > 0) {
+        html += '<div style="font-size:8.5px;color:'+rTxtMuted+';margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">바른 자세 <b style="color:'+_psColors.good+';">'+_psGoodFinal.toFixed(1)+'%</b>';
+        if (_psWarnPct  > 0) html += ' · 주의 <b style="color:'+(isDark?'#FFF17F':'#b08a20')+';">'+_psWarnPct.toFixed(1)+'%</b>';
+        if (_psBadPct2  > 0) html += ' · 위험 <b style="color:'+_psColors.bad+';">'+_psBadPct2.toFixed(1)+'%</b>';
+        if (_psAbsPct   > 0) html += ' · 미감지 <b style="color:'+_psAbsentC+';">'+_psAbsPct.toFixed(1)+'%</b>';
+        var _psOvColor = isDark ? 'rgba(180,160,255,0.7)' : '#9b7fd4';
+        if (_psOvPct    > 0) html += ' · 중복 <b style="color:'+_psOvColor+';">'+_psOvPct.toFixed(1)+'%</b>';
+        html += '</div>';
+        html += '<div style="display:flex;height:7px;border-radius:20px;overflow:hidden;gap:1px;">';
+        if (_psGoodFinal > 0) html += '<div style="flex:'+_psGoodFinal+';background:'+_psColors.good+'"></div>';
+        if (_psWarnPct   > 0) html += '<div style="flex:'+_psWarnPct+';background:'+_psColors.warn+'"></div>';
+        if (_psBadPct2   > 0) html += '<div style="flex:'+_psBadPct2+';background:'+_psColors.bad+'"></div>';
+        if (_psAbsPct    > 0) html += '<div style="flex:'+_psAbsPct+';background:'+_psAbsentC+'"></div>';
+        if (_psOvPct     > 0) html += '<div style="flex:'+_psOvPct+';background:'+_psOvColor+'"></div>';
+        html += '</div>';
+      } else {
+        html += '<div style="background:'+rEmptyBar+';border-radius:20px;height:7px;"></div>';
+      }
+      html += '</div>';
     }
     html += '</div></div>';
 
@@ -3309,7 +4185,7 @@
       var hrs = d.hours;
       var totalMins = d.totalMins !== undefined ? d.totalMins : hrs.reduce(function(s,h){return s+h.mins;},0);
       var scoredHrs = hrs.filter(function(h){return h.mins>0;});
-      var avgScore = scoredHrs.length>0 ? Math.round(scoredHrs.reduce(function(s,h){return s+h.score;},0)/scoredHrs.length) : 0;
+      var avgScore = scoredHrs.length>0 ? Math.round(scoredHrs.reduce(function(s,h){return s+h.score;},0)/scoredHrs.length*10)/10 : 0;
 
       /* 차트 레이아웃 */
       var cW=320, cH=165, pL=32, pR=30, pT=14, pB=22;
@@ -3324,42 +4200,32 @@
       var gridC  = isDark ? 'rgba(254,253,245,0.12)' : '#e8f0e8';
       var axC    = isDark ? 'rgba(254,253,245,0.45)'  : '#9aaa9a';
       var axC2   = isDark ? '#C4D9C4' : '#4a7a4a';
-      var lineC  = isDark ? '#C4D9C4' : '#2e5a2e';
+      var lineC  = isDark ? '#A2E69F' : '#4a7a4a';
       var rAxisL = isDark ? 'rgba(196,217,196,0.35)' : '#c8e0c8';
 
-      /* 막대 색상: 자세 점수에 따른 그라데이션 */
+      /* 막대 색상: 공부시간에 따른 그라데이션 — 5단계 (구간: 15/30/45/55분) */
       function getBarColor(score, mins) {
-        if (!mins) return isDark ? 'rgba(196,217,196,0.15)' : '#eef4ee';
+        if (!mins) return isDark ? 'rgba(196,217,196,0.12)' : '#ecf4ec';
         if (isDark) {
-          return score>=80?'#D9FFD9':score>=60?'#C2E2C2':score>=40?'#ACCBAC':'#9BB89B';
+          return mins>55?'#d4f0d4':mins>45?'#aad4aa':mins>30?'#80b480':mins>15?'#5a9a5a':'#3e7a3e';
         } else {
-          return score>=80?'#2e5a2e':score>=60?'#4a7a4a':score>=40?'#7aaa7a':score>=20?'#a8cca8':'#c8e0c8';
+          return mins>55?'#2e5a2e':mins>45?'#4a7a4a':mins>30?'#7aaa7a':mins>15?'#a0c4a0':'#c8e0c8';
         }
       }
 
-      html += '<div class="report-section"><div class="report-section-title">집중 시간대 분석</div>';
+      html += '<div class="report-section"><div class="report-section-title">집중 시간대 분석 <span style="font-size:10px;color:#9aaa9a;font-weight:400;">'+(hasData?'막대를 눌러 상세 보기':'')+'</span></div>';
       if (isShowingExample) {
         var hintBg2=isDark?'#5E685D':'#e8f4e8', hintBd2=isDark?'#808E7E':'#4a7a4a', hintTx2=isDark?'#FEFDF5':'#4a6a4a';
         html += '<div style="background:'+hintBg2+';border-radius:10px;padding:10px 12px;margin:0 0 8px;border-left:3px solid '+hintBd2+';font-size:11px;color:'+hintTx2+';line-height:1.7;">💡 <b>막대</b> = 시간대별 공부시간 (색상 = 자세 점수), <b>꺾은선·점</b> = 자세 점수 (우측 축)</div>';
       }
       html += '<div class="report-card" style="padding:12px 8px 8px;">';
 
-      /* 요약 수치 */
-      html += '<div style="display:flex;gap:8px;margin-bottom:12px;">';
-      html += '<div style="flex:1;background:'+rSubBg+';border-radius:10px;padding:8px 10px;">';
-      html += '<div style="font-size:10px;color:'+rTxtMuted+';margin-bottom:2px;">⏱ 전체 공부시간</div>';
-      var tmSec = d.totalStudySec || (totalMins * 60);
-      var tmH = Math.floor(tmSec / 3600);
-      var tmM = Math.floor((tmSec % 3600) / 60);
-      var tmS = tmSec % 60;
-      var tmLbl = tmSec > 0
-        ? (tmH > 0 ? tmH+'h '+tmM+'m '+tmS+'s' : (tmM > 0 ? tmM+'m '+tmS+'s' : tmS+'s'))
-        : '-';
-      html += '<div style="font-size:16px;font-weight:800;color:'+rTxt+';">'+tmLbl+'</div></div>';
-      html += '<div style="flex:1;background:'+rSubBg+';border-radius:10px;padding:8px 10px;">';
-      html += '<div style="font-size:10px;color:'+rTxtMuted+';margin-bottom:2px;">⏳ 오늘 뽀모도로</div>';
-      html += '<div style="font-size:16px;font-weight:800;color:'+rTxt+';">'+(d.pomodoroCount||0)+'번</div></div>';
-      html += '</div>';
+      /* 요약 수치 — 뽀모도로 횟수 2줄 */
+      html += '<div style="display:flex;justify-content:flex-start;margin-bottom:12px;">';
+      html += '<div style="border-left:2.5px solid '+rAccentFill+';padding-left:7px;">';
+      html += '<div style="font-size:8px;color:'+rTxtMuted+';">오늘 뽀모도로</div>';
+      html += '<div style="font-size:14px;font-weight:800;color:'+rTxt+';margin-top:3px;">'+(d.pomodoroCount||0)+'번</div>';
+      html += '</div></div>';
 
       if (!hasData) {
         /* 빈 상태 */
@@ -3389,46 +4255,67 @@
         /* 시간대별 세그먼트 캐시 (클릭 시 상세 표시용) */
         window._dailyHourSegs  = {};
         window._dailyHourMins  = {};
+        window._dailyHourSecs  = {};
+        window._dailyHourScore = {};
         window._dailyChartDark = isDark;
 
         /* 막대 + 꺾은선 포인트 수집 */
+        /* 새벽 3시 기준 하루: 3→4→…→23→0→1→2시 순서로 표시 */
+        var displayHrs = hrs.slice(3).concat(hrs.slice(0, 3));
         var linePoints = [];
-        hrs.forEach(function(h, i) {
-          var cx = pL + (i+0.5)*colW;   /* 열 중앙 X */
+        var activeHour = typeof reportActiveHour !== 'undefined' ? reportActiveHour : -1;
+        /* activeHour의 display index (3시=0, …, 23시=20, 0시=21, 1시=22, 2시=23) */
+        var activeDispIdx = activeHour >= 0 ? (activeHour >= 3 ? activeHour - 3 : activeHour + 21) : -1;
+        displayHrs.forEach(function(h, dispIdx) {
+          var cx = pL + (dispIdx+0.5)*colW;   /* 열 중앙 X */
           var bx = cx - bw/2;
+          var isActiveH = (h.hr === activeHour);
 
-          /* 세그먼트 캐시 저장 */
-          window._dailyHourSegs[i] = h.segs || [];
-          window._dailyHourMins[i] = h.mins || 0;
+          /* 세그먼트 캐시 저장 — 실제 시간(h.hr)으로 키 */
+          window._dailyHourSegs[h.hr]  = h.segs  || [];
+          window._dailyHourMins[h.hr]  = h.mins  || 0;
+          window._dailyHourSecs[h.hr]  = h.secs  || 0;
+          window._dailyHourScore[h.hr] = h.score || 0;
+
+          /* 꺾은선 점: 공부한 시간대만 (mins=0이면 제외 → 자세점수 0이 선을 끌어내리지 않음) */
+          if (h.mins > 0) {
+            var dotY = pT + iH - (h.score/100*iH);
+            linePoints.push({x:cx, y:dotY, score:h.score});
+          }
 
           if (h.mins > 0) {
             /* 막대: 높이 = 공부시간 / yMax (최대 60m) */
             var bH = Math.max(3, Math.min(iH, (h.mins/yMax)*iH));
             var bY = pT + iH - bH;
+            var strokeAttrH = isActiveH ? ' stroke="'+(isDark?'#FEFDF5':'#1e3e1e')+'" stroke-width="1.5"' : '';
             html += '<rect x="'+bx.toFixed(1)+'" y="'+bY.toFixed(1)+'" width="'+bw+'" height="'+bH.toFixed(1)+'"'
-                  + ' rx="2" fill="'+getBarColor(h.score,h.mins)+'"'
-                  + ' style="cursor:pointer;" onclick="showHourDetail('+i+')"'
+                  + ' rx="2" fill="'+getBarColor(h.score,h.mins)+'"'+strokeAttrH+' pointer-events="none"'
                   + '/>';
-
-            /* 꺾은선 점: Y = 자세 점수 → 오른쪽 축 스케일 */
-            var dotY = pT + iH - (h.score/100*iH);
-            linePoints.push({x:cx, y:dotY, score:h.score});
           }
+          /* 열 전체 너비 투명 터치 타겟 (24시간 전부 — 꺾은선 점 포함) */
+          html += '<rect x="'+(cx-colW/2).toFixed(1)+'" y="'+pT+'" width="'+colW.toFixed(1)+'" height="'+iH+'"'
+                + ' fill="transparent" style="cursor:pointer;" onclick="showHourDetail('+h.hr+')"'
+                + '/>';
 
-          /* X축 레이블: 4시간마다 */
-          if (i % 4 === 0) {
-            html += '<text x="'+cx.toFixed(1)+'" y="'+(pT+iH+15)+'" font-size="7" fill="'+axC+'" text-anchor="middle">'+i+'시</text>';
+          /* X축 레이블: 4칸마다 + 선택된 시간대는 항상 표시 */
+          var _tooClose = (activeHour >= 0) && !isActiveH && (Math.abs(dispIdx - activeDispIdx) <= 1);
+          if ((dispIdx % 4 === 0 && !_tooClose) || isActiveH) {
+            html += '<text x="'+cx.toFixed(1)+'" y="'+(pT+iH+15)+'" font-size="7"'
+                  + ' fill="'+(isActiveH?(isDark?'#FEFDF5':'#2e3e2e'):axC)+'"'
+                  + ' font-weight="'+(isActiveH?'bold':'normal')+'"'
+                  + ' text-anchor="middle">'+h.hr+'시</text>';
           }
         });
 
         /* 꺾은선 그리기 */
         if (linePoints.length > 1) {
+          /* 선 */
           var pathD = linePoints.map(function(p,i){return(i===0?'M':'L')+p.x.toFixed(1)+','+p.y.toFixed(1);}).join(' ');
-          html += '<path d="'+pathD+'" fill="none" stroke="'+lineC+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.9"/>';
+          html += '<path d="'+pathD+'" fill="none" stroke="'+lineC+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" pointer-events="none"/>';
         }
-        /* 점: 막대 중앙 상단에 */
+        /* 점 — 초록 채우기 + 틸 외곽선 (pointer-events:none) */
         linePoints.forEach(function(p) {
-          html += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="2.5" fill="'+lineC+'" stroke="#fff" stroke-width="0.8" opacity="0.95"/>';
+          html += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="4" fill="'+(isDark?'#2d3d2d':'#ffffff')+'" stroke="'+lineC+'" stroke-width="1.5" pointer-events="none"/>';
         });
 
         html += '</svg>';
@@ -3436,11 +4323,11 @@
         /* 범례 */
         html += '<div style="display:flex;align-items:center;gap:12px;margin-top:7px;flex-wrap:wrap;">';
         html += '<div style="display:flex;align-items:center;gap:4px;">';
-        html += '<div style="width:26px;height:9px;border-radius:2px;background:linear-gradient(to right,'+(isDark?'#9BB89B,#D9FFD9':'#c8e0c8,#2e5a2e')+');"></div>';
-        html += '<span style="font-size:9px;color:'+rTxtMuted+';">공부시간 (자세 낮음→높음)</span></div>';
+        html += '<div style="width:26px;height:9px;border-radius:2px;background:linear-gradient(to right,'+(isDark?'#9BB89B,#ACCBAC,#C2E2C2,#D9FFD9':'#c8e0c8,#a8cca8,#7aaa7a,#4a7a4a,#2e5a2e')+');"></div>';
+        html += '<span style="font-size:9px;color:'+rTxtMuted+';">공부시간 (짧음→김)</span></div>';
         html += '<div style="display:flex;align-items:center;gap:4px;">';
         html += '<div style="width:18px;height:1.5px;background:'+lineC+';border-radius:1px;"></div>';
-        html += '<div style="width:6px;height:6px;border-radius:50%;background:'+lineC+';"></div>';
+        html += '<div style="width:6px;height:6px;border-radius:50%;background:'+(isDark?'#2d3d2d':'#ffffff')+';border:1.5px solid '+lineC+';"></div>';
         html += '<span style="font-size:9px;color:'+axC2+';font-weight:700;">자세 점수 (우측 축)</span></div>';
         html += '</div>';
 
@@ -3450,11 +4337,18 @@
       } /* end hasData else */
       html += '</div></div>';
 
+
     } else if (tab === 'weekly') {
       var days = d.days;
-      var totalMinsW = days.reduce(function(s,d){ return s+d.mins; }, 0);
-      var avgMinsW = Math.round(totalMinsW / (days.filter(function(d){ return d.mins>0; }).length||1));
-      var avgScoreW = Math.round(days.reduce(function(s,d){ return s+d.score; },0) / days.length);
+      var _daysSecsW = days.reduce(function(s,dy){ return s+(dy.secs||Math.round(dy.mins*60)); }, 0);
+      var totalSecsW = d.totalStudySec || _daysSecsW;
+      var totalMinsW = totalSecsW / 60;
+      var activeDaysW = days.filter(function(dy){ return dy.mins>0; });
+      var avgSecsW = activeDaysW.length ? Math.round(_daysSecsW / activeDaysW.length) : 0;
+      var avgMinsW = avgSecsW / 60;
+      var avgScoreW = activeDaysW.length ? Math.round(activeDaysW.reduce(function(s,d){return s+d.score;},0)/activeDaysW.length*10)/10 : 0;
+      function _secsHms(s) { s=Math.round(s); var h=Math.floor(s/3600),mn=Math.floor((s%3600)/60),sc=s%60; if(!s) return '-'; var r=''; if(h>0) r+=h+'시간'; if(mn>0) r+=(r?' ':'')+mn+'분'; if(sc>0) r+=(r?' ':'')+sc+'초'; return r||'0초'; }
+      function _wHms(m) { return _secsHms(Math.round(m*60)); }
       var maxMinsW = Math.max.apply(null, days.map(function(d){ return d.mins; })) || 1;
       var chartH = 120, chartW = 310, padL = 28, padB = 20, padT = 16, padR2 = 28;
       var innerW = chartW - padL - padR2;
@@ -3463,41 +4357,41 @@
       var activeDay = typeof reportActiveDay !== 'undefined' ? reportActiveDay : -1;
 
       html += '<div class="report-section"><div class="report-section-title">집중 시간대 분석 <span style="font-size:10px;color:#9aaa9a;font-weight:400;">'+(hasData?'막대를 눌러 상세 보기':'')+'</span></div>';
-      if (isShowingExample) html += '<div style="background:#e8f4e8;border-radius:10px;padding:10px 12px;margin:0 0 8px;border-left:3px solid #4a7a4a;font-size:11px;color:#4a6a4a;line-height:1.7;">💡 요일별 집중시간·몰입도·자세 점수를 한눈에! <b>막대를 누르면</b> 그날 요약이 펼쳐져요.</div>';
+      if (isShowingExample) html += '<div style="background:#e8f4e8;border-radius:10px;padding:10px 12px;margin:0 0 8px;border-left:3px solid #4a7a4a;font-size:11px;color:#4a6a4a;line-height:1.7;">💡 요일별 공부시간·몰입도·자세 점수를 한눈에! <b>막대를 누르면</b> 그날 요약이 펼쳐져요.</div>';
       html += '<div class="report-card" style="padding:12px 8px 8px;">';
 
       if (!hasData) {
-        html += '<div style="display:flex;gap:6px;margin-bottom:12px;">';
-        ['⏱ 주간 총 공부시간','📅 일 평균 공부시간','🧍 일 평균 자세 점수'].forEach(function(lbl){
-          html += '<div style="flex:1;background:'+rSubBg+';border-radius:10px;padding:8px 10px;"><div style="font-size:9px;color:'+rTxtMuted+';margin-bottom:2px;">'+lbl+'</div><div style="font-size:15px;font-weight:800;color:'+rTxt+';">-</div></div>';
-        });
-        html += '</div>';
+        html += '<div style="display:flex;justify-content:flex-start;margin-bottom:12px;">';
+        html += '<div style="border-left:2.5px solid '+rAccentFill+';padding-left:7px;">';
+        html += '<div style="font-size:8px;color:'+rTxtMuted+';">일 평균 공부시간</div>';
+        html += '<div style="font-size:14px;font-weight:800;color:'+rTxt+';margin-top:3px;">-</div>';
+        html += '</div></div>';
         html += '<div style="height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:'+rCardBg+';border-radius:10px;">';
         html += '<div style="font-size:22px;">📚</div>';
         html += '<div style="font-size:13px;font-weight:700;color:'+rTxtMuted+';">이번 주 기록이 없어요</div>';
         html += '</div>';
         html += '</div></div>';
       } else {
-        /* 요약 수치 */
-        html += '<div style="display:flex;gap:6px;margin-bottom:12px;">';
-        html += '<div style="flex:1;background:'+rSubBg+';border-radius:10px;padding:8px 10px;"><div style="font-size:9px;color:'+rTxtMuted+';margin-bottom:2px;">⏱ 주간 총 공부시간</div><div style="font-size:15px;font-weight:800;color:'+rTxt+';">'+(Math.floor(totalMinsW/60))+'h '+(totalMinsW%60)+'m</div></div>';
-        html += '<div style="flex:1;background:'+rSubBg+';border-radius:10px;padding:8px 10px;"><div style="font-size:9px;color:'+rTxtMuted+';margin-bottom:2px;">📅 일 평균 공부시간</div><div style="font-size:15px;font-weight:800;color:'+rTxt+';">'+avgMinsW+'m</div></div>';
-        html += '<div style="flex:1;background:'+rSubBg+';border-radius:10px;padding:8px 10px;"><div style="font-size:9px;color:'+rTxtMuted+';margin-bottom:2px;">🧍 일 평균 자세 점수</div><div style="font-size:15px;font-weight:800;color:'+rTxt+';">'+avgScoreW+'점</div></div>';
-        html += '</div>';
+        /* 요약 수치 — 일 평균 공부시간 2줄 */
+        html += '<div style="display:flex;justify-content:flex-start;margin-bottom:12px;">';
+        html += '<div style="border-left:2.5px solid '+rAccentFill+';padding-left:7px;">';
+        html += '<div style="font-size:8px;color:'+rTxtMuted+';">일 평균 공부시간</div>';
+        html += '<div style="font-size:14px;font-weight:800;color:'+rTxt+';margin-top:3px;">'+_wHms(avgMinsW)+'</div>';
+        html += '</div></div>';
 
         /* SVG 차트 */
         var svgBgW = isDark ? '#808E7E' : 'transparent';
         html += '<svg width="100%" viewBox="0 0 '+chartW+' '+chartH+'" style="overflow:visible;display:block;background:'+svgBgW+';border-radius:8px;">';
-        var maxH = maxMinsW <= 60 ? 60 : maxMinsW <= 90 ? 90 : 120;
+        var maxH = 480; /* 8h 고정 */
         var gridColorW = isDark ? 'rgba(254,253,245,0.15)' : '#e8f0e8';
         var axisColorW = isDark ? 'rgba(254,253,245,0.5)' : '#aabcaa';
         var axisColor2W = isDark ? '#C4D9C4' : '#4a7a4a';
         var axisLineW = isDark ? 'rgba(196,217,196,0.5)' : '#c8e0c8';
-        var lineColorW = isDark ? '#C4D9C4' : '#1e3e1e';
-        [0, Math.round(maxH/2), maxH].forEach(function(v) {
+        var lineColorW = isDark ? '#A2E69F' : '#4a7a4a';
+        [0, 120, 240, 360, 480].forEach(function(v) {
           var y = padT + innerH - (v / maxH * innerH);
           html += '<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(chartW-padR2)+'" y2="'+y.toFixed(1)+'" stroke="'+gridColorW+'" stroke-width="0.8"/>';
-          html += '<text x="'+(padL-3)+'" y="'+(y+3)+'" font-size="7" fill="'+axisColorW+'" text-anchor="end">'+v+'m</text>';
+          html += '<text x="'+(padL-3)+'" y="'+(y+3)+'" font-size="7" fill="'+axisColorW+'" text-anchor="end">'+(v/60)+'h</text>';
         });
         [0, 50, 100].forEach(function(v) {
           var y = padT + innerH - (v / 100 * innerH);
@@ -3509,8 +4403,10 @@
         var cSlchW  = isDark ? '#FFF17F' : '#c8a84a';
 
         var linePointsW = [];
+        var colWW = innerW / 7;
         days.forEach(function(day, i) {
-          var x = padL + i * (innerW / 7) + (innerW/7 - bwW) / 2;
+          var cx = padL + i * colWW + colWW / 2;
+          var x  = cx - bwW / 2;
           var barH = day.mins > 0 ? Math.max(3, (day.mins / maxH) * innerH) : 2;
           var barY = padT + innerH - barH;
           var sc = day.immersion;
@@ -3521,19 +4417,24 @@
           var isActive = (i === activeDay);
           var strokeAttr = isActive ? ' stroke="'+(isDark?'#FEFDF5':'#1e3e1e')+'" stroke-width="1.5"' : '';
           var fillColor = day.mins > 0 ? bc : cEmptyW;
-          html += '<rect x="'+x.toFixed(1)+'" y="'+barY.toFixed(1)+'" width="'+bwW+'" height="'+barH.toFixed(1)+'" rx="3" fill="'+fillColor+'"'+strokeAttr+' style="cursor:pointer;" onclick="showDayDetailPanel('+i+')" />';
-          html += '<text x="'+(x+bwW/2).toFixed(1)+'" y="'+(padT+innerH+12)+'" font-size="8" fill="'+(isActive?(isDark?'#FEFDF5':'#2e3e2e'):axisColorW)+'" font-weight="'+(isActive?'bold':'normal')+'" text-anchor="middle">'+day.label+'</text>';
-          linePointsW.push({x: parseFloat(x.toFixed(1)) + bwW/2, y: padT + innerH - (day.score / 100 * innerH)});
+          /* 막대 (시각용, 클릭 불가) */
+          html += '<rect x="'+x.toFixed(1)+'" y="'+barY.toFixed(1)+'" width="'+bwW+'" height="'+barH.toFixed(1)+'" rx="3" fill="'+fillColor+'"'+strokeAttr+' pointer-events="none"/>';
+          html += '<text x="'+cx.toFixed(1)+'" y="'+(padT+innerH+12)+'" font-size="8" fill="'+(isActive?(isDark?'#FEFDF5':'#2e3e2e'):axisColorW)+'" font-weight="'+(isActive?'bold':'normal')+'" text-anchor="middle" pointer-events="none">'+day.label+'</text>';
+          /* 열 전체 너비 터치 타겟 */
+          html += '<rect x="'+(padL+i*colWW).toFixed(1)+'" y="'+padT+'" width="'+colWW.toFixed(1)+'" height="'+innerH+'" fill="transparent" style="cursor:pointer;" onclick="showDayDetailPanel('+i+')"/>';
+          linePointsW.push({x: cx, y: padT + innerH - (day.score / 100 * innerH), score: day.score});
         });
         if (linePointsW.length > 1) {
           var linePathW = linePointsW.map(function(p,i){ return (i===0?'M':'L')+p.x.toFixed(1)+','+p.y.toFixed(1); }).join(' ');
-          html += '<path d="'+linePathW+'" fill="none" stroke="'+lineColorW+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.9"/>';
-          linePointsW.forEach(function(p){ html += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="2.5" fill="'+lineColorW+'" opacity="0.9"/>'; });
+          html += '<path d="'+linePathW+'" fill="none" stroke="'+lineColorW+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" pointer-events="none"/>';
+          linePointsW.forEach(function(p) {
+            html += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="4" fill="'+(isDark?'#2d3d2d':'#ffffff')+'" stroke="'+lineColorW+'" stroke-width="1.5" pointer-events="none"/>';
+          });
         }
         html += '</svg>';
         html += '<div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;">';
         html += '<div style="display:flex;align-items:center;gap:3px;"><div style="width:28px;height:8px;border-radius:2px;background:linear-gradient(to right,'+(isDark?'#9BB89B':'#c8e0c8')+','+(isDark?'#D9FFD9':'#2e5a2e')+');"></div><span style="font-size:9px;color:'+axisColorW+';">몰입도 (낮음→높음)</span></div>';
-        html += '<div style="display:flex;align-items:center;gap:4px;"><div style="width:20px;height:1.5px;background:'+lineColorW+';opacity:0.9;"></div><span style="font-size:9px;color:'+axisColor2W+';font-weight:700;">자세 점수 (우측 축)</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:4px;"><div style="width:18px;height:1.5px;background:'+lineColorW+';border-radius:1px;"></div><div style="width:6px;height:6px;border-radius:50%;background:'+(isDark?'#2d3d2d':'#ffffff')+';border:1.5px solid '+lineColorW+';flex-shrink:0;"></div><span style="font-size:9px;color:'+axisColor2W+';font-weight:700;">자세 점수 (우측 축)</span></div>';
         html += '</div>';
         /* 아래 펼치는 상세 패널 */
         html += '<div id="day-detail-panel" style="margin-top:12px;display:none;"></div>';
@@ -3546,22 +4447,35 @@
     /* ── ③ 자세 상태별 기록 ── */
     var p = d.posture;
     /* ── 다크모드 자세 색상 ── */
-    var clrGood  = isDark ? '#FFF17F' : '#c8a84a';
-    var clrSlch  = isDark ? '#FFF17F' : '#c8a84a';
-    var clrLean  = isDark ? '#FFF17F' : '#c8a84a';  /* 기대기 = 구부정과 동일 노란색 */
-    var clrSleep = isDark ? '#FFA4A4' : '#c87a4a';  /* 졸음 = 기존 기대기 빨간색 계열 */
+    var clrWarn  = isDark ? '#FFF17F' : '#c8a84a';  /* 주의: 졸음, 기대기 → 노란색 */
+    var clrBad   = isDark ? '#FFA4A4' : '#c87a4a';  /* 불량: 거북목, 구부정 → 빨간색 */
+    var clrAbsent= isDark ? 'rgba(196,217,196,0.4)' : '#a0b8a0'; /* 얼굴미감지 → 회색 */
+    var ps = d.postureSec || {};
+    function fmtSec(s) {
+      s = Math.round(s || 0);
+      if (s <= 0) return '';
+      var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
+      var result = '';
+      if (h > 0) result += h + '시간';
+      if (m > 0) result += (result ? ' ' : '') + m + '분';
+      if (r > 0) result += (result ? ' ' : '') + r + '초';
+      return result || '0초';
+    }
+    function _excSec(excKey, totalKey) {
+      return (ps[excKey] != null ? ps[excKey] : (ps[totalKey] || 0));
+    }
     var postureItems = [
-      {label:'거북목',    val:p.turtle,   color:clrGood,  emoji:'🐢'},
-      {label:'구부정',    val:p.bent,     color:clrSlch,  emoji:'🪑'},
-      {label:'졸음',      val:p.drowsy,   color:clrSleep, emoji:'😴'},
-      {label:'기대기',    val:p.reclined, color:clrLean,  emoji:'↙️'},
-      {label:'얼굴 미감지', val:p.absent, color:clrSleep, emoji:'🌫️'}
+      {label:'졸음',      val:p.drowsy,   color:clrBad,    emoji:'😴', sec:_excSec('drowsyExc','drowsy')},
+      {label:'거북목',    val:p.turtle,   color:clrWarn,   emoji:'🐢', sec:_excSec('turtleExc','turtle')},
+      {label:'구부정',    val:p.bent,     color:clrBad,    emoji:'🪑', sec:_excSec('bentExc','bent')},
+      {label:'기대기',    val:p.reclined, color:clrWarn,   emoji:'↙️', sec:_excSec('reclinedExc','reclined')},
+      {label:'얼굴 미감지', val:p.absent, color:clrAbsent, emoji:'🌫️', sec:_excSec('absentExc','absent')}
     ];
     var postureHtml = '<div class="report-section"><div class="report-section-title">자세 상태별 기록</div>';
     if (isShowingExample) {
-      var postureDesc = tab === 'daily' ? '오늘 하루 동안 취한 불량 자세 횟수예요.'
-        : tab === 'weekly' ? '이번 주 동안 취한 불량 자세 횟수예요.'
-        : '이번 달 동안 취한 불량 자세 횟수예요.';
+      var postureDesc = tab === 'daily' ? '오늘 하루 동안 취한 주의 자세 횟수예요.'
+        : tab === 'weekly' ? '이번 주 동안 취한 주의 자세 횟수예요.'
+        : '이번 달 동안 취한 주의 자세 횟수예요.';
       /* 집중 시간대 분석 힌트와 동일한 스타일 */
       var hintBg2     = isDark ? '#5E685D' : '#e8f4e8';
       var hintBorder2 = isDark ? '#808E7E' : '#4a7a4a';
@@ -3593,21 +4507,28 @@
     } else {
       var labelColor = isDark ? 'rgba(254,253,245,0.6)' : rTxtMuted;
       var unitColor  = isDark ? 'rgba(254,253,245,0.6)' : rTxtMuted;
+      function postureCell(item) {
+        var t = fmtSec(item.sec);
+        if (!t && item.val > 0) t = '1초';
+        var html = '<div style="background:'+postureCellBg+';border-radius:10px;padding:10px 12px;">';
+        html += '<div style="font-size:11px;color:'+labelColor+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
+        html += '<div style="font-size:18px;font-weight:800;color:'+item.color+';">'+item.val+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
+        if (t) {
+          html += '<div style="font-size:10px;color:'+unitColor+';margin-top:2px;">'+t+'</div>';
+        }
+        html += '</div>';
+        return html;
+      }
       postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">';
-      postureItems.slice(0,3).forEach(function(item) {
-        postureHtml += '<div style="background:'+postureCellBg+';border-radius:10px;padding:10px 12px;">';
-        postureHtml += '<div style="font-size:11px;color:'+labelColor+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
-        postureHtml += '<div style="font-size:18px;font-weight:800;color:'+item.color+';">'+item.val+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
-        postureHtml += '</div>';
-      });
+      postureItems.slice(0,3).forEach(function(item) { postureHtml += postureCell(item); });
       postureHtml += '</div>';
       postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
-      postureItems.slice(3).forEach(function(item) {
-        postureHtml += '<div style="background:'+postureCellBg+';border-radius:10px;padding:10px 12px;">';
-        postureHtml += '<div style="font-size:11px;color:'+labelColor+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
-        postureHtml += '<div style="font-size:18px;font-weight:800;color:'+item.color+';">'+item.val+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
-        postureHtml += '</div>';
-      });
+      postureItems.slice(3).forEach(function(item) { postureHtml += postureCell(item); });
+      postureHtml += '</div>';
+      /* 중복 자세 시간 별도 카드 (전체 탭 공통) */
+      postureHtml += '<div style="margin-top:8px;background:'+postureCellBg+';border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">';
+      postureHtml += '<div style="font-size:11px;color:'+labelColor+';">⟳ 2가지 이상 동시에 취하는 자세</div>';
+      postureHtml += '<div style="font-size:10px;color:'+unitColor+';flex-shrink:0;margin-left:8px;">'+(ps.overlapTotal > 0 ? fmtSec(ps.overlapTotal) : '-')+'</div>';
       postureHtml += '</div>';
     }
     postureHtml += '</div></div>';
@@ -3618,45 +4539,41 @@
     /* ── ⑤ 월별 집중 시간대 차트 + 공부 기록 달력 ── */
     if (tab === 'monthly') {
       var weeks = d.weeks;
-      var totalMinsM = weeks.reduce(function(s,w){ return s+w.mins; },0);
-      var avgMinsM = Math.round(totalMinsM / weeks.length);
-      var avgScoreM = Math.round(weeks.reduce(function(s,w){ return s+w.score; },0) / weeks.length);
+      var totalSecsM = d.totalStudySec || weeks.reduce(function(s,w){ return s+Math.round(w.mins*60); },0);
+      var totalMinsM = totalSecsM / 60;
+      var activeWeeksM = weeks.filter(function(w){ return w.mins>0; });
+      var avgSecsM = activeWeeksM.length ? Math.round(totalSecsM / activeWeeksM.length) : 0;
+      var avgMinsM = avgSecsM / 60;
+      var avgScoreM = activeWeeksM.length ? Math.round(activeWeeksM.reduce(function(s,w){return s+w.score;},0)/activeWeeksM.length*10)/10 : 0;
+      function _mHms(m) { var s=Math.round(m*60),h=Math.floor(s/3600),mn=Math.floor((s%3600)/60),sc=s%60; if(!s) return '-'; var r=''; if(h>0) r+=h+'시간'; if(mn>0) r+=(r?' ':'')+mn+'분'; if(sc>0) r+=(r?' ':'')+sc+'초'; return r||'0초'; }
       var maxMinsM = Math.max.apply(null, weeks.map(function(w){ return w.mins; })) || 1;
       var chartH=120, chartW=310, padL=28, padB=20, padT=16, padR2=28;
       var innerW=chartW-padL-padR2, innerH=chartH-padT-padB;
-      var bwM = Math.floor(innerW/4) - 10;
+      var bwM = Math.round(innerW / Math.max(weeks.length, 1) * 0.55);
       var activePeriod = typeof reportActivePeriod !== 'undefined' ? reportActivePeriod : -1;
 
       html += '<div class="report-section"><div class="report-section-title">집중 시간대 분석 <span style="font-size:10px;color:#9aaa9a;font-weight:400;">'+(hasData?'막대를 눌러 상세 보기':'')+'</span></div>';
-      if (isShowingExample) html += '<div style="background:#e8f4e8;border-radius:10px;padding:10px 12px;margin:0 0 8px;border-left:3px solid #4a7a4a;font-size:11px;color:#4a6a4a;line-height:1.7;">💡 주차별 집중시간·몰입도·자세 점수! <b>막대를 누르면</b> 해당 주 요약이 펼쳐져요.</div>';
+      if (isShowingExample) html += '<div style="background:#e8f4e8;border-radius:10px;padding:10px 12px;margin:0 0 8px;border-left:3px solid #4a7a4a;font-size:11px;color:#4a6a4a;line-height:1.7;">💡 주차별 공부시간·몰입도·자세 점수! <b>막대를 누르면</b> 해당 주 요약이 펼쳐져요.</div>';
       html += '<div class="report-card" style="padding:12px 8px 8px;">';
 
       if (!hasData) {
-        html += '<div style="display:flex;gap:6px;margin-bottom:12px;">';
-        ['⏱ 이달 총 공부시간','📅 주 평균 공부시간','🧍 주 평균 자세 점수'].forEach(function(lbl){
-          html += '<div style="flex:1;background:'+rSubBg+';border-radius:10px;padding:8px 10px;"><div style="font-size:9px;color:'+rTxtMuted+';margin-bottom:2px;">'+lbl+'</div><div style="font-size:15px;font-weight:800;color:'+rTxt+';">-</div></div>';
-        });
-        html += '</div>';
+        html += '<div style="display:flex;justify-content:flex-start;margin-bottom:12px;">';
+        html += '<div style="border-left:2.5px solid '+rAccentFill+';padding-left:7px;">';
+        html += '<div style="font-size:8px;color:'+rTxtMuted+';">주 평균 공부시간</div>';
+        html += '<div style="font-size:14px;font-weight:800;color:'+rTxt+';margin-top:3px;">-</div>';
+        html += '</div></div>';
         html += '<div style="height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:'+rCardBg+';border-radius:10px;">';
         html += '<div style="font-size:22px;">📚</div>';
         html += '<div style="font-size:13px;font-weight:700;color:'+rTxtMuted+';">이번 달 기록이 없어요</div>';
         html += '</div>';
         html += '</div></div>';
       } else {
-      html += '<div style="display:flex;gap:6px;margin-bottom:12px;">';
-      html += '<div style="flex:1;background:'+rSubBg+';border-radius:10px;padding:8px 10px;">';
-      html += '<div style="font-size:9px;color:'+rTxtMuted+';margin-bottom:2px;">⏱ 이달 총 공부시간</div>';
-      html += '<div style="font-size:15px;font-weight:800;color:'+rTxt+';">'+(Math.floor(totalMinsM/60))+'h '+(totalMinsM%60)+'m</div>';
-      html += '</div>';
-      html += '<div style="flex:1;background:'+rSubBg+';border-radius:10px;padding:8px 10px;">';
-      html += '<div style="font-size:9px;color:'+rTxtMuted+';margin-bottom:2px;">📅 주 평균 공부시간</div>';
-      html += '<div style="font-size:15px;font-weight:800;color:'+rTxt+';">'+(Math.floor(avgMinsM/60))+'h '+(avgMinsM%60)+'m</div>';
-      html += '</div>';
-      html += '<div style="flex:1;background:'+rSubBg+';border-radius:10px;padding:8px 10px;">';
-      html += '<div style="font-size:9px;color:'+rTxtMuted+';margin-bottom:2px;">🧍 주 평균 자세 점수</div>';
-      html += '<div style="font-size:15px;font-weight:800;color:'+rTxt+';">'+avgScoreM+'점</div>';
-      html += '</div>';
-      html += '</div>';
+      /* 요약 수치 — 주 평균 공부시간 2줄 */
+      html += '<div style="display:flex;justify-content:flex-start;margin-bottom:12px;">';
+      html += '<div style="border-left:2.5px solid '+rAccentFill+';padding-left:7px;">';
+      html += '<div style="font-size:8px;color:'+rTxtMuted+';">주 평균 공부시간</div>';
+      html += '<div style="font-size:14px;font-weight:800;color:'+rTxt+';margin-top:3px;">'+_mHms(avgMinsM)+'</div>';
+      html += '</div></div>';
 
       /* SVG 차트 */
       var svgBgM = isDark ? '#808E7E' : 'transparent';
@@ -3664,16 +4581,16 @@
       var axisColorM = isDark ? 'rgba(254,253,245,0.5)' : '#aabcaa';
       var axisColor2M = isDark ? '#C4D9C4' : '#4a7a4a';
       var axisLineM = isDark ? 'rgba(196,217,196,0.5)' : '#c8e0c8';
-      var lineColorM = isDark ? '#C4D9C4' : '#1e3e1e';
+      var lineColorM = isDark ? '#A2E69F' : '#4a7a4a';
       var cEmptyM = isDark ? '#808E7E' : '#eef4ee';
       var cGoodM  = isDark ? '#4a8a4a' : '#4a7a4a';
       var cSlchM  = isDark ? '#6aaa6a' : '#7aaa7a';
       html += '<svg width="100%" viewBox="0 0 '+chartW+' '+chartH+'" style="overflow:visible;display:block;background:'+svgBgM+';border-radius:8px;">';
-      var maxHM = maxMinsM <= 300 ? 300 : maxMinsM <= 420 ? 420 : 600;
-      [0, Math.round(maxHM/2), maxHM].forEach(function(v) {
+      var maxHM = 2400; /* 40h 고정 */
+      [0, 600, 1200, 1800, 2400].forEach(function(v) {
         var y = padT + innerH - (v / maxHM * innerH);
         html += '<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(chartW-padR2)+'" y2="'+y.toFixed(1)+'" stroke="'+gridColorM+'" stroke-width="0.8"/>';
-        html += '<text x="'+(padL-3)+'" y="'+(y+3)+'" font-size="7" fill="'+axisColorM+'" text-anchor="end">'+(v>=60?Math.floor(v/60)+'h':v+'m')+'</text>';
+        html += '<text x="'+(padL-3)+'" y="'+(y+3)+'" font-size="7" fill="'+axisColorM+'" text-anchor="end">'+(v/60)+'h</text>';
       });
       [0,50,100].forEach(function(v) {
         var y = padT + innerH - (v / 100 * innerH);
@@ -3682,8 +4599,10 @@
       html += '<line x1="'+(chartW-padR2)+'" y1="'+padT+'" x2="'+(chartW-padR2)+'" y2="'+(padT+innerH)+'" stroke="'+axisLineM+'" stroke-width="0.8"/>';
 
       var linePointsM = [];
+      var colWM = innerW / Math.max(weeks.length, 1);
       weeks.forEach(function(w, i) {
-        var x = padL + i*(innerW/4) + (innerW/4-bwM)/2;
+        var cx = padL + i * colWM + colWM / 2;
+        var x  = cx - bwM / 2;
         var barH = Math.max(3, (w.mins/maxHM)*innerH);
         var barY = padT+innerH-barH;
         var sc = w.immersion;
@@ -3692,20 +4611,25 @@
           : (sc>=80?'#2e5a2e':sc>=60?'#4a7a4a':sc>=40?'#7aaa7a':sc>=20?'#a8cca8':'#c8e0c8');
         var isActive = (i===activePeriod);
         var strokeAttr = isActive?' stroke="'+(isDark?'#FEFDF5':'#1e3e1e')+'" stroke-width="1.5"':'';
-        html += '<rect x="'+x.toFixed(1)+'" y="'+barY.toFixed(1)+'" width="'+bwM+'" height="'+barH.toFixed(1)+'" rx="3" fill="'+bc+'"'+strokeAttr+' style="cursor:pointer;" onclick="showPeriodDetailPanel('+i+')" />';
-        html += '<text x="'+(x+bwM/2).toFixed(1)+'" y="'+(padT+innerH+12)+'" font-size="8" fill="'+(isActive?(isDark?'#FEFDF5':'#2e3e2e'):axisColorM)+'" font-weight="'+(isActive?'bold':'normal')+'" text-anchor="middle">'+w.label+'</text>';
-        linePointsM.push({x: parseFloat(x.toFixed(1))+bwM/2, y: padT+innerH-(w.score/100*innerH)});
+        /* 막대 (시각용, 클릭 불가) */
+        html += '<rect x="'+x.toFixed(1)+'" y="'+barY.toFixed(1)+'" width="'+bwM+'" height="'+barH.toFixed(1)+'" rx="3" fill="'+bc+'"'+strokeAttr+' pointer-events="none"/>';
+        html += '<text x="'+cx.toFixed(1)+'" y="'+(padT+innerH+12)+'" font-size="8" fill="'+(isActive?(isDark?'#FEFDF5':'#2e3e2e'):axisColorM)+'" font-weight="'+(isActive?'bold':'normal')+'" text-anchor="middle" pointer-events="none">'+w.label+'</text>';
+        /* 열 전체 너비 터치 타겟 */
+        html += '<rect x="'+(padL+i*colWM).toFixed(1)+'" y="'+padT+'" width="'+colWM.toFixed(1)+'" height="'+innerH+'" fill="transparent" style="cursor:pointer;" onclick="showPeriodDetailPanel('+i+')"/>';
+        linePointsM.push({x: cx, y: padT+innerH-(w.score/100*innerH), score: w.score});
       });
       if (linePointsM.length > 1) {
         var linePathM = linePointsM.map(function(p,i){ return (i===0?'M':'L')+p.x.toFixed(1)+','+p.y.toFixed(1); }).join(' ');
-        html += '<path d="'+linePathM+'" fill="none" stroke="'+lineColorM+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.9"/>';
-        linePointsM.forEach(function(p){ html += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="3" fill="'+lineColorM+'" opacity="0.9"/>'; });
+        html += '<path d="'+linePathM+'" fill="none" stroke="'+lineColorM+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" pointer-events="none"/>';
+        linePointsM.forEach(function(p) {
+          html += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="4" fill="'+(isDark?'#2d3d2d':'#ffffff')+'" stroke="'+lineColorM+'" stroke-width="1.5" pointer-events="none"/>';
+        });
       }
       html += '</svg>';
 
       html += '<div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;">';
       html += '<div style="display:flex;align-items:center;gap:3px;"><div style="width:28px;height:8px;border-radius:2px;background:linear-gradient(to right,'+(isDark?'#9BB89B':'#c8e0c8')+','+(isDark?'#D9FFD9':'#2e5a2e')+');"></div><span style="font-size:9px;color:'+axisColorM+';">몰입도 (낮음→높음)</span></div>';
-      html += '<div style="display:flex;align-items:center;gap:4px;"><div style="width:20px;height:1.5px;background:'+lineColorM+';opacity:0.9;"></div><span style="font-size:9px;color:'+axisColor2M+';font-weight:700;">자세 점수 (우측 축)</span></div>';
+      html += '<div style="display:flex;align-items:center;gap:4px;"><div style="width:18px;height:1.5px;background:'+lineColorM+';border-radius:1px;"></div><div style="width:6px;height:6px;border-radius:50%;background:'+(isDark?'#2d3d2d':'#ffffff')+';border:1.5px solid '+lineColorM+';flex-shrink:0;"></div><span style="font-size:9px;color:'+axisColor2M+';font-weight:700;">자세 점수 (우측 축)</span></div>';
       html += '</div>';
       html += '<div id="period-detail-panel" style="margin-top:12px;display:none;"></div>';
       html += '</div></div>';
@@ -3722,22 +4646,26 @@
       var fd = (new Date(cy, cm, 1).getDay()+6)%7;
       var dayNames = ['월','화','수','목','금','토','일'];
       var calDays = d.calDays;
+      /* month-keyed object support (예시 데이터: {5:[...], 6:[...]}) */
+      if (calDays && !Array.isArray(calDays)) {
+        calDays = calDays[cm+1] || [null];
+      }
       /* 색상: 공부량(mins) 기반 */
       var isDarkCal = document.documentElement.classList.contains('dark');
       function getDayColor(mins) {
         if (!mins || mins === 0) return isDarkCal ? '#5E685D' : '#f0f5ee';
-        if (mins < 30)  return isDarkCal ? '#6e7a6d' : '#c8e0c8';
-        if (mins < 60)  return isDarkCal ? '#808E7E' : '#8aba8a';
-        if (mins < 90)  return isDarkCal ? '#9aaa9a' : '#4a7a4a';
-        return isDarkCal ? '#C4D9C4' : '#2e5a2e';
+        if (mins < 150) return isDarkCal ? '#6e7a6d' : '#c8e0c8';  /* ~2.5h */
+        if (mins < 300) return isDarkCal ? '#808E7E' : '#8aba8a';  /* 2.5-5h */
+        if (mins < 600) return isDarkCal ? '#9aaa9a' : '#4a7a4a';  /* 5-10h */
+        return isDarkCal ? '#C4D9C4' : '#2e5a2e';                  /* 10h+ */
       }
       function getDayTextColor(mins) {
         if (isDarkCal) return '#FEFDF5';
-        return (!mins||mins<60) ? '#7a8e7a' : '#fff';
+        return (!mins||mins<150) ? '#7a8e7a' : '#fff';
       }
 
       html += '<div class="report-section"><div class="report-section-title">공부 기록</div>';
-      if (isShowingExample) html += '<div style="background:#e8f4e8;border-radius:10px;padding:10px 12px;margin:0 0 8px;border-left:3px solid #4a7a4a;font-size:11px;color:#4a6a4a;line-height:1.7;">💡 색이 진할수록 많이 공부한 날이에요. 🌲 <b>날짜를 누르면</b> 그날 몰입도·집중시간 팝업이 떠요! ‹ ›로 다른 달도 볼 수 있어요.</div>';
+      if (isShowingExample) html += '<div style="background:#e8f4e8;border-radius:10px;padding:10px 12px;margin:0 0 8px;border-left:3px solid #4a7a4a;font-size:11px;color:#4a6a4a;line-height:1.7;">💡 색이 진할수록 많이 공부한 날이에요. 🌲 <b>날짜를 누르면</b> 그날 몰입도·공부시간 팝업이 떠요! ‹ ›로 다른 달도 볼 수 있어요.</div>';
       html += '<div class="report-card" style="padding:14px 12px;">';
       /* 월 이동 헤더 */
       var calNavColor = isDarkCal ? '#C4D9C4' : '#4a7a4a';
@@ -3760,10 +4688,10 @@
         var dayData = (calDays && calDays[day]) ? calDays[day] : {mins:0, score:0};
         var bg = getDayColor(dayData.mins);
         var tc = getDayTextColor(dayData.mins);
-        var isToday = (cy===now.getFullYear() && cm===now.getMonth() && day===now.getDate());
+        var isToday = !isShowingExample && (cy===now.getFullYear() && cm===now.getMonth() && day===now.getDate());
         var todayOutlineColor = isDarkCal ? '#C4D9C4' : '#2e5a2e';
         var outlineStyle = isToday ? 'outline:2px solid '+todayOutlineColor+';outline-offset:1px;' : '';
-        html += '<div style="aspect-ratio:1;border-radius:8px;background:'+bg+';'+outlineStyle+'display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showCalDayDetail('+day+','+dayData.mins+','+dayData.score+','+(dayData.immersion||0)+')">';
+        html += '<div style="aspect-ratio:1;border-radius:8px;background:'+bg+';'+outlineStyle+'display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showCalDayDetail('+day+','+dayData.mins+','+dayData.score+','+(dayData.immersion||0)+','+(dayData.secs||Math.round((dayData.mins||0)*60))+','+(dayData.postureScore||0)+')">';
         html += '<span style="font-size:10px;font-weight:700;color:'+tc+';">'+day+'</span>';
         html += '</div>';
       }
@@ -3785,27 +4713,43 @@
     }
 
     /* ── ⑥ 응원 문구 ── */
-    var cheerMsg;
-    if (!hasData) {
-      cheerMsg = tab === 'daily' ? '오늘 첫 공부를 시작해 봐요 🌱'
-               : tab === 'weekly' ? '이번 주 아직 기록이 없어요. 오늘부터 시작해 봐요!'
-               : '이번 달 첫 기록을 만들어봐요 🌿';
-    } else {
-      cheerMsg = tab === 'daily'
-        ? cheerMessages[Math.floor(Math.random() * cheerMessages.length)]
-        : d.cheer;
-    }
+    var cheerMsg = hasData ? getCheerMsg(tab, d)
+      : (tab === 'daily'   ? '오늘 첫 공부를 시작해 봐요 🌱'
+       : tab === 'weekly'  ? '이번 주 아직 기록이 없어요. 오늘부터 시작해 봐요!'
+       :                     '이번 달 첫 기록을 만들어봐요 🌿');
+    var cheerTitle = tab === 'daily' ? '💌 오늘의 한마디'
+                   : tab === 'weekly' ? '💌 이번 주의 한마디'
+                   : '💌 이번 달의 한마디';
     var isDarkReport = document.documentElement.classList.contains('dark');
     var cheerBg = isDarkReport ? '#5E685D' : '#e8f4e8';
     var cheerBorder = isDarkReport ? '#808E7E' : '#4a7a4a';
     var cheerTitleColor = isDarkReport ? '#FEFDF5' : '#2e5a2e';
     var cheerTextColor = isDarkReport ? '#FEFDF5' : '#3a5a3a';
     html += '<div class="report-section"><div class="report-card" style="background:'+cheerBg+';border-left:3px solid '+cheerBorder+';">';
-    html += '<div style="font-size:12px;font-weight:800;color:'+cheerTitleColor+';margin-bottom:6px;">💌 오늘의 한마디</div>';
+    html += '<div style="font-size:12px;font-weight:800;color:'+cheerTitleColor+';margin-bottom:6px;">'+cheerTitle+'</div>';
     html += '<div style="font-size:13px;color:'+cheerTextColor+';line-height:1.7;">'+cheerMsg+'</div>';
     html += '</div></div>';
 
     document.getElementById('report-content').innerHTML = html;
+    /* 재렌더 후 열려있던 패널 복원 */
+    if (tab === 'daily' && window._dailyHourPanelHtml) {
+      try {
+        var _hpR = document.getElementById('hour-detail-panel');
+        if (_hpR) { _hpR.style.display = 'block'; _hpR.innerHTML = window._dailyHourPanelHtml; }
+      } catch(e) {}
+    }
+    if (tab === 'weekly' && window._weeklyPanelHtml) {
+      try {
+        var _wp = document.getElementById('day-detail-panel');
+        if (_wp) { _wp.style.display = 'block'; _wp.innerHTML = window._weeklyPanelHtml; }
+      } catch(e) {}
+    }
+    if (tab === 'monthly' && window._monthlyPanelHtml) {
+      try {
+        var _mp = document.getElementById('period-detail-panel');
+        if (_mp) { _mp.style.display = 'block'; _mp.innerHTML = window._monthlyPanelHtml; }
+      } catch(e) {}
+    }
     } catch(e) {
       /* 리포트 렌더링 오류 방지 */
       var el = document.getElementById('report-content');
@@ -3815,35 +4759,62 @@
 
   var reportActiveDay = -1;
 
-  function showDayDetailPanel(idx) {
-    reportActiveDay = idx;
+  function _buildDayDetailHtml(idx) {
     var d = reportData['weekly'].days[idx];
     var isDarkD = document.documentElement.classList.contains('dark');
     var detBg  = isDarkD ? '#808E7E' : '#f0f7f0';
     var detBox = isDarkD ? '#3D493D' : '#fff';
     var detTxt = isDarkD ? '#FEFDF5' : '#2e3e2e';
     var detMut = isDarkD ? 'rgba(254,253,245,0.6)' : '#9aaa9a';
-    /* 몰입도 색 = 막대그래프 색과 동일 기준 (D9FFD9→C2E2C2→ACCBAC→9BB89B) */
     var sc = d.immersion;
     var imColor = isDarkD
       ? (sc>=80?'#D9FFD9':sc>=60?'#C2E2C2':sc>=40?'#ACCBAC':'#9BB89B')
       : (sc>=80?'#2e5a2e':sc>=60?'#4a7a4a':sc>=40?'#7aaa7a':'#a8cca8');
+    var dSec = d.secs || Math.round(d.mins * 60);
+    var dH = Math.floor(dSec/3600), dM = Math.floor((dSec%3600)/60), dS = dSec%60;
+    var dStr = dSec>0?(function(){var r='';if(dH>0)r+=dH+'시간';if(dM>0)r+=(r?' ':'')+dM+'분';if(dS>0)r+=(r?' ':'')+dS+'초';return r||'0초';})():'-';
+    /* weekStart로 실제 날짜 계산 */
+    var _wStartStr = reportData['weekly'].weekStart;
+    var _datePrefix = '';
+    if (_wStartStr) {
+      var _wp = _wStartStr.split('-');
+      var _wd = new Date(+_wp[0], +_wp[1]-1, +_wp[2]+idx);
+      _datePrefix = (_wd.getMonth()+1)+'월 '+_wd.getDate()+'일 ';
+    }
+    var tsD = d.timeScore || 0;
+    var tsColorD = isDarkD ? (tsD>=80?'#D9FFD9':tsD>=60?'#C2E2C2':tsD>=40?'#ACCBAC':'#9BB89B')
+                           : (tsD>=80?'#2e5a2e':tsD>=60?'#4a7a4a':tsD>=40?'#7aaa7a':'#a8cca8');
     var html = '<div style="background:'+detBg+';border-radius:12px;padding:12px;">';
-    html += '<div style="font-size:12px;font-weight:800;color:'+detTxt+';margin-bottom:10px;">'+d.label+'요일 요약</div>';
-    html += '<div style="display:flex;gap:8px;">';
-    html += '<div style="flex:1;background:'+detBox+';border-radius:10px;padding:8px;text-align:center;"><div style="font-size:9px;color:'+detMut+';margin-bottom:3px;">⏱ 집중시간</div><div style="font-size:15px;font-weight:800;color:'+detTxt+';">'+(d.mins>=60?Math.floor(d.mins/60)+'h '+(d.mins%60)+'m':d.mins+'m')+'</div></div>';
-    html += '<div style="flex:1;background:'+detBox+';border-radius:10px;padding:8px;text-align:center;"><div style="font-size:9px;color:'+detMut+';margin-bottom:3px;">🧍 자세 점수</div><div style="font-size:15px;font-weight:800;color:'+(isDarkD?'#8BC48E':'#4a7a4a')+';">'+d.score+'점</div></div>';
-    html += '<div style="flex:1;background:'+detBox+';border-radius:10px;padding:8px;text-align:center;"><div style="font-size:9px;color:'+detMut+';margin-bottom:3px;">🌿 몰입 점수</div><div style="font-size:15px;font-weight:800;color:'+imColor+';">'+Math.round(d.immersion)+'점</div></div>';
+    /* 헤더: 제목 왼쪽, 몰입점수 오른쪽 */
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+    html += '<div style="font-size:12px;font-weight:800;color:'+detTxt+';">'+_datePrefix+'('+d.label+') 요약</div>';
+    html += '<div style="font-size:11px;font-weight:800;color:'+imColor+';white-space:nowrap;">🌿 몰입 '+Math.round(d.immersion)+'점</div>';
+    html += '</div>';
+    /* 3개 박스: 집중시간 / 시간점수 / 자세점수 */
+    html += '<div style="display:flex;gap:6px;">';
+    html += '<div style="flex:1;background:'+detBox+';border-radius:10px;padding:8px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;"><div style="font-size:9px;color:'+detMut+';margin-bottom:3px;white-space:nowrap;">⏱ 공부시간</div><div style="font-size:10px;font-weight:800;color:'+detTxt+';white-space:nowrap;">'+dStr+'</div></div>';
+    html += '<div style="flex:1;background:'+detBox+';border-radius:10px;padding:8px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;"><div style="font-size:9px;color:'+detMut+';margin-bottom:3px;white-space:nowrap;">🕐 시간 점수</div><div style="font-size:13px;font-weight:800;color:'+tsColorD+';white-space:nowrap;">'+(Math.round((tsD||0)*10)/10).toFixed(1)+'점</div></div>';
+    html += '<div style="flex:1;background:'+detBox+';border-radius:10px;padding:8px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;"><div style="font-size:9px;color:'+detMut+';margin-bottom:3px;white-space:nowrap;">🧍 자세 점수</div><div style="font-size:13px;font-weight:800;color:'+(isDarkD?'#8BC48E':'#4a7a4a')+';white-space:nowrap;">'+(Math.round((d.score||0)*10)/10).toFixed(1)+'점</div></div>';
     html += '</div></div>';
+    return html;
+  }
+
+  function showDayDetailPanel(idx) {
+    if (reportActiveDay === idx) {
+      reportActiveDay = -1;
+      window._weeklyPanelHtml = '';
+      renderReport('weekly');
+      return;
+    }
+    reportActiveDay = idx;
+    var html = _buildDayDetailHtml(idx);
+    window._weeklyPanelHtml = html;
     renderReport('weekly');
-    var panel = document.getElementById('day-detail-panel');
-    if (panel) { panel.style.display = 'block'; panel.innerHTML = html; }
   }
 
   var reportActivePeriod = -1;
 
-  function showPeriodDetailPanel(idx) {
-    reportActivePeriod = idx;
+  function _buildPeriodDetailHtml(idx) {
     var w = reportData['monthly'].weeks[idx];
     var isDarkP2 = document.documentElement.classList.contains('dark');
     var detBg2  = isDarkP2 ? '#808E7E' : '#f0f7f0';
@@ -3854,30 +4825,209 @@
     var imColor2 = isDarkP2
       ? (sc2>=80?'#D9FFD9':sc2>=60?'#C2E2C2':sc2>=40?'#ACCBAC':'#9BB89B')
       : (sc2>=80?'#2e5a2e':sc2>=60?'#4a7a4a':sc2>=40?'#7aaa7a':'#a8cca8');
+    var wSec = w.secs || Math.round(w.mins * 60);
+    var wH = Math.floor(wSec/3600), wM = Math.floor((wSec%3600)/60), wS = wSec%60;
+    var wStr = wSec>0?(function(){var r='';if(wH>0)r+=wH+'시간';if(wM>0)r+=(r?' ':'')+wM+'분';if(wS>0)r+=(r?' ':'')+wS+'초';return r||'0초';})():'-';
+    var tsW = w.timeScore || 0;
+    var tsColorW = isDarkP2 ? (tsW>=80?'#D9FFD9':tsW>=60?'#C2E2C2':tsW>=40?'#ACCBAC':'#9BB89B')
+                            : (tsW>=80?'#2e5a2e':tsW>=60?'#4a7a4a':tsW>=40?'#7aaa7a':'#a8cca8');
     var html = '<div style="background:'+detBg2+';border-radius:12px;padding:12px;">';
-    html += '<div style="font-size:12px;font-weight:800;color:'+detTxt2+';margin-bottom:10px;">'+w.label+' 요약</div>';
-    html += '<div style="display:flex;gap:8px;">';
-    html += '<div style="flex:1;background:'+detBox2+';border-radius:10px;padding:8px;text-align:center;"><div style="font-size:9px;color:'+detMut2+';margin-bottom:3px;">⏱ 집중시간</div><div style="font-size:15px;font-weight:800;color:'+detTxt2+';">'+(Math.floor(w.mins/60))+'h '+(w.mins%60)+'m</div></div>';
-    html += '<div style="flex:1;background:'+detBox2+';border-radius:10px;padding:8px;text-align:center;"><div style="font-size:9px;color:'+detMut2+';margin-bottom:3px;">🧍 자세 점수</div><div style="font-size:15px;font-weight:800;color:'+(isDarkP2?'#8BC48E':'#4a7a4a')+';">'+w.score+'점</div></div>';
-    html += '<div style="flex:1;background:'+detBox2+';border-radius:10px;padding:8px;text-align:center;"><div style="font-size:9px;color:'+detMut2+';margin-bottom:3px;">🌿 몰입 점수</div><div style="font-size:15px;font-weight:800;color:'+imColor2+';">'+Math.round(w.immersion)+'점</div></div>';
+    /* 헤더: 제목 왼쪽, 몰입점수 오른쪽 */
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+    html += '<div style="font-size:12px;font-weight:800;color:'+detTxt2+';">'+w.label+' 요약</div>';
+    html += '<div style="font-size:11px;font-weight:800;color:'+imColor2+';white-space:nowrap;">🌿 몰입 '+Math.round(w.immersion)+'점</div>';
+    html += '</div>';
+    /* 3개 박스: 집중시간 / 시간점수 / 자세점수 */
+    html += '<div style="display:flex;gap:6px;">';
+    html += '<div style="flex:1;background:'+detBox2+';border-radius:10px;padding:8px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;"><div style="font-size:9px;color:'+detMut2+';margin-bottom:3px;white-space:nowrap;">⏱ 공부시간</div><div style="font-size:10px;font-weight:800;color:'+detTxt2+';white-space:nowrap;">'+wStr+'</div></div>';
+    html += '<div style="flex:1;background:'+detBox2+';border-radius:10px;padding:8px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;"><div style="font-size:9px;color:'+detMut2+';margin-bottom:3px;white-space:nowrap;">🕐 시간 점수</div><div style="font-size:13px;font-weight:800;color:'+tsColorW+';white-space:nowrap;">'+(Math.round((tsW||0)*10)/10).toFixed(1)+'점</div></div>';
+    html += '<div style="flex:1;background:'+detBox2+';border-radius:10px;padding:8px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;"><div style="font-size:9px;color:'+detMut2+';margin-bottom:3px;white-space:nowrap;">🧍 자세 점수</div><div style="font-size:13px;font-weight:800;color:'+(isDarkP2?'#8BC48E':'#4a7a4a')+';white-space:nowrap;">'+(Math.round((w.score||0)*10)/10).toFixed(1)+'점</div></div>';
     html += '</div></div>';
-    renderReport('monthly');
-    var panel = document.getElementById('period-detail-panel');
-    if (panel) { panel.style.display = 'block'; panel.innerHTML = html; }
+    return html;
   }
 
-  var cheerMessages = [
-    '오늘도 책상 앞에 앉은 것만으로도 대단해요 🌱 꾸준함이 결국 이겨요!',
-    '10시 황금 집중 타임을 잘 잡았네요 🌿 내일도 그 시간을 노려봐요!',
-    '자세가 좋으면 집중력도 올라가요 🧍 오늘 바른 자세 비율 훌륭해요!',
-    '완벽하지 않아도 괜찮아요 💚 오늘 앉아서 공부한 것 자체가 성과예요.',
-    '졸음이 왔어도 다시 잡은 거잖아요 😴→🌿 그게 진짜 집중력이에요!',
-    '오늘 데이터를 보니 오후에 집중이 잘 됐네요 🕑 내일도 그 흐름 유지해봐요!',
-    '기록이 쌓일수록 나만의 패턴이 보여요 📊 계속 기록해요!',
-    '힘든 날에도 앱을 켠 당신, 이미 남들보다 한 발 앞서 있어요 🚀',
-    '바른 자세는 집중력의 기본이에요 🌲 오늘 자세 점수 꽤 좋은데요?',
-    '오늘 하루도 수고했어요 ✨ 내일의 나를 위한 오늘의 기록이에요!'
-  ];
+  function showPeriodDetailPanel(idx) {
+    if (reportActivePeriod === idx) {
+      reportActivePeriod = -1;
+      window._monthlyPanelHtml = '';
+      renderReport('monthly');
+      return;
+    }
+    reportActivePeriod = idx;
+    var html = _buildPeriodDetailHtml(idx);
+    window._monthlyPanelHtml = html;
+    renderReport('monthly');
+  }
+
+  function getCheerMsg(tab, d) {
+    var today = new Date();
+    var pick = function(arr, seed) { return arr[((seed % arr.length) + arr.length) % arr.length]; };
+    var daySeed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+
+    /* ── 일별 ── */
+    if (tab === 'daily') {
+      var im = d.immersion || 0;
+      var ps = d.postureScore || 0;
+      var secs = d.totalStudySec || 0;
+      var goalRate = (d.totalPomodoroGoalSec > 0) ? (secs / d.totalPomodoroGoalSec * 100) : 0;
+
+      if (im >= 80 && goalRate >= 80) {
+        return pick([
+          '몰입도 ' + im + '점에 목표 ' + Math.round(goalRate) + '% 달성! 오늘 완벽한 하루였어요 🌲',
+          '시간도 집중력도 모두 잡은 하루예요 🏆 이런 날이 쌓여야 진짜 실력이 돼요!',
+          '오늘 최고의 컨디션이었어요 🌲 내일도 이 흐름 이어가봐요!'
+        ], daySeed);
+      }
+      if (im >= 80) {
+        return pick([
+          '짧았지만 집중력만큼은 최고였어요 🎯 내일은 시간도 좀 더 늘려봐요!',
+          '몰입도 ' + im + '점! 집중력은 완벽해요 🌿 시간을 조금만 더 채우면 무적이에요.',
+          '알차게 집중한 하루예요 💚 시간이 조금 아쉽지만 질은 최고였어요!'
+        ], daySeed);
+      }
+      if (im >= 60 && goalRate >= 80 && ps >= 75) {
+        return pick([
+          '시간도, 집중도, 자세도 고루 잘 잡은 하루예요 🌿 균형 잡힌 공부예요!',
+          '목표를 훌쩍 채우고 자세까지 좋았어요 🌲 오늘 정말 잘 했어요!',
+          '꾸준하고 바른 공부를 했어요 🌿 이런 하루가 쌓이면 무조건 성장해요!'
+        ], daySeed);
+      }
+      if (im >= 60 && goalRate >= 80) {
+        return pick([
+          '목표 달성에 집중도 좋았어요 🌿 자세만 조금 더 신경 쓰면 완벽해요!',
+          '오늘 공부 잘 했어요 💚 내일은 자세도 함께 챙겨봐요!',
+          '열심히 한 하루예요 🌱 자세 점수를 올려보면 몰입도도 같이 올라갈 거예요!'
+        ], daySeed);
+      }
+      if (goalRate >= 80) {
+        return pick([
+          '오래 앉아 있었는데 집중이 조금 아쉬웠어요 🌱 내일은 짧더라도 몰입해봐요!',
+          '시간은 충분히 채웠어요 🌿 다음엔 집중의 질도 함께 올려봐요!',
+          '긴 시간 자리를 지켜줬어요 💚 집중력도 같이 잡으면 정말 대단해질 거예요!'
+        ], daySeed);
+      }
+      return pick([
+        '완벽하지 않아도 괜찮아요 💚 오늘 공부를 시작한 것 자체가 성과예요.',
+        '오늘도 책상 앞에 앉은 것만으로도 대단해요 🌱 꾸준함이 결국 이겨요!',
+        '힘든 날에도 기록을 남긴 당신, 이미 남들보다 한 발 앞서 있어요 🚀'
+      ], daySeed);
+    }
+
+    /* ── 주별 ── */
+    if (tab === 'weekly') {
+      var daysStudied = (d.days || []).filter(function(day) { return (day.mins || 0) > 0; }).length;
+      var goalRate = d.totalGoalSec > 0 ? (d.totalStudySec / d.totalGoalSec * 100) : 0;
+      var peak = d.peak || '';
+      var weekSeed = today.getFullYear() * 100 + today.getMonth() * 6 + Math.floor(today.getDate() / 7);
+
+      if (daysStudied === 7) {
+        return pick([
+          '이번 주 하루도 빠짐없이 공부했어요 🏆 정말 대단한 꾸준함이에요!',
+          '7일 연속 공부 완료! 🌲 이 습관이 실력이 되는 거예요.',
+          peak ? '이번 주 퍼펙트 출석에 ' + peak + '이 가장 빛났어요 🏆 완벽한 한 주였어요!'
+               : '이번 주 퍼펙트 출석! 🏆 정말 멋진 한 주였어요.'
+        ], weekSeed);
+      }
+      if (daysStudied >= 5 && goalRate >= 80) {
+        return pick([
+          '거의 매일 공부하면서 목표까지 달성했어요 🌿 이번 주 정말 잘 했어요!',
+          peak ? peak + '이 최고였어요 🌲 이번 주 ' + daysStudied + '일 공부, 아주 훌륭해요!'
+               : '이번 주 ' + daysStudied + '일 공부에 목표까지 달성! 꾸준함의 승리예요 🌿',
+          '이번 주 공부 습관 아주 좋아요 💚 다음 주도 이 리듬 유지해봐요!'
+        ], weekSeed);
+      }
+      if (daysStudied >= 5) {
+        return pick([
+          '이번 주 ' + daysStudied + '일이나 공부했어요 🌿 꾸준함만큼은 최고예요!',
+          '거의 매일 책상에 앉았어요 💚 시간을 조금만 더 채우면 완벽해요!',
+          peak ? '꾸준하게 잘 했어요 🌱 ' + peak + '처럼 집중하는 날을 늘려봐요!'
+               : '꾸준하게 잘 했어요 🌱 시간을 조금씩 늘려가봐요!'
+        ], weekSeed);
+      }
+      if (daysStudied >= 3) {
+        return pick([
+          '이번 주 ' + daysStudied + '일 공부했어요 🌱 조금씩 늘려가봐요!',
+          peak ? peak + '처럼 집중한 날이 더 많아지면 정말 무서울 것 같아요 🌿'
+               : '이번 주 절반은 해냈어요 🌱 다음 주는 하루 더 늘려봐요!',
+          '중간 정도는 했어요 💚 다음 주 목표를 하루 더 늘려보는 건 어때요?'
+        ], weekSeed);
+      }
+      return pick([
+        '이번 주는 좀 쉬었네요 🌱 ' + (daysStudied > 0 ? daysStudied + '일이라도 공부한 게 어디예요!' : '다음 주엔 가볍게 시작해봐요!'),
+        '바쁜 한 주였나요? 💚 다음 주엔 조금 더 시간을 내봐요!',
+        peak ? peak + '에 제대로 집중했어요 🌿 그 에너지를 다른 날에도 나눠봐요!'
+             : '완벽하지 않아도 괜찮아요 🌱 다음 주 다시 시작해봐요!'
+      ], weekSeed);
+    }
+
+    /* ── 월별 ── */
+    if (tab === 'monthly') {
+      var goalRate = d.totalGoalSec > 0 ? (d.totalStudySec / d.totalGoalSec * 100) : 0;
+      var _calDaysFlat = Array.isArray(d.calDays)
+        ? (d.calDays || []).slice(1)
+        : d.calDays ? Object.values(d.calDays).reduce(function(a,arr){return a.concat((arr||[]).slice(1));}, []) : [];
+      var daysStudied = _calDaysFlat.filter(function(day) { return day && (day.mins || 0) > 0; }).length;
+      var peak = d.peak || '';
+      var monthSeed = today.getFullYear() * 100 + today.getMonth();
+
+      var trend = 'flat';
+      var validWeeks = (d.weeks || []).filter(function(w) { return (w.mins || 0) > 0; });
+      if (validWeeks.length >= 2) {
+        var wFirst = validWeeks[0].immersion || 0;
+        var wLast  = validWeeks[validWeeks.length - 1].immersion || 0;
+        if (wLast > wFirst + 8) trend = 'up';
+        else if (wLast < wFirst - 8) trend = 'down';
+      }
+
+      if (goalRate >= 90 && trend === 'up') {
+        return pick([
+          (peak ? peak + '가 최고였어요 🌱→🌲 ' : '') + '목표 달성에 상승 트렌드까지, 이번 달 완벽했어요!',
+          '갈수록 성장한 한 달이에요 🌲 이 흐름 다음 달로 이어봐요!',
+          '목표 달성에 상승 트렌드까지! 🏆 이번 달 정말 완벽했어요.'
+        ], monthSeed);
+      }
+      if (goalRate >= 90) {
+        return pick([
+          '이번 달 목표를 훌쩍 달성했어요 🏆 ' + (peak ? peak + '가 특히 빛났네요!' : '정말 대단해요!'),
+          '목표 달성 ' + Math.round(goalRate) + '%! 🌲 이번 달 공부량 정말 인상적이에요.',
+          '이번 달 목표 완벽 달성! 💚 꾸준함이 만들어낸 결과예요.'
+        ], monthSeed);
+      }
+      if (goalRate >= 70 && trend === 'up') {
+        return pick([
+          '이번 달 후반부터 잘 달려줬어요 🌿 이 흐름 다음 달 초까지 이어봐요!',
+          peak ? peak + '의 활약이 빛났어요 🌱 다음 달은 더 강하게 시작해봐요!'
+               : '갈수록 좋아지는 패턴이에요 🌱 다음 달이 기대돼요!',
+          '상승세가 보여요 🌲 다음 달은 더 높은 목표에 도전해봐요!'
+        ], monthSeed);
+      }
+      if (goalRate >= 70 && trend === 'down') {
+        return pick([
+          '이번 달 초반에 잘 달렸어요 🌿 마무리도 강하게 가는 습관을 만들어봐요!',
+          '시작은 좋았어요 💚 다음 달엔 끝까지 이 에너지를 유지해봐요!',
+          peak ? peak + '의 기세를 끝까지 유지해봐요 🌱 다음 달엔 꾸준함이 핵심이에요!'
+               : '이번 달 70% 이상 달성! 🌱 다음 달엔 마무리를 더 강하게 해봐요!'
+        ], monthSeed);
+      }
+      if (goalRate >= 70) {
+        return pick([
+          '이번 달 꾸준하게 잘 유지했어요 🌿 조금만 더 하면 목표 달성이에요!',
+          '착실하게 쌓아온 한 달이에요 💚 다음 달엔 조금 더 높은 목표를 잡아봐요!',
+          peak ? peak + '처럼 집중한 주를 늘려봐요 🌱 꾸준함이 쌓이면 무조건 성장해요!'
+               : '꾸준히 잘 했어요 🌿 다음 달은 목표를 조금 높여봐요!'
+        ], monthSeed);
+      }
+      return pick([
+        '이번 달은 좀 아쉬웠나요? 🌱 괜찮아요, 다음 달엔 가볍게 다시 시작해봐요!',
+        '완벽하지 않아도 괜찮아요 💚 기록을 남긴 것만으로도 충분히 잘 한 거예요.',
+        daysStudied > 0
+          ? daysStudied + '일이나 기록을 남겼어요 🌱 이 습관이 언젠가 큰 결실이 될 거예요!'
+          : '다음 달은 작은 목표부터 시작해봐요 🌱'
+      ], monthSeed);
+    }
+
+    return '';
+  }
 
   function closeDailyPopup() {
     var modal = document.getElementById('daily-popup-modal');
@@ -3885,8 +5035,10 @@
     unlockReportScroll();
   }
 
-  function showCalDayDetail(day, mins, score, immersion) {
+  function showCalDayDetail(day, mins, score, immersion, secs, postureScore) {
+    secs = secs || Math.round((mins||0) * 60);
     immersion = Math.round(immersion || 0);
+    postureScore = postureScore || 0;
     var modal = document.getElementById('daily-popup-modal');
     var titleEl = document.getElementById('daily-popup-title');
     var contentEl = document.getElementById('daily-popup-content');
@@ -3923,42 +5075,39 @@
       html += '<div style="font-size:14px;color:'+emptyColor+';">이날은 공부 기록이 없어요</div>';
       html += '</div>';
     } else {
-      /* 몰입도 원형 게이지 + 최고예요! */
-      var r=28, circ=Math.round(2*3.14159*r), dash=Math.round(circ*immersion/100);
+      /* 공부시간: 가로 전체 너비, 레이블-시간 한 줄 */
       var gaugeBg = isDarkP ? 'rgba(196,217,196,0.5)' : '#f0f7f0';
-      var gaugeTrack = isDarkP ? '#808E7E' : '#ddeedd';
-      html += '<div style="display:flex;align-items:center;gap:14px;background:'+gaugeBg+';border:'+pBoxBorder+';border-radius:14px;padding:14px;margin-bottom:12px;">';
-      html += '<div style="position:relative;width:68px;height:68px;flex-shrink:0;">';
-      html += '<svg width="68" height="68" viewBox="0 0 68 68"><circle cx="34" cy="34" r="'+r+'" fill="none" stroke="'+gaugeTrack+'" stroke-width="7"/>';
-      html += '<circle cx="34" cy="34" r="'+r+'" fill="none" stroke="'+(isDarkP?'#C4D9C4':imColor)+'" stroke-width="7" stroke-dasharray="'+dash+' '+circ+'" stroke-linecap="round" transform="rotate(-90 34 34)"/></svg>';
-      html += '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">';
-      html += '<span style="font-size:15px;font-weight:800;color:'+pTxt+';line-height:1;">'+immersion+'</span>';
-      html += '<span style="font-size:8px;color:'+pTxtMuted+';">점</span>';
-      html += '</div></div>';
-      html += '<div><div style="font-size:10px;color:'+pTxtMuted+';margin-bottom:2px;">몰입 점수</div>';
-      html += '<div style="font-size:18px;font-weight:800;color:'+pTxt+';">'+imEmoji+' '+imLabel+'</div></div>';
+      var csH=Math.floor(secs/3600), csM=Math.floor((secs%3600)/60), csS=secs%60;
+      var csStr = secs>0
+        ? (csH>0 ? csH+'시간 '+csM+'분 '+csS+'초' : csM>0 ? csM+'분 '+csS+'초' : csS+'초')
+        : '-';
+      html += '<div style="display:flex;align-items:center;justify-content:center;gap:10px;background:'+gaugeBg+';border:'+pBoxBorder+';border-radius:14px;padding:12px 16px;margin-bottom:10px;">';
+      html += '<div style="font-size:10px;color:'+pTxtMuted+';">공부시간</div>';
+      html += '<div style="font-size:18px;font-weight:800;color:'+pTxt+';">'+csStr+'</div>';
       html += '</div>';
 
-      /* 집중시간 + 자세 점수 카드 */
-      html += '<div style="display:flex;gap:8px;margin-bottom:12px;">';
-      html += '<div style="flex:1;background:'+pBoxBg+';border:'+pBoxBorder+';border-radius:12px;padding:12px;text-align:center;">';
-      html += '<div style="font-size:10px;color:'+pTxtMuted+';margin-bottom:4px;">⏱ 집중시간</div>';
-      html += '<div style="font-size:20px;font-weight:800;color:'+pTxt+';">'+(mins>=60?Math.floor(mins/60)+'h '+(mins%60)+'m':mins+'m')+'</div>';
+      /* 3개 박스: 몰입점수 / 시간점수 / 자세점수 */
+      var tsColor = isDarkP ? (score>=80?'#D9FFD9':score>=60?'#C2E2C2':score>=40?'#ACCBAC':'#9BB89B')
+                            : (score>=80?'#2e5a2e':score>=60?'#4a7a4a':score>=40?'#7aaa7a':'#a8cca8');
+      var psColor = isDarkP ? '#8BC48E' : '#4a7a4a';
+      var imBoxBg     = isDarkP ? 'rgba(255,215,50,0.38)' : '#fef8e1';
+      var imBoxBorder = isDarkP ? '1px solid rgba(230,195,50,0.5)' : 'none';
+      var imLabelClr  = isDarkP ? '#3A4A2A' : pTxtMuted;   /* 다크모드: 짙은 초록, 라이트: 기본 */
+      var imValClr    = isDarkP ? '#2e4a1e' : imColor;      /* 다크모드: 짙은 초록 고정 */
+      var _boxStyle = 'flex:1;min-width:0;border-radius:12px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;';
+      html += '<div style="display:flex;gap:8px;">';
+      html += '<div style="'+_boxStyle+'background:'+imBoxBg+';border:'+imBoxBorder+';">';
+      html += '<div style="font-size:9px;color:'+imLabelClr+';margin-bottom:4px;white-space:nowrap;">몰입 점수</div>';
+      html += '<div style="font-size:18px;font-weight:800;color:'+imValClr+';">'+immersion+'<span style="font-size:10px;font-weight:600;">점</span></div>';
       html += '</div>';
-      html += '<div style="flex:1;background:'+pBoxBg+';border:'+pBoxBorder+';border-radius:12px;padding:12px;text-align:center;">';
-      html += '<div style="font-size:10px;color:'+pTxtMuted+';margin-bottom:4px;">🧍 자세 점수</div>';
-      html += '<div style="font-size:20px;font-weight:800;color:'+pTxt+';">'+score+'점</div>';
+      html += '<div style="'+_boxStyle+'background:'+pBoxBg+';border:'+pBoxBorder+';">';
+      html += '<div style="font-size:9px;color:'+pTxtMuted+';margin-bottom:4px;white-space:nowrap;">시간 점수</div>';
+      html += '<div style="font-size:18px;font-weight:800;color:'+tsColor+';">'+(Math.round(score*10)/10).toFixed(1)+'<span style="font-size:10px;font-weight:600;">점</span></div>';
       html += '</div>';
+      html += '<div style="'+_boxStyle+'background:'+pBoxBg+';border:'+pBoxBorder+';">';
+      html += '<div style="font-size:9px;color:'+pTxtMuted+';margin-bottom:4px;white-space:nowrap;">자세 점수</div>';
+      html += '<div style="font-size:18px;font-weight:800;color:'+psColor+';">'+(Math.round(postureScore*10)/10).toFixed(1)+'<span style="font-size:10px;font-weight:600;">점</span></div>';
       html += '</div>';
-
-      /* 이날의 한마디 */
-      var msg = immersion>=80?'완벽한 하루였어요! 이런 날이 계속되길 🌲'
-               :immersion>=60?'잘했어요! 집중력이 좋은 하루였어요 🌿'
-               :immersion>=40?'괜찮은 하루였어요. 내일은 더 잘할 수 있어요 🌱'
-               :'오늘은 쉬어간 날이에요. 내일 다시 힘내봐요 💚';
-      html += '<div style="background:'+pCheerBg+';border-radius:12px;padding:12px;border-left:'+pCheerBorder+';">';
-      html += '<div style="font-size:11px;font-weight:800;color:'+pCheerTxt+';margin-bottom:4px;">💌 이날의 한마디</div>';
-      html += '<div style="font-size:12px;color:'+pCheerBody+';line-height:1.7;">'+msg+'</div>';
       html += '</div>';
     }
 
@@ -3989,6 +5138,68 @@
   }
 
   var reportActiveHour = -1;
+  var _dotScoreActiveIdx = -1;
+
+  /* 툴팁 div를 body에 한 번만 생성 (transform 부모 영향 차단) */
+  var _dotTip = (function() {
+    var el = document.createElement('div');
+    el.id = 'dot-score-tooltip';
+    el.style.cssText = 'display:none;position:fixed;z-index:9999;'
+      + 'background:rgba(255,255,255,0.97);border:1.5px solid #4a7a4a;'
+      + 'border-radius:8px;padding:5px 12px;font-size:12px;font-weight:800;'
+      + 'color:#4a7a4a;pointer-events:none;white-space:nowrap;'
+      + 'box-shadow:0 2px 10px rgba(0,0,0,0.22);';
+    document.body.appendChild(el);
+    return el;
+  })();
+
+  function showDotScore(evt, idx, score) {
+    evt.stopPropagation();
+    /* 같은 점 재탭 시 닫기 (토글) */
+    if (_dotScoreActiveIdx === idx && _dotTip.style.display !== 'none') {
+      _dotTip.style.display = 'none';
+      _dotScoreActiveIdx = -1;
+      return;
+    }
+    _dotScoreActiveIdx = idx;
+    /* 막대 상세 패널이 열려 있으면 먼저 닫기 */
+    var _hp = document.getElementById('hour-detail-panel');
+    if (_hp) { _hp.style.display = 'none'; reportActiveHour = -1; window._dailyHourPanelHtml = ''; }
+    _dotTip.textContent = '자세 점수: ' + score + '점';
+    _dotTip.style.display = 'block';
+    /* clientX/Y 기준으로 점 위쪽에 위치, 화면 경계 클램핑 */
+    var cx = evt.clientX, cy = evt.clientY;
+    var tipW = _dotTip.offsetWidth, tipH = _dotTip.offsetHeight;
+    var tx = cx - tipW / 2;
+    if (tx < 8) tx = 8;
+    if (tx + tipW > window.innerWidth - 8) tx = window.innerWidth - tipW - 8;
+    var ty = cy - tipH - 22;
+    if (ty < 8) ty = cy + 26;
+    _dotTip.style.left = tx + 'px';
+    _dotTip.style.top  = ty + 'px';
+  }
+
+  /* 툴팁 외부 탭 / 스크롤 시 닫기 */
+  document.addEventListener('click', function() {
+    _dotTip.style.display = 'none';
+    _dotScoreActiveIdx = -1;
+  });
+  document.addEventListener('scroll', function() {
+    _dotTip.style.display = 'none';
+    _dotScoreActiveIdx = -1;
+  }, true);
+
+  /* per-cell 배열 여부: ['g','y','g','n','g'] — seg[1]이 문자열이면 per-cell */
+  function _isCellArray(s) { return Array.isArray(s) && typeof s[1] === 'string'; }
+  function _segColor(s) {
+    if (_isCellArray(s)) return s.find(function(c){return c!=='n';}) || 'n';
+    return Array.isArray(s) ? s[0] : s;
+  }
+  function _segRatio(s) {
+    if (_isCellArray(s)) { var f=s.filter(function(c){return c!=='n';}).length; return f/5; }
+    return Array.isArray(s) ? (s[1]||0) : (s==='n'?0:1);
+  }
+  function _segOffset(s) { return Array.isArray(s) && s.length > 2 && !_isCellArray(s) ? Math.round(s[2]) : 0; }
 
   function showHourDetail(hr) {
     var panel = document.getElementById('hour-detail-panel');
@@ -3997,7 +5208,8 @@
     /* 같은 막대 재클릭 시 닫기 (토글) */
     if (reportActiveHour === hr) {
       reportActiveHour = -1;
-      panel.style.display = 'none';
+      window._dailyHourPanelHtml = '';
+      renderReport('daily');
       return;
     }
     reportActiveHour = hr;
@@ -4005,23 +5217,29 @@
     var isDarkH = window._dailyChartDark || document.documentElement.classList.contains('dark');
 
     /* segs: window 캐시 우선 (renderReport 호출 없이 최신 데이터 사용) */
-    var segs    = (window._dailyHourSegs && window._dailyHourSegs[hr]) || [];
-    var minsVal = (window._dailyHourMins && window._dailyHourMins[hr]) || 0;
+    var segs      = (window._dailyHourSegs  && window._dailyHourSegs[hr])  || [];
+    var minsVal   = (window._dailyHourMins  && window._dailyHourMins[hr])  || 0;
+    var secsRaw   = (window._dailyHourSecs  && window._dailyHourSecs[hr])  || 0;
+    var scoreVal  = (window._dailyHourScore && window._dailyHourScore[hr]) || 0;
 
-    /* Xm Ys 형식 변환 */
-    var wholeM  = Math.floor(minsVal);
-    var remSec  = Math.round((minsVal % 1) * 60);
-    var timeStr = wholeM > 0 ? wholeM + 'm' : '';
-    if (remSec > 0) timeStr += (timeStr ? ' ' : '') + remSec + 's';
-    if (!timeStr) timeStr = '0s';
+    /* 시간:분:초 한국어 형식 변환 — secs 필드 우선(정확), 없으면 mins 환산 */
+    var totalSec = secsRaw > 0 ? secsRaw : Math.round(minsVal * 60);
+    var wholeH   = Math.floor(totalSec / 3600);
+    var wholeM   = Math.floor((totalSec % 3600) / 60);
+    var remSec   = totalSec % 60;
+    var timeStr  = '';
+    if (wholeH > 0) timeStr += wholeH + '시간';
+    if (wholeM > 0) timeStr += (timeStr ? ' ' : '') + wholeM + '분';
+    if (remSec > 0) timeStr += (timeStr ? ' ' : '') + remSec + '초';
+    if (!timeStr) timeStr = '0초';
 
     /* 12칸 보장 */
     while (segs.length < 12) segs.push('n');
 
     var segColors = isDarkH
-      ? {g:'#A2E69F', y:'#FFF17F', r:'#FFA4A4', n:'rgba(196,217,196,0.12)'}
-      : {g:'#7aaa7a', y:'#e8c84a', r:'#e07a6a', n:'#eef4ee'};
-    var segLabels = {g:'바른 자세', y:'주의 자세', r:'위험 자세', n:'비공부'};
+      ? {g:'#A2E69F', y:'#FFF17F', r:'#FFA4A4', n:'rgba(196,217,196,0.12)', o:'#C4A0E8', a:'#AAAAAA'}
+      : {g:'#7aaa7a', y:'#e8c84a', r:'#e07a6a', n:'#d8e4d8',              o:'#9b59b6', a:'#888888'};
+    var segLabels = {g:'바른 자세', y:'주의 자세', r:'위험 자세', n:'비공부', o:'중복 자세', a:'얼굴 미감지'};
 
     var hDetBg = isDarkH ? '#2D3A2D' : '#f0f7f0';
     var hBorder= isDarkH ? '1px solid #4a6a4a' : '1px solid #C4D9C4';
@@ -4029,47 +5247,152 @@
     var hMuted = isDarkH ? 'rgba(254,253,245,0.7)' : '#7a8e7a';
     var hTime  = isDarkH ? 'rgba(254,253,245,0.5)' : '#9aaa9a';
     var nextHr = (hr + 1) % 24;
+    var hrStr  = (hr < 10 ? '0' : '') + hr;
+    var nhrStr = (nextHr < 10 ? '0' : '') + nextHr;
 
-    var html = '<div style="background:'+hDetBg+';border:'+hBorder+';border-radius:12px;padding:12px;">';
-    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">';
-    html += '<span style="font-size:13px;font-weight:800;color:'+hTxt+';">📍 '+hr+'시 ('+hr+':00 ~ '+nextHr+':00)</span>';
-    html += '<span style="font-size:11px;color:'+hMuted+';">집중 '+timeStr+'</span>';
-    html += '</div>';
-
-    /* 5분 단위 세그먼트 그리드 (12칸 = 60분) */
-    html += '<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-bottom:5px;">';
-    segs.forEach(function(s, i) {
-      var c     = segColors[s] || segColors['n'];
-      var tLabel= hr+':'+(i*5<10?'0'+i*5:i*5)+' '+segLabels[s||'n'];
-      html += '<div style="height:28px;border-radius:4px;background:'+c+';" title="'+tLabel+'"></div>';
+    /* segs에서 자세별 분수 집계 */
+    var gMin=0, yMin=0, rMin=0, oMin=0, aMin=0, nMin=0;
+    segs.forEach(function(seg) {
+      if (_isCellArray(seg)) {
+        /* per-cell 형식: ['g','y','n','g','g'] */
+        seg.forEach(function(c) {
+          if (c==='g') gMin++;
+          else if (c==='y') yMin++;
+          else if (c==='r') rMin++;
+          else if (c==='o') oMin++;
+          else if (c==='a') aMin++;
+          else nMin++;
+        });
+      } else {
+        var sc = _segColor(seg);
+        var nr = Math.round(_segRatio(seg) * 5);
+        if (sc === 'n') { nMin += 5; }
+        else {
+          if (sc==='g') gMin += nr;
+          else if (sc==='y') yMin += nr;
+          else if (sc==='r') rMin += nr;
+          else if (sc==='o') oMin += nr;
+          else if (sc==='a') aMin += nr;
+          nMin += (5 - nr);
+        }
+      }
     });
+    var studiedMin = gMin + yMin + rMin + oMin + aMin;
+    var dividerC = isDarkH ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
+
+    /* ── 60분 타임라인 바 (segs → 1분 단위 60칸 확장) ── */
+    var minColors = [];
+    for (var m = 0; m < 60; m++) minColors.push('n');
+    segs.forEach(function(seg, si) {
+      if (_isCellArray(seg)) {
+        for (var j = 0; j < 5; j++) { var mi = si*5+j; if (mi<60) minColors[mi]=seg[j]||'n'; }
+      } else {
+        var sc2 = _segColor(seg);
+        if (sc2 === 'n') return;
+        var nf = Math.round(_segRatio(seg)*5), ofs = _segOffset(seg);
+        for (var j = 0; j < nf; j++) { var mi = si*5+ofs+j; if (mi<60) minColors[mi]=sc2; }
+      }
+    });
+
+    var html = '<div style="background:'+hDetBg+';border:'+hBorder+';border-radius:12px;padding:12px 14px;">';
+
+    /* 헤더 + 오른쪽 스탯 한 줄 */
+    html += '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px;">';
+    html += '<div style="font-size:12px;font-weight:800;color:'+hTxt+';flex:1;">📍 '+hrStr+'시 ('+hrStr+':00 ~ '+nhrStr+':00)</div>';
+    html += '<div style="font-size:8px;color:'+hMuted+';flex-shrink:0;text-align:right;">';
+    html += '공부시간 <span style="font-weight:700;color:'+hTxt+';">'+(minsVal > 0 ? timeStr : '-')+'</span>';
+    /* 시간대별 점수만 사용 — 없으면 0 (→ '-' 표시) */
+    var _dailyPs = scoreVal > 0 ? Math.round(scoreVal * 10) / 10 : 0;
+    html += ' &nbsp;·&nbsp; 자세 점수 <span style="font-weight:700;color:'+hTxt+';">'+_dailyPs.toFixed(1)+'점</span>';
+    html += '</div>';
     html += '</div>';
 
-    /* 시간 라벨: 0·15·30·45분 위치 */
-    html += '<div style="display:grid;grid-template-columns:repeat(12,1fr);margin-bottom:10px;">';
-    for (var s = 0; s < 12; s++) {
-      var lbl = (s%3===0) ? hr+':'+(s*5<10?'0'+s*5:s*5) : '';
-      html += '<div style="font-size:8px;color:'+hTime+';text-align:center;">'+lbl+'</div>';
+    /* 12칸 바 (5분 단위, 슬롯별 자세 색상 / 부분 채움 지원) */
+    html += '<div style="display:flex;gap:3px;">';
+    for (var i = 0; i < 12; i++) {
+      var seg = segs[i] || 'n';
+      var _bg;
+      if (_isCellArray(seg)) {
+        /* per-minute 형식: ['g','y','n','g','g'] — 1분씩 5개 스트라이프 */
+        var stops = [];
+        seg.forEach(function(c, i) {
+          var col = segColors[c] || segColors['n'];
+          stops.push(col + ' ' + (i * 20) + '%');
+          stops.push(col + ' ' + ((i + 1) * 20) + '%');
+        });
+        _bg = 'linear-gradient(to right,' + stops.join(',') + ')';
+      } else if (Array.isArray(seg)) {
+        /* 신형 [colorKey, ratio, offset]: ratio 만큼만 색칠 */
+        var _ck  = seg[0];
+        var _rat = typeof seg[1] === 'number' ? seg[1] : 0;
+        var _off = typeof seg[2] === 'number' ? seg[2] : 0;
+        if (_ck === 'n' || _rat <= 0) {
+          _bg = segColors['n'];
+        } else {
+          var _s  = (_off / 5 * 100).toFixed(1);
+          var _e  = Math.min(100, (_off / 5 + _rat) * 100).toFixed(1);
+          var _fc = segColors[_ck] || segColors['n'];
+          var _nc = segColors['n'];
+          _bg = 'linear-gradient(to right,'+_nc+' '+_s+'%,'+_fc+' '+_s+'%,'+_fc+' '+_e+'%,'+_nc+' '+_e+'%)';
+        }
+      } else {
+        /* 단순 문자열 'g'/'y'/'r'/'n' */
+        _bg = segColors[seg] || segColors['n'];
+      }
+      html += '<div style="flex:1;height:28px;border-radius:4px;background:'+_bg+';"></div>';
     }
     html += '</div>';
 
-    /* 범례 */
-    html += '<div style="display:flex;gap:10px;flex-wrap:wrap;">';
-    [{k:'g',l:'바른 자세'},{k:'y',l:'주의 자세'},{k:'r',l:'위험 자세'},{k:'n',l:'비공부'}].forEach(function(item){
-      html += '<div style="display:flex;align-items:center;gap:3px;">';
-      html += '<div style="width:10px;height:10px;border-radius:2px;background:'+segColors[item.k]+';" ></div>';
-      html += '<span style="font-size:9px;color:'+hMuted+';">'+item.l+'</span></div>';
-    });
-    html += '</div></div>';
+    /* 분 눈금 — 경계에 맞게 right-align 사용 */
+    html += '<div style="display:flex;gap:3px;margin-top:3px;margin-bottom:10px;">';
+    for (var li = 0; li < 12; li++) {
+      var lbl = (li===0) ? hrStr+':00' : (li===3) ? hrStr+':20' : (li===7) ? hrStr+':40' : (li===11) ? nhrStr+':00' : '';
+      var la  = (li===0) ? 'left' : 'right';
+      html += '<div style="flex:1;font-size:7px;color:'+hTime+';text-align:'+la+';overflow:visible;white-space:nowrap;">'+lbl+'</div>';
+    }
+    html += '</div>';
 
-    panel.innerHTML = html;
-    panel.style.display = 'block';
+    /* 구분선 */
+    html += '<div style="height:1px;background:'+dividerC+';margin-bottom:8px;"></div>';
+
+    /* 자세 범례: 1행(바른·주의·위험) + 2행(중복·비공부) */
+    var _legend1 = [{k:'g',l:'바른 자세'},{k:'y',l:'주의 자세(거북목, 기대기)'},{k:'r',l:'위험 자세(졸음, 구부정)'}];
+    var _legend2 = [{k:'o',l:'중복 자세'},{k:'n',l:'비공부'}];
+    function _renderLegendRow(items) {
+      var s = '<div style="display:flex;gap:8px;flex-wrap:nowrap;align-items:center;">';
+      items.forEach(function(item) {
+        s += '<div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">';
+        s += '<div style="width:7px;height:7px;border-radius:2px;flex-shrink:0;background:'+(segColors[item.k]||segColors['n'])+';"></div>';
+        s += '<span style="font-size:8px;color:'+hMuted+';white-space:nowrap;">'+item.l+'</span>';
+        s += '</div>';
+      });
+      s += '</div>';
+      return s;
+    }
+    html += '<div style="display:flex;flex-direction:column;gap:4px;">';
+    html += _renderLegendRow(_legend1);
+    html += _renderLegendRow(_legend2);
+    html += '</div>';
+
+    html += '</div>';
+
+    window._dailyHourPanelHtml = html;
+    renderReport('daily');
   }
 
   function renderDailyChart() { renderReport('daily'); }
 
   function changeCalMonth(delta) {
-    calMonthOffset += delta;
+    var newOffset = calMonthOffset + delta;
+    if (isShowingExample) {
+      /* 예시 모드: 2026년 3월~7월만 허용 */
+      var now = new Date();
+      var ny = now.getFullYear(), nm = now.getMonth() + newOffset;
+      while (nm > 11){ nm -= 12; ny++; } while (nm < 0){ nm += 12; ny--; }
+      if (ny < 2026 || (ny === 2026 && nm < 4)) return;   /* 2026-05 미만 차단 */
+      if (ny > 2026 || (ny === 2026 && nm > 6)) return;   /* 2026-07 초과 차단 */
+    }
+    calMonthOffset = newOffset;
     renderReport('monthly');
   }
 
@@ -4222,7 +5545,7 @@
   }
 
   function exportData() {
-    var csv = '날짜,집중시간(분)\n';
+    var csv = '날짜,공부시간(분)\n';
     csv += '2026-03-25,90\n2026-03-24,75\n2026-03-23,60\n';
     var blob = new Blob([csv], {type:'text/csv'});
     var a = document.createElement('a');
@@ -4242,15 +5565,37 @@
   /* ── 대시보드 체크 상태 폴링 (2초마다) ── */
   var _lastCompletedStr = '';
   var _lastUrgentStr = '';
+  var _lastPomodoroCount = -1;
   setInterval(function() {
     if (!currentUser) return;
-    fetch(getStatusUrl())
+    var _pollCtrl = new AbortController();
+    setTimeout(function(){ _pollCtrl.abort(); }, 3000);
+    fetch(getStatusUrl(), {signal: _pollCtrl.signal})
       .then(function(r){
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
       })
       .then(function(data) {
         if (!data) return;
+
+        /* ── 리포트 화면 실시간 차트 업데이트 ── */
+        var reportScreen = document.getElementById('screen-report');
+        /* 학습종료(pomodoroCount 변화) 감지 → 그때만 주별/월별 갱신 */
+        var _pomoChanged = (_lastPomodoroCount >= 0 && data.pomodoroCount !== undefined && data.pomodoroCount !== _lastPomodoroCount);
+        if (data.pomodoroCount !== undefined) _lastPomodoroCount = data.pomodoroCount;
+        if (reportScreen && reportScreen.classList.contains('active')) {
+          _applyDashboardData(data, false);
+          /* 학습종료 시 주별/월별 탭 즉시 재렌더 */
+          if (_pomoChanged && currentReportTab !== 'daily') {
+            try { renderReport(currentReportTab); } catch(e) {}
+          }
+          /* 일별 탭이고 상세 패널 닫혀있을 때만 재렌더 (시간점수 실시간 반영) */
+          if ((currentReportTab === 'daily' || !currentReportTab) && reportActiveHour === -1) {
+            try { renderReport('daily'); } catch(e) {}
+          }
+        }
+
+        /* ── 할 일 동기화 ── */
         var newCompleted = JSON.stringify(data.completedTasks || []);
         var newUrgent = JSON.stringify(data.urgentTasks || []);
         if (newCompleted === _lastCompletedStr && newUrgent === _lastUrgentStr) return;
@@ -4277,6 +5622,27 @@
         console.error('[status polling] 오류:', err.message);
       });
   }, 2000);
+
+  /* ── 세션 중 일별 탭 실시간 갱신 (5초마다) ── */
+  setInterval(function() {
+    var d = reportData && reportData['daily'];
+    if (!d || !d.sessionActive) return;
+    var reportScreen = document.getElementById('screen-report');
+    if (!reportScreen || !reportScreen.classList.contains('active')) return;
+    if (currentReportTab !== 'daily' && currentReportTab) return;
+    try {
+      var _savedHr = reportActiveHour;
+      if (_savedHr !== -1) {
+        /* 하단 패널 열린 상태: 캐시 초기화 후 재렌더 → 패널 갱신 */
+        window._dailyHourPanelHtml = '';
+        reportActiveHour = -1;
+      }
+      renderReport('daily');
+      if (_savedHr !== -1) {
+        showHourDetail(_savedHr);  /* 최신 데이터로 패널 재생성 */
+      }
+    } catch(e) {}
+  }, 5000);
 
   /* 초기 언어 적용 */
   applyLang(currentLang);
@@ -4342,16 +5708,28 @@
         if (!phone) return;
         var vw = window.innerWidth;
         var vh = window.innerHeight;
-        var scale = Math.min(vw / PHONE_W, vh / PHONE_H, 1);
+        var scale = vw / PHONE_W;
+        // phone 높이를 viewport에 정확히 맞춰 위아래 클리핑 없이 꽉 채움
+        var phoneH = Math.ceil(vh / scale);
+        phone.style.width  = PHONE_W + 'px';
+        phone.style.height = phoneH + 'px';
         phone.style.position = 'fixed';
-        phone.style.top  = '50%';
-        phone.style.left = '50%';
-        phone.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
-        phone.style.transformOrigin = 'center center';
+        phone.style.left = '0';
+        phone.style.top  = '0';
+        phone.style.transform = 'scale(' + scale + ')';
+        phone.style.transformOrigin = 'top left';
+        phone.style.margin = '0';
       }
       fitPhone();
       window.addEventListener('resize', fitPhone);
     })();
+  </script>
+  <script>
+    /* 서비스 워커 등록 — HTTPS 환경에서만 (ngrok 등) */
+    if ('serviceWorker' in navigator &&
+        (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+      navigator.serviceWorker.register('/sw.js').catch(function(){});
+    }
   </script>
 </body>
 </html>
