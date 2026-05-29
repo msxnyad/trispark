@@ -2,19 +2,64 @@
   "activeUser": "test",
   "users": {
     "test": {
-      "folderData": {},
-      "habits": [],
-      "ddayList": [],
+      "folderData": {
+        "그만하고싶다진심": [
+          "똑같은문제를 몇번을고치는지",
+          "이제그만 좀 .. 돼라"
+        ],
+        "테스트": [
+          "테스트하는중",
+          "데이터연동하는중"
+        ]
+      },
+      "habits": [
+        {
+          "name": "오전 기상",
+          "records": {
+            "2026-05-04": false,
+            "2026-05-11": true,
+            "2026-05-18": true,
+            "2026-05-25": true,
+            "2026-05-12": true,
+            "2026-05-19": true,
+            "2026-05-26": true,
+            "2026-05-13": true,
+            "2026-05-20": true,
+            "2026-05-27": true,
+            "2026-05-15": true,
+            "2026-05-22": true,
+            "2026-05-29": true,
+            "2026-05-16": false
+          }
+        }
+      ],
+      "ddayList": [
+        {
+          "name": "댕",
+          "date": "2026-05-31"
+        }
+      ],
       "selectedDdayIdx": 0,
       "goalMinutes": 120,
-      "pomoMinutes": 25,
+      "pomoMinutes": 5,
       "eisenData": [
-        [],
+        [
+          {
+            "text": "테스트하는중",
+            "done": false,
+            "pinned": true
+          },
+          {
+            "text": "제발좀 ...",
+            "done": false,
+            "pinned": true
+          }
+        ],
         [],
         [],
         []
       ],
-      "lastOpenTime": "2026-05-29T17:31:18.807Z"
+      "lastOpenTime": "2026-05-29T17:29:47.013Z"
     }
   },
   "appUsers": {
