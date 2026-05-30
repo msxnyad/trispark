@@ -45,7 +45,13 @@
             "pinned": true
           }
         ],
-        [],
+        [
+          {
+            "text": "이건되나?",
+            "done": false,
+            "pinned": false
+          }
+        ],
         [],
         []
       ],
