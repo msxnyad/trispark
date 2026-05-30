@@ -2255,7 +2255,7 @@
         var _local = getUserData(_uid);
         saveUserData(_uid, Object.assign({}, _local, ud));
         loadUserData();
-        if (ud.habits)    { habits = ud.habits; renderHabits && renderHabits(); }
+        if (ud.habits)    { habits = ud.habits; renderHabitGrid && renderHabitGrid(); }
         if (ud.ddayList)  { ddayList = ud.ddayList; renderDday && renderDday(); }
         if (ud.folderData){ folderData = ud.folderData; }
         updateDdayBadge();
@@ -2754,7 +2754,7 @@
     _ghPushTimer = setTimeout(function() {
       try {
         var _ghToken = localStorage.getItem('gh_token') || '';
-        if (!_ghToken) return;
+        if (!_ghToken) { alert('[디버그] GitHub 토큰 없음 — 설정에서 입력해주세요'); return; }
         var _ghOwner = 'msxnyad';
         var _ghRepo  = 'trispark';
         var _ghFile  = 'shared_data.json';
@@ -2763,19 +2763,28 @@
           'Authorization': 'token ' + _ghToken,
           'Content-Type': 'application/json'
         };
-        /* 현재 파일의 SHA 가져오기 */
-        fetch(_apiUrl, {headers: _headers})
+        /* 업로드 전 /status 호출해서 최신 파이 데이터 캐시에 저장 */
+        var _doUpload = function() {
+          fetch(_apiUrl, {headers: _headers})
           .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
           .then(function(meta) {
-            /* 기존 shared_data 읽기 → 유저 데이터 병합 후 업로드 */
             var existing = {};
             try { existing = JSON.parse(atob(meta.content.replace(/\n/g, ''))); } catch(e) {}
-            /* 현재 유저 데이터 병합 */
             if (!existing.users) existing.users = {};
-            existing.users[currentUser.id] = getUserData(currentUser.id);
+            var _ud = getUserData(currentUser.id);
+            try {
+              var _cacheKey = 'dashboard_cache_' + currentUser.id;
+              var _cached = JSON.parse(localStorage.getItem(_cacheKey) || 'null');
+              if (_cached) {
+                var _piFields = ['totalStudySec','immersionScore','timeScore','postureScore',
+                  'pomodoroCount','totalPomodoroGoalSec','sessionActive','postureStats',
+                  'hourlyData','hourlySegments','weeklyStudyData','monthlyData'];
+                _piFields.forEach(function(k){ if (_cached[k] !== undefined) _ud[k] = _cached[k]; });
+              }
+            } catch(e) {}
+            existing.users[currentUser.id] = _ud;
             if (!existing.appUsers) existing.appUsers = {};
-            var localUsers = getUsers();
-            Object.assign(existing.appUsers, localUsers);
+            Object.assign(existing.appUsers, getUsers());
             existing.activeUser = currentUser.id;
             var _encoded = btoa(unescape(encodeURIComponent(JSON.stringify(existing, null, 2))));
             return fetch(_apiUrl, {
@@ -2784,8 +2793,24 @@
               body: JSON.stringify({message: 'auto sync from browser', content: _encoded, sha: meta.sha})
             });
           })
-          .then(function(r){ if (r && r.ok) console.log('[GitHub] 브라우저 동기화 완료'); })
-          .catch(function(e){ console.log('[GitHub] 브라우저 동기화 실패:', e); });
+          .then(function(r){ if (r && r.ok) alert('[디버그] GitHub 업로드 성공!'); else alert('[디버그] GitHub 업로드 실패: ' + (r ? r.status : '응답없음')); })
+          .catch(function(e){ alert('[디버그] GitHub 업로드 오류: ' + e); });
+        };
+        /* /status로 최신 파이 데이터 가져온 뒤 업로드 (실패해도 업로드는 진행) */
+        var _ctrl = new AbortController();
+        setTimeout(function(){ _ctrl.abort(); }, 3000);
+        fetch(_apiBase() + '/status', {signal: _ctrl.signal})
+          .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+          .then(function(piData) {
+            if (piData && !piData.offline) {
+              try {
+                var _ck = 'dashboard_cache_' + currentUser.id;
+                localStorage.setItem(_ck, JSON.stringify(piData));
+              } catch(e) {}
+            }
+            _doUpload();
+          })
+          .catch(function(){ _doUpload(); });
       } catch(e) {}
     }, 30000);
   }
@@ -3067,7 +3092,7 @@
                       var _merged = Object.assign({}, ud, _existing);
                       saveUserData(uid, _merged);
                       /* 앱 메모리에도 즉시 반영 */
-                      if (ud.habits)    { habits    = ud.habits;    renderHabits && renderHabits(); }
+                      if (ud.habits)    { habits    = ud.habits;    renderHabitGrid && renderHabitGrid(); }
                       if (ud.ddayList)  { ddayList  = ud.ddayList;  renderDday   && renderDday(); }
                       if (ud.folderData){ folderData = ud.folderData; }
                     } catch(e) {}
@@ -3137,7 +3162,7 @@
   /* ── 변수 선언 (자동복원 전에 초기값 설정, loadUserData 후 덮어씌워짐 방지) ── */
   var ddayList = [];
   var selectedDdayIdx = 0;
-  var goalMinutes = 120;
+  var goalMinutes = 0;
   var eisenData = [[],[],[],[]];
   /* 실시간 공부시간 보간: 서버 30초 주기 → JS로 초당 부드럽게 표시 */
   var _liveStudyBase = 0;
@@ -4127,7 +4152,7 @@
       var tsActualSec  = _getLiveStudySec();
       var tsGoalSec = d.sessionActive
           ? ((d.totalPomodoroGoalSec || 0) + (d.pomodoroSeconds || 0)) || (goalMinutes * 60)
-          : d.totalPomodoroGoalSec || (d.pomodoroSeconds || (goalMinutes * 60));
+          : (d.totalPomodoroGoalSec || 0);
       var tsComputed   = (hasData && tsActualSec > 0 && tsGoalSec > 0) ? Math.min(100, Math.round(tsActualSec / tsGoalSec * 1000) / 10) : 0;
       /* 세션 종료 후엔 저장된 점수 사용 → 게이지 숫자와 항목 바 일치 */
       var _subTs = d.sessionActive ? tsComputed : (d.timeScore > 0 ? d.timeScore : tsComputed);
@@ -4241,7 +4266,7 @@
       /* 세션 진행 중엔 완료 목표 + 현재 세션 목표 합산, 아니면 완료 목표 기준 */
       var totalGoalSec = d.sessionActive
           ? ((d.totalPomodoroGoalSec || 0) + (d.pomodoroSeconds || 0)) || (goalMinutes * 60)
-          : d.totalPomodoroGoalSec || (d.pomodoroSeconds || (goalMinutes * 60));
+          : (d.totalPomodoroGoalSec || 0);
       var actualSec = _getLiveStudySec();
       function _fmtDur(s, showSec) {
         s = Math.round(s);
