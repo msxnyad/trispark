@@ -2215,6 +2215,35 @@
     document.getElementById('nickname-display').textContent = currentUser.nick;
     updateDdayBadge();
     goTo('screen-home');
+
+    /* GitHub Pages: 로그인 직후 GitHub에서 유저 데이터 가져와서 반영 */
+    if (_isGhPages) {
+      var _ghRaw = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
+      fetch(_ghRaw + '?_=' + Date.now())
+        .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+        .then(function(ghData) {
+          var _ghUsers = ghData.users || {};
+          var _uid = currentUser ? currentUser.id : null;
+          if (!_uid) return;
+          var ud = _ghUsers[_uid];
+          /* 유저 ID 불일치 시 activeUser → 첫 번째 유저 폴백 */
+          if (!ud || Object.keys(ud).length === 0) {
+            var _fb = ghData.activeUser || Object.keys(_ghUsers)[0];
+            ud = _fb ? _ghUsers[_fb] : null;
+          }
+          if (!ud) return;
+          /* GitHub 데이터를 로컬에 병합 (GitHub 우선) */
+          var _local = getUserData(_uid);
+          saveUserData(_uid, Object.assign({}, _local, ud));
+          /* 앱 메모리에 즉시 반영 */
+          loadUserData();
+          if (ud.habits)    { habits = ud.habits; renderHabits && renderHabits(); }
+          if (ud.ddayList)  { ddayList = ud.ddayList; renderDday && renderDday(); }
+          if (ud.folderData){ folderData = ud.folderData; }
+          updateDdayBadge();
+        })
+        .catch(function(){});
+    }
   }
 
   function resetTodayData() {
@@ -2786,13 +2815,34 @@
                 return r.json();
             })
             .then(function(data) {
-              if (!data) return;
-              /* ★ 파이 연결 성공 시 데이터 캐시 저장 */
+              if (!data || data.offline) return Promise.reject(new Error('offline'));
+              /* ★ 파이 연결 성공 시 데이터 캐시 저장 + GitHub 동기화용 app_data에도 저장 */
               try {
                 var cacheKey = 'dashboard_cache_' + (currentUser ? currentUser.id : 'guest');
                 localStorage.setItem(cacheKey, JSON.stringify(data));
                 localStorage.setItem(cacheKey + '_time', new Date().toLocaleString('ko-KR'));
               } catch(e) {}
+              if (currentUser) {
+                try {
+                  var _piMetrics = {
+                    totalStudySec:       data.totalStudySec       || 0,
+                    immersionScore:      data.immersionScore      || 0,
+                    timeScore:           data.timeScore           || 0,
+                    postureScore:        data.postureScore        || 0,
+                    pomodoroCount:       data.pomodoroCount       || 0,
+                    pomodoroSeconds:     data.pomodoroSeconds     || 0,
+                    totalPomodoroGoalSec:data.totalPomodoroGoalSec|| 0,
+                    sessionActive:       data.sessionActive       || false,
+                    postureStats:        data.postureStats        || {},
+                    hourlyData:          data.hourlyData          || {},
+                    hourlySegments:      data.hourlySegments      || {},
+                    weeklyStudyData:     data.weeklyStudyData     || null,
+                    monthlyData:         data.monthlyData         || null
+                  };
+                  var _ud = getUserData(currentUser.id);
+                  saveUserData(currentUser.id, Object.assign(_ud, _piMetrics));
+                } catch(e) {}
+              }
               // 오늘 공부 시간이 0이면 점수도 0으로
               var _noStudy = !data.totalStudySec || data.totalStudySec === 0;
               if (data.immersionScore !== undefined) {
@@ -2978,7 +3028,13 @@
                     }
                     if (!currentUser) return;
                     var uid = currentUser.id;
-                    var ud  = (ghData.users || {})[uid] || {};
+                    var _ghUsers = ghData.users || {};
+                    var ud = _ghUsers[uid];
+                    /* 유저 ID 불일치 시 activeUser → 첫 번째 유저 순으로 폴백 */
+                    if (!ud || Object.keys(ud).length === 0) {
+                      var _fallbackId = ghData.activeUser || Object.keys(_ghUsers)[0];
+                      ud = _fallbackId ? _ghUsers[_fallbackId] : null;
+                    }
                     if (!ud || Object.keys(ud).length === 0) return;
                     /* GitHub 데이터를 localStorage에 복원 (할일·플래시카드 등 포함) */
                     try {
