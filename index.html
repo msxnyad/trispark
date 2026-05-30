@@ -2250,8 +2250,7 @@
           var _fb = ghData.activeUser || Object.keys(_ghUsers)[0];
           ud = _fb ? _ghUsers[_fb] : null;
         }
-        if (!ud) { alert('[디버그] GitHub에 유저 데이터 없음. users 키: ' + Object.keys(_ghUsers).join(', ') + ' / 내 ID: ' + _uid); return; }
-        alert('[디버그] GitHub 데이터 발견! habits:' + (ud.habits ? ud.habits.length + '개' : '없음') + ', folderData:' + (ud.folderData ? Object.keys(ud.folderData).length + '개' : '없음'));
+        if (!ud) return;
         var _local = getUserData(_uid);
         saveUserData(_uid, Object.assign({}, _local, ud));
         loadUserData();
@@ -2266,7 +2265,7 @@
         fetch('https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json?_=' + Date.now())
           .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
           .then(_applyGhData)
-          .catch(function(e){ alert('[디버그] GitHub fetch 실패: ' + e); });
+          .catch(function(){});
       }
     }
   }
@@ -2749,12 +2748,13 @@
   var _ghPushTimer = null;
   function _pushUserDataToGitHub() {
     if (!currentUser) return;
+    if (_isGhPages) return;
     /* 너무 자주 호출 방지 (30초 디바운스) */
     if (_ghPushTimer) clearTimeout(_ghPushTimer);
     _ghPushTimer = setTimeout(function() {
       try {
         var _ghToken = localStorage.getItem('gh_token') || '';
-        if (!_ghToken) { alert('[디버그] GitHub 토큰 없음 — 설정에서 입력해주세요'); return; }
+        if (!_ghToken) return;
         var _ghOwner = 'msxnyad';
         var _ghRepo  = 'trispark';
         var _ghFile  = 'shared_data.json';
@@ -2793,8 +2793,8 @@
               body: JSON.stringify({message: 'auto sync from browser', content: _encoded, sha: meta.sha})
             });
           })
-          .then(function(r){ if (r && r.ok) alert('[디버그] GitHub 업로드 성공!'); else alert('[디버그] GitHub 업로드 실패: ' + (r ? r.status : '응답없음')); })
-          .catch(function(e){ alert('[디버그] GitHub 업로드 오류: ' + e); });
+          .then(function(r){ if (r && r.ok) console.log('[GitHub] 업로드 성공'); })
+          .catch(function(e){ console.log('[GitHub] 업로드 오류:', e); });
         };
         /* /status로 최신 파이 데이터 가져온 뒤 업로드 (실패해도 업로드는 진행) */
         var _ctrl = new AbortController();
@@ -3099,16 +3099,19 @@
                     /* shared_data 구조 → _applyDashboardData 포맷으로 변환 */
                     var mapped = {
                       activeUser:           uid,
-                      totalStudySec:        ud.totalStudySec        || 0,
-                      pomodoroCount:        ud.pomodoroCount        || 0,
-                      timeScore:            ud.timeScore            || 0,
-                      immersionScore:       ud.immersionScore       || 0,
-                      postureScore:         ud.postureScore         || 0,
-                      postureStats:         ud.postureStats         || null,
-                      weeklyStudyData:      ud.weeklyStudyData      || null,
-                      monthlyData:          ud.monthlyData          || null,
-                      hourlyData:           ud.hourlyData           || {},
-                      hourlySegments:       ud.hourlySegments       || {},
+                      totalStudySec:        ud.totalStudySec           || 0,
+                      pomodoroCount:        ud.pomodoroCount           || 0,
+                      pomodoroSeconds:      ud.pomodoroSeconds         || 0,
+                      totalPomodoroGoalSec: ud.totalPomodoroGoalSec   || 0,
+                      sessionActive:        ud.sessionActive           || false,
+                      timeScore:            ud.timeScore               || 0,
+                      immersionScore:       ud.immersionScore          || 0,
+                      postureScore:         ud.postureScore            || 0,
+                      postureStats:         ud.postureStats            || null,
+                      weeklyStudyData:      ud.weeklyStudyData         || null,
+                      monthlyData:          ud.monthlyData             || null,
+                      hourlyData:           ud.hourlyData              || {},
+                      hourlySegments:       ud.hourlySegments          || {},
                     };
                     _applyDashboardData(mapped, false);
                     /* 이 데이터로 스냅샷 갱신 */
