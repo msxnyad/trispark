@@ -5873,6 +5873,7 @@
   var _lastPomodoroCount = -1;
   setInterval(function() {
     if (!currentUser) return;
+    if (_isGhPages) return;
     var _pollCtrl = new AbortController();
     setTimeout(function(){ _pollCtrl.abort(); }, 3000);
     fetch(getStatusUrl(), {signal: _pollCtrl.signal})
