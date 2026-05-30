@@ -2203,46 +2203,71 @@
 
     var users = getUsers();
     if (!users[id] || users[id].pw !== pw) {
+      /* GitHub Pages: 계정 로드가 안 됐을 수 있으니 GitHub에서 받아서 재시도 */
+      if (_isGhPages) {
+        errEl.textContent = '계정 확인 중...';
+        fetch('https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json?_=' + Date.now())
+          .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+          .then(function(ghData) {
+            if (ghData.appUsers) {
+              var _merged = Object.assign({}, ghData.appUsers, getUsers());
+              saveUsers(_merged);
+            }
+            var _users2 = getUsers();
+            if (!_users2[id] || _users2[id].pw !== pw) {
+              errEl.textContent = '아이디 또는 비밀번호가 틀렸어요'; return;
+            }
+            errEl.textContent = '';
+            _completeLogin(id, _users2[id].nick, ghData);
+          })
+          .catch(function(){ errEl.textContent = '아이디 또는 비밀번호가 틀렸어요'; });
+        return;
+      }
       errEl.textContent = '아이디 또는 비밀번호가 틀렸어요'; return;
     }
 
-    currentUser = { id: id, nick: users[id].nick };
+    _completeLogin(id, users[id].nick, null);
+  }
+
+  function _completeLogin(id, nick, ghDataPreloaded) {
+    currentUser = { id: id, nick: nick };
     localStorage.setItem('app_current', id);
     loadUserData();
     notifyLogin(id);
     syncToDashboard();
-    document.getElementById('home-greeting').innerHTML = currentUser.nick + (currentLang==='ko'?'<span>님</span>':'');
-    document.getElementById('nickname-display').textContent = currentUser.nick;
+    document.getElementById('home-greeting').innerHTML = nick + (currentLang==='ko'?'<span>님</span>':'');
+    document.getElementById('nickname-display').textContent = nick;
     updateDdayBadge();
     goTo('screen-home');
 
-    /* GitHub Pages: 로그인 직후 GitHub에서 유저 데이터 가져와서 반영 */
+    /* GitHub Pages: GitHub에서 유저 데이터 가져와서 반영 */
     if (_isGhPages) {
-      var _ghRaw = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
-      fetch(_ghRaw + '?_=' + Date.now())
-        .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
-        .then(function(ghData) {
-          var _ghUsers = ghData.users || {};
-          var _uid = currentUser ? currentUser.id : null;
-          if (!_uid) return;
-          var ud = _ghUsers[_uid];
-          /* 유저 ID 불일치 시 activeUser → 첫 번째 유저 폴백 */
-          if (!ud || Object.keys(ud).length === 0) {
-            var _fb = ghData.activeUser || Object.keys(_ghUsers)[0];
-            ud = _fb ? _ghUsers[_fb] : null;
-          }
-          if (!ud) return;
-          /* GitHub 데이터를 로컬에 병합 (GitHub 우선) */
-          var _local = getUserData(_uid);
-          saveUserData(_uid, Object.assign({}, _local, ud));
-          /* 앱 메모리에 즉시 반영 */
-          loadUserData();
-          if (ud.habits)    { habits = ud.habits; renderHabits && renderHabits(); }
-          if (ud.ddayList)  { ddayList = ud.ddayList; renderDday && renderDday(); }
-          if (ud.folderData){ folderData = ud.folderData; }
-          updateDdayBadge();
-        })
-        .catch(function(){});
+      var _applyGhData = function(ghData) {
+        var _ghUsers = ghData.users || {};
+        var _uid = id;
+        var ud = _ghUsers[_uid];
+        if (!ud || Object.keys(ud).length === 0) {
+          var _fb = ghData.activeUser || Object.keys(_ghUsers)[0];
+          ud = _fb ? _ghUsers[_fb] : null;
+        }
+        if (!ud) { alert('[디버그] GitHub에 유저 데이터 없음. users 키: ' + Object.keys(_ghUsers).join(', ') + ' / 내 ID: ' + _uid); return; }
+        alert('[디버그] GitHub 데이터 발견! habits:' + (ud.habits ? ud.habits.length + '개' : '없음') + ', folderData:' + (ud.folderData ? Object.keys(ud.folderData).length + '개' : '없음'));
+        var _local = getUserData(_uid);
+        saveUserData(_uid, Object.assign({}, _local, ud));
+        loadUserData();
+        if (ud.habits)    { habits = ud.habits; renderHabits && renderHabits(); }
+        if (ud.ddayList)  { ddayList = ud.ddayList; renderDday && renderDday(); }
+        if (ud.folderData){ folderData = ud.folderData; }
+        updateDdayBadge();
+      };
+      if (ghDataPreloaded) {
+        _applyGhData(ghDataPreloaded);
+      } else {
+        fetch('https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json?_=' + Date.now())
+          .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+          .then(_applyGhData)
+          .catch(function(e){ alert('[디버그] GitHub fetch 실패: ' + e); });
+      }
     }
   }
 
