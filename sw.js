@@ -1,6 +1,6 @@
 /* Trispark Service Worker — offline-first app shell cache */
-var CACHE = 'trispark-v1';
-var SHELL = ['/', '/index.html', '/sortable.min.js'];
+var CACHE = 'trispark-v3';
+var SHELL = ['/index.html', '/sortable.min.js'];
 
 self.addEventListener('install', function(e) {
   e.waitUntil(
@@ -20,6 +20,23 @@ self.addEventListener('activate', function(e) {
 self.addEventListener('fetch', function(e) {
   var url = new URL(e.request.url);
 
+  /* 페이지 네비게이션 — 캐시된 index.html 우선 (오프라인에서도 앱 열림) */
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      caches.match('/index.html').then(function(cached) {
+        if (cached) return cached;
+        return fetch(e.request).then(function(res) {
+          if (res && res.status === 200) {
+            var clone = res.clone();
+            caches.open(CACHE).then(function(c){ c.put('/index.html', clone); });
+          }
+          return res;
+        });
+      })
+    );
+    return;
+  }
+
   /* API calls — network first, 3s timeout, return {offline:true} on fail */
   if (url.pathname === '/status' || url.pathname === '/sync' ||
       url.pathname === '/reset-today' || url.pathname === '/reset-all' ||
@@ -38,7 +55,7 @@ self.addEventListener('fetch', function(e) {
     return;
   }
 
-  /* App shell — cache-first, update in background */
+  /* App shell (JS, CSS 등) — cache-first, update in background */
   e.respondWith(
     caches.match(e.request).then(function(cached) {
       var network = fetch(e.request).then(function(res) {

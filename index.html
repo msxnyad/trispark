@@ -2242,32 +2242,34 @@
 
     /* GitHub Pages: GitHub에서 유저 데이터 가져와서 반영 */
     if (_isGhPages) {
-      var _applyGhData = function(ghData) {
-        var _ghUsers = ghData.users || {};
-        var _uid = id;
-        var ud = _ghUsers[_uid];
-        if (!ud || Object.keys(ud).length === 0) {
-          var _fb = ghData.activeUser || Object.keys(_ghUsers)[0];
-          ud = _fb ? _ghUsers[_fb] : null;
-        }
-        if (!ud) return;
-        var _local = getUserData(_uid);
-        saveUserData(_uid, Object.assign({}, _local, ud));
-        loadUserData();
-        if (ud.habits)    { habits = ud.habits; renderHabitGrid && renderHabitGrid(); }
-        if (ud.ddayList)  { ddayList = ud.ddayList; renderDday && renderDday(); }
-        if (ud.folderData){ folderData = ud.folderData; }
-        updateDdayBadge();
-      };
       if (ghDataPreloaded) {
-        _applyGhData(ghDataPreloaded);
+        _applyGitHubUserData(ghDataPreloaded);
       } else {
         fetch('https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json?_=' + Date.now())
           .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
-          .then(_applyGhData)
+          .then(_applyGitHubUserData)
           .catch(function(){});
       }
     }
+  }
+
+  function _applyGitHubUserData(ghData) {
+    if (!currentUser) return;
+    var _ghUsers = ghData.users || {};
+    var _uid = currentUser.id;
+    var ud = _ghUsers[_uid];
+    if (!ud || Object.keys(ud).length === 0) {
+      var _fb = ghData.activeUser || Object.keys(_ghUsers)[0];
+      ud = _fb ? _ghUsers[_fb] : null;
+    }
+    if (!ud) return;
+    var _local = getUserData(_uid);
+    saveUserData(_uid, Object.assign({}, _local, ud));
+    loadUserData();
+    if (ud.habits)    { habits = ud.habits; renderHabitGrid && renderHabitGrid(); }
+    if (ud.ddayList)  { ddayList = ud.ddayList; renderDday && renderDday(); }
+    if (ud.folderData){ folderData = ud.folderData; }
+    updateDdayBadge();
   }
 
   function resetTodayData() {
@@ -3196,6 +3198,14 @@
       var _rt = sessionStorage.getItem('returnTo');
       if (_rt) { sessionStorage.removeItem('returnTo'); goTo(_rt); }
       else { goTo('screen-home'); }
+      /* GitHub Pages: 자동복원 시에도 최신 데이터 fetch */
+      if (_isGhPages) {
+        var _ghRaw2 = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
+        fetch(_ghRaw2 + '?_=' + Date.now())
+          .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+          .then(function(ghData){ _applyGitHubUserData(ghData); })
+          .catch(function(){});
+      }
     } else if (_isGhPages) {
       /* GitHub Pages에서 로컬 계정 없으면 GitHub에서 계정 목록 가져오기 (자동로그인 X) */
       var _ghRaw = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
@@ -6023,7 +6033,14 @@
     /* 서비스 워커 등록 — HTTPS 환경에서만 (ngrok 등) */
     if ('serviceWorker' in navigator &&
         (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-      navigator.serviceWorker.register('/sw.js').catch(function(){});
+      navigator.serviceWorker.register('/sw.js').then(function(reg) {
+        reg.addEventListener('updatefound', function() {
+          var newSW = reg.installing;
+          newSW.addEventListener('statechange', function() {
+            if (newSW.state === 'activated') location.reload();
+          });
+        });
+      }).catch(function(){});
     }
   </script>
 </body>
