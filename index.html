@@ -2206,8 +2206,7 @@
       /* GitHub Pages: 계정 로드가 안 됐을 수 있으니 GitHub에서 받아서 재시도 */
       if (_isGhPages) {
         errEl.textContent = '계정 확인 중...';
-        fetch('https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json?_=' + Date.now())
-          .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+        _fetchSharedData()
           .then(function(ghData) {
             if (ghData.appUsers) {
               var _merged = Object.assign({}, ghData.appUsers, getUsers());
@@ -2245,10 +2244,7 @@
       if (ghDataPreloaded) {
         _applyGitHubUserData(ghDataPreloaded);
       } else {
-        fetch('https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json?_=' + Date.now())
-          .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
-          .then(_applyGitHubUserData)
-          .catch(function(){});
+        _fetchSharedData().then(_applyGitHubUserData).catch(function(){});
       }
     }
   }
@@ -2489,6 +2485,12 @@
   })();
   var _piIp = localStorage.getItem('pi_ip') || '172.20.10.3';
   var _isGhPages = window.location.hostname.endsWith('github.io') || window.location.hostname.endsWith('github.dev');
+  /* GitHub API로 shared_data.json 읽기 (CDN 캐시 우회) */
+  function _fetchSharedData() {
+    var _apiUrl = 'https://api.github.com/repos/msxnyad/trispark/contents/shared_data.json?_=' + Date.now();
+    return fetch(_apiUrl, {headers: {'Accept': 'application/vnd.github.v3.raw'}})
+      .then(function(r){ return r.ok ? r.json() : Promise.reject(); });
+  }
   function _apiBase() {
     if (!_isGhPages) return '';
     /* ngrok 등 전체 도메인이 저장된 경우 (슬래시 없이 host만) */
@@ -2504,11 +2506,7 @@
   /* GitHub Pages: 페이지 로드 즉시 ngrok URL 가져오기 */
   if (_isGhPages) {
     (function() {
-      var _ghRaw = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
-      var _ctrl = new AbortController();
-      setTimeout(function(){ _ctrl.abort(); }, 5000);
-      fetch(_ghRaw + '?_=' + Date.now(), {signal: _ctrl.signal})
-        .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+      _fetchSharedData()
         .then(function(d) {
           if (d.ngrokUrl && d.ngrokUrl.startsWith('https://')) {
             _piIp = d.ngrokUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
@@ -3066,11 +3064,7 @@
             })
             .catch(function(err){
                 /* 파이 꺼져있을 때 → GitHub shared_data.json 시도 (크로스 디바이스 동기화) */
-                var _ghRaw = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
-                var _ghCtrl = new AbortController();
-                setTimeout(function(){ _ghCtrl.abort(); }, 4000);
-                fetch(_ghRaw + '?_=' + Date.now(), {signal: _ghCtrl.signal})
-                  .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+                _fetchSharedData()
                   .then(function(ghData) {
                     /* ngrok URL이 있으면 API 주소로 저장 */
                     if (ghData.ngrokUrl && ghData.ngrokUrl.startsWith('https://')) {
@@ -3200,20 +3194,13 @@
       else { goTo('screen-home'); }
       /* GitHub Pages: 자동복원 시에도 최신 데이터 fetch */
       if (_isGhPages) {
-        var _ghRaw2 = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
-        fetch(_ghRaw2 + '?_=' + Date.now())
-          .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
-          .then(function(ghData){ _applyGitHubUserData(ghData); })
-          .catch(function(){});
+        _fetchSharedData().then(_applyGitHubUserData).catch(function(){});
       }
     } else if (_isGhPages) {
       /* GitHub Pages에서 로컬 계정 없으면 GitHub에서 계정 목록 가져오기 (자동로그인 X) */
-      var _ghRaw = 'https://raw.githubusercontent.com/msxnyad/trispark/main/shared_data.json';
-      fetch(_ghRaw + '?_=' + Date.now())
-        .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+      _fetchSharedData()
         .then(function(ghData) {
           if (!ghData.appUsers) return;
-          /* 계정 정보만 로컬에 저장 (로그인은 사용자가 직접) */
           var _localUsers = getUsers();
           var _merged = Object.assign({}, ghData.appUsers, _localUsers);
           saveUsers(_merged);
