@@ -27,14 +27,14 @@
       "ddayList": [],
       "selectedDdayIdx": 0,
       "goalMinutes": 120,
-      "pomoMinutes": 70,
+      "pomoMinutes": 120,
       "eisenData": [
         [],
         [],
         [],
         []
       ],
-      "lastOpenTime": "2026-05-29T17:45:54.256Z"
+      "lastOpenTime": "2026-05-30T11:44:04.452Z"
     }
   },
   "appUsers": {
