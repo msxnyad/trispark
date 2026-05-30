@@ -6033,15 +6033,7 @@
     /* 서비스 워커 등록 — HTTPS 환경에서만 (ngrok 등) */
     if ('serviceWorker' in navigator &&
         (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-      navigator.serviceWorker.register('/sw.js').then(function(reg) {
-        if (!navigator.serviceWorker.controller) return;
-        reg.addEventListener('updatefound', function() {
-          var newSW = reg.installing;
-          newSW.addEventListener('statechange', function() {
-            if (newSW.state === 'activated') location.reload();
-          });
-        });
-      }).catch(function(){});
+      navigator.serviceWorker.register('/sw.js').catch(function(){});
     }
   </script>
 </body>
