@@ -6034,6 +6034,7 @@
     if ('serviceWorker' in navigator &&
         (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
       navigator.serviceWorker.register('/sw.js').then(function(reg) {
+        if (!navigator.serviceWorker.controller) return;
         reg.addEventListener('updatefound', function() {
           var newSW = reg.installing;
           newSW.addEventListener('statechange', function() {
