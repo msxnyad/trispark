@@ -3000,26 +3000,16 @@
                             var oldMins  = reportData.daily.hours[hour].mins  || 0;
                             var oldSecs  = reportData.daily.hours[hour].secs  || 0;
                             var oldScore = reportData.daily.hours[hour].score || 0;
-                            var _newPs = hData[hourStr].postureSec || null;
                             if (oldMins > 0) {
                                 var total = oldMins + newMins;
                                 reportData.daily.hours[hour].score = total > 0
                                     ? Math.round((oldScore * oldMins + newScore * newMins) / total * 10) / 10 : 0;
                                 reportData.daily.hours[hour].mins  = Math.round(total * 10) / 10;
                                 reportData.daily.hours[hour].secs  = oldSecs + newSecs;
-                                /* 자세별 시간 합산 */
-                                if (_newPs) {
-                                    var _oldPs = reportData.daily.hours[hour].postureSec || {};
-                                    var _mk = ['turtle','bent','reclined','drowsy','absent','overlap'];
-                                    var _sum = {};
-                                    _mk.forEach(function(k){ _sum[k] = Math.round(((_oldPs[k]||0)+(_newPs[k]||0))*10)/10; });
-                                    reportData.daily.hours[hour].postureSec = _sum;
-                                }
                             } else {
                                 reportData.daily.hours[hour].mins  = newMins;
                                 reportData.daily.hours[hour].secs  = newSecs;
                                 reportData.daily.hours[hour].score = newScore;
-                                if (_newPs) reportData.daily.hours[hour].postureSec = _newPs;
                             }
                         }
                     }
@@ -3030,7 +3020,6 @@
                     reportData.daily.hours[_hi].secs  = 0;
                     reportData.daily.hours[_hi].score = 0;
                     reportData.daily.hours[_hi].segs  = [];
-                    reportData.daily.hours[_hi].postureSec = null;
                 }
                 if (data.hourlyData && Object.keys(data.hourlyData).length > 0) {
                     mergeHourlyIntoReport(data.hourlyData);
@@ -3049,14 +3038,6 @@
                             _ex.mins  = Math.round(((_ex.mins || 0) + (_csh_d.mins || 0)) * 10) / 10;
                             _ex.secs  = (_ex.secs || 0) + (_csh_d.secs || 0);
                             _ex.score = _csh_d.score || 0;  // ← 현재 세션 per-hour 점수 우선
-                            /* 자세별 시간 합산 (라이브) */
-                            if (_csh_d.postureSec) {
-                                var _exPs = _ex.postureSec || {};
-                                var _mk2 = ['turtle','bent','reclined','drowsy','absent','overlap'];
-                                var _sum2 = {};
-                                _mk2.forEach(function(k){ _sum2[k] = Math.round(((_exPs[k]||0)+(_csh_d.postureSec[k]||0))*10)/10; });
-                                _ex.postureSec = _sum2;
-                            }
                         }
                     }
                 }
@@ -4604,7 +4585,6 @@
         window._dailyHourMins  = {};
         window._dailyHourSecs  = {};
         window._dailyHourScore = {};
-        window._dailyHourPs    = {};
         window._dailyChartDark = isDark;
 
         /* 막대 + 꺾은선 포인트 수집 */
@@ -4624,7 +4604,6 @@
           window._dailyHourMins[h.hr]  = h.mins  || 0;
           window._dailyHourSecs[h.hr]  = h.secs  || 0;
           window._dailyHourScore[h.hr] = h.score || 0;
-          window._dailyHourPs[h.hr]    = h.postureSec || null;
 
           /* 꺾은선 점: 공부한 시간대만 (mins=0이면 제외 → 자세점수 0이 선을 끌어내리지 않음) */
           if (h.mins > 0) {
@@ -4815,10 +4794,10 @@
       return (ps[excKey] != null ? ps[excKey] : (ps[totalKey] || 0));
     }
     var postureItems = [
-      {label:'졸음',      val:p.drowsy,   color:clrBad,    emoji:'😴', sec:_excSec('drowsyExc','drowsy')},
       {label:'거북목',    val:p.turtle,   color:clrWarn,   emoji:'🐢', sec:_excSec('turtleExc','turtle')},
-      {label:'구부정',    val:p.bent,     color:clrBad,    emoji:'🪑', sec:_excSec('bentExc','bent')},
       {label:'기대기',    val:p.reclined, color:clrWarn,   emoji:'↙️', sec:_excSec('reclinedExc','reclined')},
+      {label:'구부정',    val:p.bent,     color:clrBad,    emoji:'🪑', sec:_excSec('bentExc','bent')},
+      {label:'졸음',      val:p.drowsy,   color:clrBad,    emoji:'😴', sec:_excSec('drowsyExc','drowsy')},
       {label:'얼굴 미감지', val:p.absent, color:clrAbsent, emoji:'🌫️', sec:_excSec('absentExc','absent')}
     ];
     var postureHtml = '<div class="report-section"><div class="report-section-title">자세 상태별 기록</div>';
@@ -5709,65 +5688,24 @@
     /* 구분선 */
     html += '<div style="height:1px;background:'+dividerC+';margin-bottom:8px;"></div>';
 
-    /* ── 자세별 시간 (이 시간대) ── */
-    var _hPs = (window._dailyHourPs && window._dailyHourPs[hr]) || null;
-    function _fmtHourSec(s) {
-      s = Math.floor((s || 0) * 10) / 10;  /* 둘째자리 버림 */
-      if (s <= 0) return '0초';
-      var m = Math.floor(s / 60), r = Math.round((s % 60) * 10) / 10;
-      var out = '';
-      if (m > 0) out += m + '분';
-      if (r > 0) out += (out ? ' ' : '') + r + '초';
-      return out || '0초';
-    }
-    /* 바른자세 시간 = 공부시간 - 나쁜자세 합 */
-    var _goodSec = totalSec;
-    var _psRows = [];
-    if (_hPs) {
-      var _badSum = (_hPs.turtle||0)+(_hPs.bent||0)+(_hPs.reclined||0)+(_hPs.drowsy||0)+(_hPs.absent||0)+(_hPs.overlap||0);
-      _goodSec = Math.max(0, totalSec - _badSum);
-      _psRows = [
-        {c:'g', l:'바른 자세',   sec:_goodSec},
-        {c:'r', l:'😴 졸음',      sec:_hPs.drowsy||0},
-        {c:'y', l:'🐢 거북목',    sec:_hPs.turtle||0},
-        {c:'r', l:'🪑 구부정',    sec:_hPs.bent||0},
-        {c:'y', l:'↙️ 기대기',    sec:_hPs.reclined||0},
-        {c:'a', l:'🌫️ 얼굴 미감지', sec:_hPs.absent||0},
-        {c:'o', l:'🔁 중복 자세', sec:_hPs.overlap||0}
-      ];
-    }
-    if (_psRows.length > 0) {
-      html += '<div style="display:flex;flex-direction:column;gap:5px;">';
-      _psRows.forEach(function(row) {
-        html += '<div style="display:flex;align-items:center;justify-content:space-between;">';
-        html += '<div style="display:flex;align-items:center;gap:5px;">';
-        html += '<div style="width:8px;height:8px;border-radius:2px;flex-shrink:0;background:'+(segColors[row.c]||segColors['n'])+';"></div>';
-        html += '<span style="font-size:10px;color:'+hTxt+';white-space:nowrap;">'+row.l+'</span>';
-        html += '</div>';
-        html += '<span style="font-size:10px;font-weight:700;color:'+(row.sec>0?hTxt:hMuted)+';white-space:nowrap;">'+_fmtHourSec(row.sec)+'</span>';
-        html += '</div>';
-      });
-      html += '</div>';
-    } else {
-      /* postureSec 없는 옛 데이터: 기존 색상 범례로 폴백 */
-      var _legend1 = [{k:'g',l:'바른 자세'},{k:'y',l:'주의 자세(거북목, 기대기)'},{k:'r',l:'위험 자세(졸음, 구부정)'}];
-      var _legend2 = [{k:'o',l:'중복 자세'},{k:'n',l:'비공부'}];
-      function _renderLegendRow(items) {
-        var s = '<div style="display:flex;gap:8px;flex-wrap:nowrap;align-items:center;">';
-        items.forEach(function(item) {
-          s += '<div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">';
-          s += '<div style="width:7px;height:7px;border-radius:2px;flex-shrink:0;background:'+(segColors[item.k]||segColors['n'])+';"></div>';
-          s += '<span style="font-size:8px;color:'+hMuted+';white-space:nowrap;">'+item.l+'</span>';
-          s += '</div>';
-        });
+    /* 자세 범례: 1행(바른·주의·위험) + 2행(중복·비공부) */
+    var _legend1 = [{k:'g',l:'바른 자세'},{k:'y',l:'주의 자세(거북목, 기대기)'},{k:'r',l:'위험 자세(졸음, 구부정)'}];
+    var _legend2 = [{k:'o',l:'중복 자세'},{k:'n',l:'비공부'}];
+    function _renderLegendRow(items) {
+      var s = '<div style="display:flex;gap:8px;flex-wrap:nowrap;align-items:center;">';
+      items.forEach(function(item) {
+        s += '<div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">';
+        s += '<div style="width:7px;height:7px;border-radius:2px;flex-shrink:0;background:'+(segColors[item.k]||segColors['n'])+';"></div>';
+        s += '<span style="font-size:8px;color:'+hMuted+';white-space:nowrap;">'+item.l+'</span>';
         s += '</div>';
-        return s;
-      }
-      html += '<div style="display:flex;flex-direction:column;gap:4px;">';
-      html += _renderLegendRow(_legend1);
-      html += _renderLegendRow(_legend2);
-      html += '</div>';
+      });
+      s += '</div>';
+      return s;
     }
+    html += '<div style="display:flex;flex-direction:column;gap:4px;">';
+    html += _renderLegendRow(_legend1);
+    html += _renderLegendRow(_legend2);
+    html += '</div>';
 
     html += '</div>';
 
