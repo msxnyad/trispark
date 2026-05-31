@@ -3998,7 +3998,7 @@
     var calDaysNew = [null];
     for (var i = 1; i <= 31; i++) {
       var e = mData[String(i)] || {};
-      calDaysNew.push({mins: e.mins||0, secs: e.secs||Math.round((e.mins||0)*60), score: e.score||0, postureScore: e.postureScore||0, immersion: e.immersion||0});
+      calDaysNew.push({mins: e.mins||0, secs: e.secs||Math.round((e.mins||0)*60), score: e.score||0, postureScore: e.postureScore||0, immersion: e.immersion||0, goalSec: e.goalSec||0});
     }
     reportData['monthly'].calDays = calDaysNew;
 
@@ -4838,10 +4838,11 @@
       var unitColor  = isDark ? 'rgba(254,253,245,0.6)' : rTxtMuted;
       function postureCell(item) {
         var t = fmtSec(item.sec);
-        if (!t && item.val > 0) t = '0초';  /* 단독 시간 0 (항상 다른 자세와 겹침) → 0초 정직 표시 */
+        /* 단독 시간이 0초면(항상 겹침 or 아주 짧게 스침) 횟수도 0으로 — 중복에 이미 포함 */
+        var cnt = (item.sec && item.sec >= 0.1) ? item.val : 0;
         var html = '<div style="background:'+postureCellBg+';border-radius:10px;padding:10px 12px;">';
         html += '<div style="font-size:11px;color:'+labelColor+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
-        html += '<div style="font-size:18px;font-weight:800;color:'+item.color+';">'+item.val+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
+        html += '<div style="font-size:18px;font-weight:800;color:'+item.color+';">'+cnt+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
         if (t) {
           html += '<div style="font-size:10px;color:'+unitColor+';margin-top:2px;">'+t+'</div>';
         }
