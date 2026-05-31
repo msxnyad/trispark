@@ -4347,7 +4347,7 @@
           var rawBad    = (psSec.bentExc     || 0) + (psSec.drowsyExc   || 0);
           var rawAbsent = (psSec.absentExc   || 0);
           var rawOv     = (psSec.overlapTotal || 0);
-          var psT = _getLiveStudySec() || _psTotal;
+          var psT = actualSec || _psTotal;
           psWarnPct   = Math.round(rawWarn   / psT * 1000) / 10;
           psBadPct    = Math.round(rawBad    / psT * 1000) / 10;
           psAbsentPct = Math.round(rawAbsent / psT * 1000) / 10;
