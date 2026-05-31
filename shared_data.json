@@ -17,7 +17,8 @@
             "2026-05-27": true,
             "2026-05-28": true,
             "2026-05-29": true,
-            "2026-05-30": true
+            "2026-05-30": true,
+            "2026-05-31": false
           }
         }
       ],
@@ -42,136 +43,18 @@
         [],
         []
       ],
-      "lastOpenTime": "2026-05-30T15:00:20.690Z",
-      "totalStudySec": 449,
-      "immersionScore": 69,
-      "timeScore": 50,
-      "postureScore": 88.9,
-      "pomodoroCount": 3,
+      "lastOpenTime": "2026-05-31T04:57:51.489Z",
+      "totalStudySec": 0,
+      "immersionScore": 0,
+      "timeScore": 0,
+      "postureScore": 0,
+      "pomodoroCount": 0,
       "pomodoroSeconds": 300,
-      "totalPomodoroGoalSec": 900,
+      "totalPomodoroGoalSec": 0,
       "sessionActive": false,
-      "postureStats": {
-        "absentCount": 0,
-        "absentExcSec": 0,
-        "absentSec": 0,
-        "bentCount": 3,
-        "bentExcSec": 11.799999999999999,
-        "bentOverlapSec": 27.5,
-        "bentSec": 39.3,
-        "drowsyCount": 1,
-        "drowsyExcSec": 0,
-        "drowsyOverlapSec": 3.2,
-        "drowsySec": 3.2,
-        "goodSec": 412.5,
-        "overlapTotalSec": 28,
-        "postureRatio": 88.9,
-        "proneCount": 0,
-        "reclinedCount": 0,
-        "reclinedExcSec": 0,
-        "reclinedOverlapSec": 0,
-        "reclinedSec": 0,
-        "totalSec": 463.9,
-        "turtleCount": 4,
-        "turtleExcSec": 11.5,
-        "turtleOverlapSec": 28,
-        "turtleSec": 39.5
-      },
-      "hourlyData": {
-        "23": {
-          "mins": 7.5,
-          "score": 88.5,
-          "secs": 449
-        }
-      },
-      "hourlySegments": {
-        "23": [
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "g",
-            "g",
-            "n",
-            "g"
-          ],
-          [
-            "g",
-            "g",
-            "g",
-            "g",
-            "g"
-          ]
-        ]
-      },
+      "postureStats": {},
+      "hourlyData": {},
+      "hourlySegments": {},
       "weeklyStudyData": {
         "avgImmersion": 69,
         "avgPosturePct": {
