@@ -37,13 +37,18 @@
             "text": "테스트하는중입니댕",
             "done": false,
             "pinned": true
+          },
+          {
+            "text": "이제ㅈㅉ된거냥",
+            "done": false,
+            "pinned": true
           }
         ],
         [],
         [],
         []
       ],
-      "lastOpenTime": "2026-05-31T13:25:14.499Z",
+      "lastOpenTime": "2026-05-31T13:27:36.798Z",
       "totalStudySec": 109,
       "immersionScore": 49,
       "timeScore": 36,
