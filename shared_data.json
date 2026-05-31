@@ -43,46 +43,46 @@
         [],
         []
       ],
-      "lastOpenTime": "2026-05-31T09:13:28.384Z",
-      "totalStudySec": 93,
-      "immersionScore": 44,
-      "timeScore": 31,
-      "postureScore": 56.3,
-      "pomodoroCount": 1,
+      "lastOpenTime": "2026-05-31T09:18:46.779Z",
+      "totalStudySec": 243,
+      "immersionScore": 59,
+      "timeScore": 40,
+      "postureScore": 77.8,
+      "pomodoroCount": 2,
       "pomodoroSeconds": 300,
-      "totalPomodoroGoalSec": 300,
+      "totalPomodoroGoalSec": 600,
       "sessionActive": false,
       "postureStats": {
         "absentCount": 0,
         "absentExcSec": 0,
         "absentSec": 0,
-        "bentCount": 2,
-        "bentExcSec": 20.2,
-        "bentOverlapSec": 13.2,
-        "bentSec": 33.4,
+        "bentCount": 3,
+        "bentExcSec": 22,
+        "bentOverlapSec": 19.9,
+        "bentSec": 41.9,
         "drowsyCount": 0,
         "drowsyExcSec": 0,
         "drowsyOverlapSec": 0,
         "drowsySec": 0,
-        "goodSec": 55.7,
-        "overlapTotalSec": 13.2,
-        "postureRatio": 56.3,
+        "goodSec": 194.2,
+        "overlapTotalSec": 19.9,
+        "postureRatio": 77.8,
         "proneCount": 0,
         "reclinedCount": 1,
         "reclinedExcSec": 9.7,
         "reclinedOverlapSec": 13.3,
         "reclinedSec": 23,
-        "totalSec": 98.9,
-        "turtleCount": 0,
-        "turtleExcSec": 0,
-        "turtleOverlapSec": 0,
-        "turtleSec": 0
+        "totalSec": 249.3,
+        "turtleCount": 2,
+        "turtleExcSec": 3.4,
+        "turtleOverlapSec": 6.7,
+        "turtleSec": 10.1
       },
       "hourlyData": {
         "18": {
-          "mins": 1.6,
-          "score": 53.8,
-          "secs": 93
+          "mins": 4,
+          "score": 77.2,
+          "secs": 243
         }
       },
       "hourlySegments": {
@@ -110,9 +110,9 @@
           ],
           [
             "n",
-            "n",
-            "n",
-            "n",
+            "g",
+            "g",
+            "g",
             "n"
           ],
           [
@@ -174,16 +174,16 @@
         ]
       },
       "weeklyStudyData": {
-        "avgImmersion": 42,
+        "avgImmersion": 59,
         "avgPosturePct": {
           "absent": 0,
-          "bad": 20.4,
-          "good": 56.5,
-          "overlap": 13.3,
-          "warn": 9.8
+          "bad": 8.8,
+          "good": 78.1,
+          "overlap": 7.9,
+          "warn": 5.2
         },
-        "avgPostureScore": 53.8,
-        "avgTimeScore": 31,
+        "avgPostureScore": 77.8,
+        "avgTimeScore": 40,
         "days": {
           "Fri": {
             "immersion": 0,
@@ -210,41 +210,41 @@
             "sessions": 0
           },
           "Sun": {
-            "goalSec": 300,
-            "immersion": 42,
-            "mins": 2,
+            "goalSec": 600,
+            "immersion": 59,
+            "mins": 4,
             "posture": {
               "absent": 0,
-              "bent": 2,
+              "bent": 3,
               "drowsy": 0,
               "reclined": 1,
-              "turtle": 0
+              "turtle": 2
             },
             "posturePct": {
               "absent": 0,
-              "bad": 20.4,
-              "good": 56.5,
-              "overlap": 13.3,
-              "warn": 9.8
+              "bad": 8.8,
+              "good": 78.1,
+              "overlap": 7.9,
+              "warn": 5.2
             },
-            "postureScore": 53.8,
+            "postureScore": 77.8,
             "postureSec": {
               "absent": 0,
               "absentExc": 0,
-              "bent": 20.2,
-              "bentExc": 20.2,
+              "bent": 22,
+              "bentExc": 22,
               "drowsy": 0,
               "drowsyExc": 0,
-              "overlapTotal": 13.2,
+              "overlapTotal": 19.9,
               "reclined": 9.7,
               "reclinedExc": 9.7,
-              "total": 98.9,
-              "turtle": 0,
-              "turtleExc": 0
+              "total": 249.3,
+              "turtle": 3.4,
+              "turtleExc": 3.4
             },
-            "score": 31,
-            "secs": 93,
-            "sessions": 1
+            "score": 40,
+            "secs": 243,
+            "sessions": 2
           },
           "Thu": {
             "immersion": 0,
@@ -271,67 +271,67 @@
             "sessions": 0
           }
         },
-        "totalGoalSec": 300,
+        "totalGoalSec": 600,
         "totalPosture": {
           "absent": 0,
-          "bent": 2,
+          "bent": 3,
           "drowsy": 0,
           "reclined": 1,
-          "turtle": 0
+          "turtle": 2
         },
         "totalPostureSec": {
           "absent": 0,
           "absentExc": 0,
-          "bent": 20.2,
-          "bentExc": 20.2,
+          "bent": 22,
+          "bentExc": 22,
           "drowsy": 0,
           "drowsyExc": 0,
-          "overlapTotal": 13.2,
+          "overlapTotal": 19.9,
           "reclined": 9.7,
           "reclinedExc": 9.7,
-          "total": 98.9,
-          "turtle": 0,
-          "turtleExc": 0
+          "total": 249.3,
+          "turtle": 3.4,
+          "turtleExc": 3.4
         },
         "weekStart": "2026-05-25"
       },
       "monthlyData": {
         "2026-05": {
           "31": {
-            "goalSec": 300,
-            "immersion": 42,
-            "mins": 2,
+            "goalSec": 600,
+            "immersion": 59,
+            "mins": 4,
             "posture": {
               "absent": 0,
-              "bent": 2,
+              "bent": 3,
               "drowsy": 0,
               "reclined": 1,
-              "turtle": 0
+              "turtle": 2
             },
             "posturePct": {
               "absent": 0,
-              "bad": 20.4,
-              "good": 56.5,
-              "overlap": 13.3,
-              "warn": 9.8
+              "bad": 8.8,
+              "good": 78.1,
+              "overlap": 7.9,
+              "warn": 5.2
             },
-            "postureScore": 53.8,
+            "postureScore": 77.8,
             "postureSec": {
               "absent": 0,
               "absentExc": 0,
-              "bent": 20.2,
-              "bentExc": 20.2,
+              "bent": 22,
+              "bentExc": 22,
               "drowsy": 0,
               "drowsyExc": 0,
-              "overlapTotal": 13.2,
+              "overlapTotal": 19.9,
               "reclined": 9.7,
               "reclinedExc": 9.7,
-              "total": 98.9,
-              "turtle": 0,
-              "turtleExc": 0
+              "total": 249.3,
+              "turtle": 3.4,
+              "turtleExc": 3.4
             },
-            "score": 31,
-            "secs": 93
+            "score": 40,
+            "secs": 243
           }
         }
       }
