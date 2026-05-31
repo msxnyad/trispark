@@ -4845,16 +4845,18 @@
         var cnt = (item.sec && item.sec >= 0.1) ? item.val : 0;
         var t = (item.sec && item.sec >= 0.1) ? fmtSec(item.sec) : '0초';
         var html = '<div style="background:'+postureCellBg+';border-radius:10px;padding:10px 12px;box-sizing:border-box;">';
-        html += '<div style="font-size:11px;color:'+labelColor+';margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.emoji+' '+item.label+'</div>';
-        html += '<div style="font-size:18px;font-weight:800;color:'+item.color+';white-space:nowrap;line-height:1.1;">'+cnt+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
-        /* 시간 줄: 작게 + 한 줄 → 칸 높이 통일 (정렬 맞춤) */
-        html += '<div style="font-size:8.5px;color:'+unitColor+';margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+t+'</div>';
+        /* 라벨/숫자/시간 줄마다 고정 높이 → 이모지 높이 차이로 정렬 틀어지는 것 방지 */
+        html += '<div style="font-size:11px;color:'+labelColor+';height:16px;line-height:16px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.emoji+' '+item.label+'</div>';
+        html += '<div style="font-size:18px;font-weight:800;color:'+item.color+';height:22px;line-height:22px;white-space:nowrap;">'+cnt+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
+        html += '<div style="font-size:8.5px;color:'+unitColor+';height:12px;line-height:12px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+t+'</div>';
         html += '</div>';
         return html;
       }
-      /* 5개를 3열 그리드 하나로 → 위/아래 줄 열 너비·정렬 일치 (마지막 칸은 비움) */
-      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">';
-      postureItems.forEach(function(item) { postureHtml += postureCell(item); });
+      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">';
+      postureItems.slice(0,3).forEach(function(item) { postureHtml += postureCell(item); });
+      postureHtml += '</div>';
+      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+      postureItems.slice(3).forEach(function(item) { postureHtml += postureCell(item); });
       postureHtml += '</div>';
       /* 중복 자세 시간 별도 카드 (전체 탭 공통) */
       postureHtml += '<div style="margin-top:8px;background:'+postureCellBg+';border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">';
