@@ -4836,7 +4836,7 @@
       var unitColor  = isDark ? 'rgba(254,253,245,0.6)' : rTxtMuted;
       function postureCell(item) {
         var t = fmtSec(item.sec);
-        if (!t && item.val > 0) t = '1초';
+        if (!t && item.val > 0) t = '0초';  /* 단독 시간 0 (항상 다른 자세와 겹침) → 0초 정직 표시 */
         var html = '<div style="background:'+postureCellBg+';border-radius:10px;padding:10px 12px;">';
         html += '<div style="font-size:11px;color:'+labelColor+';margin-bottom:4px;">'+item.emoji+' '+item.label+'</div>';
         html += '<div style="font-size:18px;font-weight:800;color:'+item.color+';">'+item.val+'<span style="font-size:11px;font-weight:400;color:'+unitColor+';">회</span></div>';
