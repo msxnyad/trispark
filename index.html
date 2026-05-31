@@ -2643,9 +2643,12 @@
         var _pst = data.postureStats;
         var _studyDen = data.totalStudySec || 0;
         if (_todayDay && _todayDay.mins > 0 && _studyDen > 0) {
-          var _badEx = (_pst.turtleExcSec||0) + (_pst.bentExcSec||0) + (_pst.reclinedExcSec||0)
-                     + (_pst.drowsyExcSec||0) + (_pst.absentExcSec||0) + (_pst.overlapTotalSec||0);
-          var _todayGood = Math.round(Math.max(0, _studyDen - _badEx) / _studyDen * 1000) / 10;
+          /* good = 100 − 나머지 (각 항목 반올림 후) → 자세 bar와 동일하게 합 100 보장 */
+          var _wP = Math.round(((_pst.turtleExcSec||0)+(_pst.reclinedExcSec||0)) / _studyDen * 1000) / 10;
+          var _bP = Math.round(((_pst.bentExcSec||0)+(_pst.drowsyExcSec||0)) / _studyDen * 1000) / 10;
+          var _aP = Math.round((_pst.absentExcSec||0) / _studyDen * 1000) / 10;
+          var _oP = Math.round((_pst.overlapTotalSec||0) / _studyDen * 1000) / 10;
+          var _todayGood = Math.round((100 - _wP - _bP - _aP - _oP) * 10) / 10;
           _todayDay.score = _todayGood;
           var _wkActive = reportData['weekly'].days.filter(function(d){ return d.mins > 0; });
           reportData['weekly'].postureScore = Math.round(_wkActive.reduce(function(s,d){ return s+(d.score||0); }, 0) / _wkActive.length * 10) / 10;
@@ -4354,8 +4357,8 @@
           psBadPct    = Math.round(rawBad    / psT * 1000) / 10;
           psAbsentPct = Math.round(rawAbsent / psT * 1000) / 10;
           psOverlapPct= Math.round(rawOv     / psT * 1000) / 10;
-          var rawGood = psT - rawWarn - rawBad - rawAbsent - rawOv;
-          psGoodPct   = Math.round(Math.max(0, rawGood) / psT * 1000) / 10;
+          /* good = 100 − 나머지 → 반올림 오차 흡수, 합이 항상 100 */
+          psGoodPct   = Math.round((100 - psWarnPct - psBadPct - psAbsentPct - psOverlapPct) * 10) / 10;
         } else {
           /* 구버전 폴백: overlap 차감 후 비례 보정 */
           var rawWarn   = (psSec.turtle + psSec.reclined);
