@@ -4180,8 +4180,8 @@
           ? ((d.totalPomodoroGoalSec || 0) + (d.pomodoroSeconds || 0)) || (goalMinutes * 60)
           : (d.totalPomodoroGoalSec || 0);
       var tsComputed   = (hasData && tsActualSec > 0 && tsGoalSec > 0) ? Math.min(100, Math.round(tsActualSec / tsGoalSec * 1000) / 10) : 0;
-      /* 세션 종료 후엔 저장된 점수 사용 → 게이지 숫자와 항목 바 일치 */
-      var _subTs = d.sessionActive ? tsComputed : (d.timeScore > 0 ? d.timeScore : tsComputed);
+      /* tsComputed: actualSec/goalSec 직접 계산 → 소수점 1자리 정확 */
+      var _subTs = tsComputed > 0 ? tsComputed : (d.timeScore || 0);
       var _subPs = hasData ? _dailyPsGood : 0;
       subItems = [
         {label:'시간 점수', val: _subTs, color:barColorTime},
@@ -4772,9 +4772,10 @@
     var clrAbsent= isDark ? 'rgba(196,217,196,0.4)' : '#a0b8a0'; /* 얼굴미감지 → 회색 */
     var ps = d.postureSec || {};
     function fmtSec(s) {
-      s = Math.round(s || 0);
+      s = s || 0;
       if (s <= 0) return '';
-      var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
+      var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+      var r = Math.round((s % 60) * 10) / 10;  // 소수점 1자리
       var result = '';
       if (h > 0) result += h + '시간';
       if (m > 0) result += (result ? ' ' : '') + m + '분';
