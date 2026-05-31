@@ -4132,7 +4132,7 @@
           _rawBad = _rw + _rb + (_psd.absent||0);
           _psT = _psd.total;
         }
-        _dailyPsGood = Math.round((d.postureScore || 0) * 10) / 10;
+        _dailyPsGood = Math.round(Math.max(0, Math.min(100, (_psT - _rawBad) / _psT * 100)) * 10) / 10;
       } else {
         _dailyPsGood = d.postureScore !== undefined ? Math.round((d.postureScore||0)*10)/10 : 0;
       }
@@ -4343,19 +4343,12 @@
           var rawBad    = (psSec.bentExc     || 0) + (psSec.drowsyExc   || 0);
           var rawAbsent = (psSec.absentExc   || 0);
           var rawOv     = (psSec.overlapTotal || 0);
-          /* good%: 서버 postureScore 기준 (인터벌 클리핑 정확) → 패널과 일치 */
-          psGoodPct   = Math.round((d.postureScore || 0) * 10) / 10;
-          /* 나쁜자세 분포: ExcSec 비율로 (100 - good)% 를 비례 배분 */
-          var totalBadPct = Math.max(0, Math.round((100 - psGoodPct) * 10) / 10);
-          var totalBadExc = rawWarn + rawBad + rawAbsent + rawOv;
-          if (totalBadExc > 0) {
-            psWarnPct   = Math.round(totalBadPct * rawWarn   / totalBadExc * 10) / 10;
-            psBadPct    = Math.round(totalBadPct * rawBad    / totalBadExc * 10) / 10;
-            psAbsentPct = Math.round(totalBadPct * rawAbsent / totalBadExc * 10) / 10;
-            psOverlapPct= Math.round(Math.max(0, totalBadPct - psWarnPct - psBadPct - psAbsentPct) * 10) / 10;
-          } else {
-            psWarnPct = psBadPct = psAbsentPct = psOverlapPct = 0;
-          }
+          psWarnPct   = Math.round(rawWarn   / psT * 1000) / 10;
+          psBadPct    = Math.round(rawBad    / psT * 1000) / 10;
+          psAbsentPct = Math.round(rawAbsent / psT * 1000) / 10;
+          psOverlapPct= Math.round(rawOv     / psT * 1000) / 10;
+          var rawGood = psT - rawWarn - rawBad - rawAbsent - rawOv;
+          psGoodPct   = Math.round(Math.max(0, rawGood) / psT * 1000) / 10;
         } else {
           /* 구버전 폴백: overlap 차감 후 비례 보정 */
           var rawWarn   = (psSec.turtle + psSec.reclined);
@@ -4375,8 +4368,10 @@
         psOffPct = 0;
       }
 
-      /* 점수 표시값: 서버 postureScore = 인터벌 클리핑 기반 → 패널과 일치 */
-      var psValDisplay = (Math.round((d.postureScore || 0) * 10) / 10).toFixed(1);
+      /* 점수 표시값: ExcSec/actualSec 기반 → 자세 상태별 기록과 일치 */
+      var psValDisplay = psHasDetail
+        ? (Math.max(0, Math.min(100, psGoodPct))).toFixed(1)
+        : (Math.round((d.postureScore || 0) * 10) / 10).toFixed(1);
 
       html += '<div>';
       html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">';
