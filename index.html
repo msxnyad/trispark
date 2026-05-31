@@ -2634,12 +2634,19 @@
       if (wd.avgPosturePct   !== undefined) reportData['weekly'].avgPosturePct = wd.avgPosturePct;
       if (wd.weekStart       !== undefined) reportData['weekly'].weekStart      = wd.weekStart;
       if (wd.totalPostureSec !== undefined) reportData['weekly'].postureSec     = wd.totalPostureSec;
-      /* 오늘 자세 점수를 daily 실시간 값으로 동기화 (주별은 세션 종료 시에만 저장되므로) */
-      if (data.postureScore !== undefined && reportData['weekly'].days) {
+      /* 오늘 자세 점수를 daily 실시간 값으로 동기화 (주별은 세션 종료 시에만 저장되므로)
+         ★ data.postureScore(스칼라)는 카메라 totalSec 분모를 쓸 수 있어 부정확 →
+            postureStats ExcSec / totalStudySec 로 직접 계산 (자세 bar와 동일 공식) */
+      if (data.postureStats && reportData['weekly'].days) {
         var _todayWI = (new Date().getDay() + 6) % 7; /* 0=Mon */
         var _todayDay = reportData['weekly'].days[_todayWI];
-        if (_todayDay && _todayDay.mins > 0 && data.postureScore > 0) {
-          _todayDay.score = Math.round(data.postureScore * 10) / 10;
+        var _pst = data.postureStats;
+        var _studyDen = data.totalStudySec || 0;
+        if (_todayDay && _todayDay.mins > 0 && _studyDen > 0) {
+          var _badEx = (_pst.turtleExcSec||0) + (_pst.bentExcSec||0) + (_pst.reclinedExcSec||0)
+                     + (_pst.drowsyExcSec||0) + (_pst.absentExcSec||0) + (_pst.overlapTotalSec||0);
+          var _todayGood = Math.round(Math.max(0, _studyDen - _badEx) / _studyDen * 1000) / 10;
+          _todayDay.score = _todayGood;
           var _wkActive = reportData['weekly'].days.filter(function(d){ return d.mins > 0; });
           reportData['weekly'].postureScore = Math.round(_wkActive.reduce(function(s,d){ return s+(d.score||0); }, 0) / _wkActive.length * 10) / 10;
         }
