@@ -4031,11 +4031,13 @@
         if (ed && ed.mins > 0) wDays.push(ed);
       }
       var wSecs = wDays.reduce(function(s, ed){ return s + (ed.secs || Math.round((ed.mins||0)*60)); }, 0);
+      var wGoal = wDays.reduce(function(s, ed){ return s + (ed.goalSec || 0); }, 0);
       var wMins = wSecs / 60;
       var wImm  = wDays.length ? Math.round(wDays.reduce(function(s,ed){return s+(ed.immersion||0);},0)/wDays.length) : 0;
       var wPs   = wDays.length ? Math.round(wDays.reduce(function(s,ed){return s+(ed.postureScore||0);},0)/wDays.length*10)/10 : 0;
-      var wTs   = wDays.length ? Math.round(wDays.reduce(function(s,ed){return s+(ed.score||0);},0)/wDays.length*10)/10 : 0;
-      return {label: weekLabels[wi], mins: wMins, secs: wSecs, score: wPs, immersion: wImm, timeScore: wTs};
+      /* 시간점수: 누적 secs/goalSec로 직접 계산 → 소수점 1자리 */
+      var wTs   = wGoal > 0 ? Math.min(100, Math.round(wSecs / wGoal * 1000) / 10) : 0;
+      return {label: weekLabels[wi], mins: wMins, secs: wSecs, goalSec: wGoal, score: wPs, immersion: wImm, timeScore: wTs};
     });
 
     var allDays = Object.keys(mData).map(function(k){ return mData[k]; }).filter(function(e){ return e.mins > 0; });
@@ -5018,7 +5020,7 @@
         var isToday = !isShowingExample && (cy===now.getFullYear() && cm===now.getMonth() && day===now.getDate());
         var todayOutlineColor = isDarkCal ? '#C4D9C4' : '#2e5a2e';
         var outlineStyle = isToday ? 'outline:2px solid '+todayOutlineColor+';outline-offset:1px;' : '';
-        html += '<div style="aspect-ratio:1;border-radius:8px;background:'+bg+';'+outlineStyle+'display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showCalDayDetail('+day+','+dayData.mins+','+dayData.score+','+(dayData.immersion||0)+','+(dayData.secs||Math.round((dayData.mins||0)*60))+','+(dayData.postureScore||0)+')">';
+        html += '<div style="aspect-ratio:1;border-radius:8px;background:'+bg+';'+outlineStyle+'display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showCalDayDetail('+day+','+dayData.mins+','+dayData.score+','+(dayData.immersion||0)+','+(dayData.secs||Math.round((dayData.mins||0)*60))+','+(dayData.postureScore||0)+','+(dayData.goalSec||0)+')">';
         html += '<span style="font-size:10px;font-weight:700;color:'+tc+';">'+day+'</span>';
         html += '</div>';
       }
@@ -5108,7 +5110,8 @@
       var _wd = new Date(+_wp[0], +_wp[1]-1, +_wp[2]+idx);
       _datePrefix = (_wd.getMonth()+1)+'월 '+_wd.getDate()+'일 ';
     }
-    var tsD = d.timeScore || 0;
+    /* 시간점수: secs/goalSec로 직접 계산 → 소수점 1자리 (저장값 정수 한계 우회) */
+    var tsD = (d.goalSec > 0) ? Math.min(100, Math.round(dSec / d.goalSec * 1000) / 10) : (d.timeScore || 0);
     var tsColorD = isDarkD ? (tsD>=80?'#D9FFD9':tsD>=60?'#C2E2C2':tsD>=40?'#ACCBAC':'#9BB89B')
                            : (tsD>=80?'#2e5a2e':tsD>=60?'#4a7a4a':tsD>=40?'#7aaa7a':'#a8cca8');
     var html = '<div style="background:'+detBg+';border-radius:12px;padding:12px;">';
@@ -5362,10 +5365,12 @@
     unlockReportScroll();
   }
 
-  function showCalDayDetail(day, mins, score, immersion, secs, postureScore) {
+  function showCalDayDetail(day, mins, score, immersion, secs, postureScore, goalSec) {
     secs = secs || Math.round((mins||0) * 60);
     immersion = Math.round(immersion || 0);
     postureScore = postureScore || 0;
+    /* 시간점수: goalSec 있으면 secs/goalSec로 직접 계산 → 소수점 1자리 */
+    if (goalSec && goalSec > 0) score = Math.min(100, Math.round(secs / goalSec * 1000) / 10);
     var modal = document.getElementById('daily-popup-modal');
     var titleEl = document.getElementById('daily-popup-title');
     var contentEl = document.getElementById('daily-popup-content');
