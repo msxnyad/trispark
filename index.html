@@ -4781,7 +4781,7 @@
       s = s || 0;
       if (s <= 0) return '';
       var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
-      var r = Math.round((s % 60) * 10) / 10;  // 소수점 1자리
+      var r = Math.floor((s % 60) * 10) / 10;  // 소수점 1자리 (둘째자리 버림)
       var result = '';
       if (h > 0) result += h + '시간';
       if (m > 0) result += (result ? ' ' : '') + m + '분';
