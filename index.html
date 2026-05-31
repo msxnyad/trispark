@@ -4121,15 +4121,16 @@
          goodPct = (totalSec - 모든 나쁜자세 시간합) / totalSec * 100 */
       var _psd = d.postureSec;
       if (_psd && (_psd.total || 0) > 0) {
-        var _psT = (d.totalStudySec > 0) ? d.totalStudySec : _psd.total;
         var _hasExc = (_psd.turtleExc !== undefined);
-        var _rawBad;
+        var _rawBad, _psT;
         if (_hasExc) {
           _rawBad = (_psd.turtleExc||0) + (_psd.reclinedExc||0) + (_psd.bentExc||0) + (_psd.drowsyExc||0) + (_psd.absentExc||0) + (_psd.overlapTotal||0);
+          _psT = _getLiveStudySec() || _psd.total;
         } else {
           var _rw = Math.max(0, (_psd.turtle||0) + (_psd.reclined||0) - (_psd.turtleOverlap||0) - (_psd.reclinedOverlap||0));
           var _rb = Math.max(0, (_psd.bent||0) + (_psd.drowsy||0) - (_psd.bentOverlap||0) - (_psd.drowsyOverlap||0));
           _rawBad = _rw + _rb + (_psd.absent||0);
+          _psT = _psd.total;
         }
         _dailyPsGood = Math.round(Math.max(0, Math.min(100, (_psT - _rawBad) / _psT * 100)) * 10) / 10;
       } else {
@@ -4338,16 +4339,15 @@
       var psAbsentColor = isDark ? 'rgba(196,217,196,0.35)' : '#a8b8a8';
       var psOverlapPct = 0;
       if (psHasDetail) {
-        /* 분모: 실제 공부 시간 기준 (카메라 측정 시간과 다를 수 있음) */
-        var psT = (tab === 'daily' && d.totalStudySec > 0) ? d.totalStudySec : _psTotal;
         /* combo_stats 기반 exclusive 시간 사용 → 합이 totalSec을 초과하지 않음 */
         var hasExc = (psSec.turtleExc !== undefined);
         if (hasExc) {
-          /* 신규: exclusive 시간 직접 사용 */
+          /* 분모 = goodSec + 모든 ExcSec 합계 → 측정된 시간만 써서 항상 합 100% 보장 */
           var rawWarn   = (psSec.turtleExc   || 0) + (psSec.reclinedExc || 0);
           var rawBad    = (psSec.bentExc     || 0) + (psSec.drowsyExc   || 0);
           var rawAbsent = (psSec.absentExc   || 0);
           var rawOv     = (psSec.overlapTotal || 0);
+          var psT = _getLiveStudySec() || _psTotal;
           psWarnPct   = Math.round(rawWarn   / psT * 1000) / 10;
           psBadPct    = Math.round(rawBad    / psT * 1000) / 10;
           psAbsentPct = Math.round(rawAbsent / psT * 1000) / 10;
