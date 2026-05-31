@@ -4852,11 +4852,9 @@
         html += '</div>';
         return html;
       }
-      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">';
-      postureItems.slice(0,3).forEach(function(item) { postureHtml += postureCell(item); });
-      postureHtml += '</div>';
-      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
-      postureItems.slice(3).forEach(function(item) { postureHtml += postureCell(item); });
+      /* 5개를 3열 그리드 하나로 → 위/아래 줄 열 너비·정렬 일치 (마지막 칸은 비움) */
+      postureHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">';
+      postureItems.forEach(function(item) { postureHtml += postureCell(item); });
       postureHtml += '</div>';
       /* 중복 자세 시간 별도 카드 (전체 탭 공통) */
       postureHtml += '<div style="margin-top:8px;background:'+postureCellBg+';border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">';
