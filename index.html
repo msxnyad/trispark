@@ -2092,6 +2092,7 @@
 
   var isShowingExample = false;
   var _savedReportData  = null;   // 예시 보기 전 실제 데이터 백업
+  var _savedOfflineBannerVisible = false; // 예시 보기 전 오프라인 배너 상태 백업
 
   function openReportInfo() {
     /* 실제 데이터 백업 (닫기 시 복원용) */
@@ -2106,7 +2107,10 @@
     renderReport(tab);
     document.getElementById('example-banner').style.display = 'flex';
     var _ob = document.getElementById('offline-banner');
-    if (_ob) _ob.style.display = 'none';
+    if (_ob) {
+      _savedOfflineBannerVisible = (_ob.style.display === 'flex');
+      _ob.style.display = 'none';
+    }
   }
 
   function closeReportInfo() {
@@ -2124,6 +2128,12 @@
     }
     renderReport(currentReportTab || 'daily');
     document.getElementById('example-banner').style.display = 'none';
+    /* 오프라인 배너 상태 복원 */
+    var _ob = document.getElementById('offline-banner');
+    if (_ob && _savedOfflineBannerVisible) {
+      _ob.style.display = 'flex';
+    }
+    _savedOfflineBannerVisible = false;
   }
 
   /* ══════════ localStorage 인증 ══════════ */
@@ -4107,9 +4117,24 @@
       _weeklyImPct  = Math.round((_wPreTs + _weeklyPsGood) / 2);
     }
     if (tab === 'daily' && hasData) {
-      /* 상단 자세점수 = API의 postureScore (기록 기반 나쁜 구간 빼기 방식, compute_session_score 결과)
-         postureSec 카운터 방식은 알고리즘이 달라 패널/전체 점수와 불일치 → 사용 안 함 */
-      _dailyPsGood = d.postureScore !== undefined ? Math.round((d.postureScore||0)*10)/10 : 0;
+      /* 자세점수 = postureSec ExcSec 기반으로 계산 (자세 상태별 기록과 동일한 값 사용)
+         goodPct = (totalSec - 모든 나쁜자세 시간합) / totalSec * 100 */
+      var _psd = d.postureSec;
+      if (_psd && (_psd.total || 0) > 0) {
+        var _psT = _psd.total;
+        var _hasExc = (_psd.turtleExc !== undefined);
+        var _rawBad;
+        if (_hasExc) {
+          _rawBad = (_psd.turtleExc||0) + (_psd.reclinedExc||0) + (_psd.bentExc||0) + (_psd.drowsyExc||0) + (_psd.absentExc||0) + (_psd.overlapTotal||0);
+        } else {
+          var _rw = Math.max(0, (_psd.turtle||0) + (_psd.reclined||0) - (_psd.turtleOverlap||0) - (_psd.reclinedOverlap||0));
+          var _rb = Math.max(0, (_psd.bent||0) + (_psd.drowsy||0) - (_psd.bentOverlap||0) - (_psd.drowsyOverlap||0));
+          _rawBad = _rw + _rb + (_psd.absent||0);
+        }
+        _dailyPsGood = Math.round(Math.max(0, Math.min(100, (_psT - _rawBad) / _psT * 100)) * 10) / 10;
+      } else {
+        _dailyPsGood = d.postureScore !== undefined ? Math.round((d.postureScore||0)*10)/10 : 0;
+      }
     }
 
     /* ── ① 몰입 게이지 ── */
@@ -4346,8 +4371,10 @@
         psOffPct = 0;
       }
 
-      /* 점수 표시값: 항상 API의 postureScore 사용 (compute_session_score 기반, 카운터 방식 재계산 금지) */
-      var psValDisplay = (Math.round((d.postureScore || 0) * 10) / 10).toFixed(1);
+      /* 점수 표시값: postureSec ExcSec 기반 psGoodPct 사용 → bar 비율·자세 상태별 기록과 일치 */
+      var psValDisplay = psHasDetail
+        ? (Math.max(0, Math.min(100, psGoodPct))).toFixed(1)
+        : (Math.round((d.postureScore || 0) * 10) / 10).toFixed(1);
 
       html += '<div>';
       html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">';
