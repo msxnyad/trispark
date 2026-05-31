@@ -1531,7 +1531,12 @@
 
       <!-- 계정 -->
       <div class="settings-group">
-        <div class="settings-group-label">계정</div>
+        <div class="settings-group-label" style="display:flex;align-items:center;justify-content:space-between;">
+          <span>계정</span>
+          <button onclick="var t=localStorage.getItem('gh_token')||'';var i=document.getElementById('gh-token-input');if(i)i.value=(t?'••••••••••••••••':'');document.getElementById('gh-token-modal').classList.add('open')"
+            title="GitHub 동기화 설정"
+            style="width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);background:var(--card);color:var(--txt-muted);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">🔑</button>
+        </div>
         <div class="settings-card">
           <div class="settings-row">
             <div>
@@ -1584,25 +1589,6 @@
         </div>
       </div>
 
-      <!-- Pi IP 설정 (GitHub Pages 오프라인 접속용) -->
-      <div style="margin-bottom:12px;background:var(--card);border-radius:14px;padding:14px;border:1px solid var(--border);">
-        <div style="font-size:12px;font-weight:700;color:var(--txt-muted);margin-bottom:8px;">📡 파이 IP 주소 (오프라인 접속용)</div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input id="pi-ip-input" type="text" placeholder="예: 172.20.10.3"
-            style="flex:1;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--txt);font-size:13px;font-family:'Nanum Gothic',sans-serif;"
-            value="" />
-          <button onclick="savePiIp()" style="padding:8px 14px;border-radius:10px;border:none;background:#4a7a4a;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">저장</button>
-        </div>
-        <div style="font-size:10px;color:var(--txt-muted);margin-top:6px;">파이 핫스팟 연결 시 자동 감지돼요. GitHub Pages에서 리포트를 볼 때 필요해요.</div>
-      </div>
-      <!-- GitHub 토큰 설정 -->
-      <div style="margin-bottom:12px;background:var(--card);border-radius:14px;padding:14px;border:1px solid var(--border);">
-        <div style="font-size:12px;font-weight:700;color:var(--txt-muted);margin-bottom:8px;">🔑 GitHub 토큰 (데이터 동기화용)</div>
-        <input id="gh-token-input" type="password" placeholder="ghp_..."
-          style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--txt);font-size:13px;font-family:'Nanum Gothic',sans-serif;margin-bottom:8px;" />
-        <button onclick="saveGhToken()" style="width:100%;padding:10px;border-radius:10px;border:none;background:#4a7a4a;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">저장</button>
-        <div style="font-size:10px;color:var(--txt-muted);margin-top:6px;">토큰은 이 기기에만 저장돼요. GitHub → Settings → Developer settings → Personal access tokens에서 발급하세요.</div>
-      </div>
 
       <!-- 전체 데이터 초기화 -->
       <button onclick="resetAllData()" style="width:100%;padding:14px;border-radius:14px;border:1.5px solid #e8c84a;background:none;font-size:14px;font-family:'Nanum Gothic',sans-serif;font-weight:700;color:#b08a20;cursor:pointer;margin-bottom:8px;">🗑 전체 기록 초기화</button>
@@ -1612,6 +1598,20 @@
 
       <!-- 계정 삭제 -->
       <button onclick="deleteAccount()" style="width:100%;padding:14px;border-radius:14px;border:1.5px solid #e0a0a0;background:none;font-size:14px;font-family:'Nanum Gothic',sans-serif;font-weight:700;color:#c0503a;cursor:pointer;margin-top:8px;">계정 삭제</button>
+    </div>
+
+    <!-- GitHub 토큰 모달 (설정 화면 내) -->
+    <div class="modal-overlay" id="gh-token-modal">
+      <div class="modal" style="width:300px;">
+        <h3>🔑 GitHub 토큰</h3>
+        <div style="font-size:11px;color:#7a8e7a;margin-bottom:10px;line-height:1.6;">데이터 동기화용 토큰이에요. 이 기기에만 저장돼요.<br>GitHub → Settings → Developer settings → Personal access tokens에서 발급하세요.</div>
+        <input id="gh-token-input" type="password" placeholder="ghp_..."
+          style="width:100%;box-sizing:border-box;border:1.5px solid #C4D9C4;border-radius:10px;padding:8px 12px;font-size:13px;font-family:'Nanum Gothic',sans-serif;color:#2e3e2e;outline:none;background:#FEFDF5;" />
+        <div class="modal-btns">
+          <button class="btn-cancel" onclick="document.getElementById('gh-token-modal').classList.remove('open')">닫기</button>
+          <button class="btn-add-confirm" onclick="saveGhToken();document.getElementById('gh-token-modal').classList.remove('open')">저장</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -3989,6 +3989,7 @@
   function _applyMonthlyOffset() {
     if (!_rawMonthlyData || Object.keys(_rawMonthlyData).length === 0) return;
     var now = new Date();
+    if (now.getHours() < 3) now = new Date(now.getTime() - 3 * 3600 * 1000);  /* 새벽 3시 기준: 전날(전달 말일)로 */
     var cy = now.getFullYear(), cm = now.getMonth() + calMonthOffset;
     while (cm > 11) { cm -= 12; cy++; } while (cm < 0) { cm += 12; cy--; }
     var monthKey = cy + '-' + String(cm + 1).padStart(2, '0');
@@ -4246,7 +4247,10 @@
                    + (_sun.getMonth()+1)+'월 '+_sun.getDate()+'일 ('+_wday[_sun.getDay()]+')';
         }
       } else if (tab === 'monthly') {
-        _dateTxt = _now.getFullYear()+'년 '+(_now.getMonth()+1)+'월';
+        /* 새벽 3시 이전이면 전날(전달 말일) 기준 → 달 라벨도 전달로 */
+        var _mDate = new Date(_now);
+        if (_mDate.getHours() < 3) _mDate.setDate(_mDate.getDate() - 1);
+        _dateTxt = _mDate.getFullYear()+'년 '+(_mDate.getMonth()+1)+'월';
       }
       if (_dateTxt && !isShowingExample) {
         html += '<div style="text-align:center;font-size:11px;font-weight:600;color:'+rTxtMuted+';margin-bottom:10px;letter-spacing:0.02em;">'+_dateTxt+'</div>';
@@ -4969,6 +4973,7 @@
 
       /* ── 공부 기록 달력 (항상 표시) ── */
       var now = new Date();
+      if (now.getHours() < 3) now = new Date(now.getTime() - 3 * 3600 * 1000);  /* 새벽 3시 기준 */
       var cy = now.getFullYear(), cm = now.getMonth() + calMonthOffset;
       while (cm > 11){ cm -= 12; cy++; } while (cm < 0){ cm += 12; cy--; }
       var dim = new Date(cy, cm+1, 0).getDate();
@@ -5377,6 +5382,7 @@
     if (!modal || !contentEl) return;
 
     var now = new Date();
+    if (now.getHours() < 3) now = new Date(now.getTime() - 3 * 3600 * 1000);  /* 새벽 3시 기준 */
     var cy = now.getFullYear(), cm = now.getMonth() + calMonthOffset;
     while (cm > 11){ cm -= 12; cy++; } while (cm < 0){ cm += 12; cy--; }
     var dayNames = ['일','월','화','수','목','금','토'];
