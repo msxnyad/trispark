@@ -4132,7 +4132,7 @@
           _rawBad = _rw + _rb + (_psd.absent||0);
           _psT = _psd.total;
         }
-        _dailyPsGood = Math.round(Math.max(0, Math.min(100, (_psT - _rawBad) / _psT * 100)) * 10) / 10;
+        _dailyPsGood = Math.round((d.postureScore || 0) * 10) / 10;
       } else {
         _dailyPsGood = d.postureScore !== undefined ? Math.round((d.postureScore||0)*10)/10 : 0;
       }
@@ -4372,10 +4372,8 @@
         psOffPct = 0;
       }
 
-      /* 점수 표시값: postureSec ExcSec 기반 psGoodPct 사용 → bar 비율·자세 상태별 기록과 일치 */
-      var psValDisplay = psHasDetail
-        ? (Math.max(0, Math.min(100, psGoodPct))).toFixed(1)
-        : (Math.round((d.postureScore || 0) * 10) / 10).toFixed(1);
+      /* 점수 표시값: 서버 compute_session_score 기반 → 시간대별 점수와 일치 */
+      var psValDisplay = (Math.round((d.postureScore || 0) * 10) / 10).toFixed(1);
 
       html += '<div>';
       html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">';
