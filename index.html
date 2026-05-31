@@ -4339,15 +4339,15 @@
       var psAbsentColor = isDark ? 'rgba(196,217,196,0.35)' : '#a8b8a8';
       var psOverlapPct = 0;
       if (psHasDetail) {
+        /* 분모: 실제 공부 시간 (자세 상태별 기록과 동일한 기준) */
+        var psT = actualSec || _psTotal;
         /* combo_stats 기반 exclusive 시간 사용 → 합이 totalSec을 초과하지 않음 */
         var hasExc = (psSec.turtleExc !== undefined);
         if (hasExc) {
-          /* 분모 = goodSec + 모든 ExcSec 합계 → 측정된 시간만 써서 항상 합 100% 보장 */
           var rawWarn   = (psSec.turtleExc   || 0) + (psSec.reclinedExc || 0);
           var rawBad    = (psSec.bentExc     || 0) + (psSec.drowsyExc   || 0);
           var rawAbsent = (psSec.absentExc   || 0);
           var rawOv     = (psSec.overlapTotal || 0);
-          var psT = actualSec || _psTotal;
           psWarnPct   = Math.round(rawWarn   / psT * 1000) / 10;
           psBadPct    = Math.round(rawBad    / psT * 1000) / 10;
           psAbsentPct = Math.round(rawAbsent / psT * 1000) / 10;
