@@ -4352,7 +4352,9 @@
           psBadPct    = Math.round(rawBad    / psT * 1000) / 10;
           psAbsentPct = Math.round(rawAbsent / psT * 1000) / 10;
           psOverlapPct= Math.round(rawOv     / psT * 1000) / 10;
-          psGoodPct   = Math.round((100 - psWarnPct - psBadPct - psAbsentPct - psOverlapPct) * 10) / 10;
+          /* goodPct: 체인 반올림 오차 방지 위해 rawGood 직접 계산 */
+          var rawGood = psT - rawWarn - rawBad - rawAbsent - rawOv;
+          psGoodPct   = Math.round(Math.max(0, rawGood) / psT * 1000) / 10;
         } else {
           /* 구버전 폴백: overlap 차감 후 비례 보정 */
           var rawWarn   = (psSec.turtle + psSec.reclined);
