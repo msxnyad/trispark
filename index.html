@@ -2594,9 +2594,9 @@
         var _studyDen = data.totalStudySec || 0;
         if (_todayDay && _todayDay.mins > 0 && _studyDen > 0) {
           /* good = 100 − 나머지 (각 항목 반올림 후) → 자세 bar와 동일하게 합 100 보장 */
-          var _wP = Math.round(((_pst.turtleExcSec||0)+(_pst.reclinedExcSec||0)) / _studyDen * 1000) / 10;
-          var _bP = Math.round(((_pst.bentExcSec||0)+(_pst.drowsyExcSec||0)) / _studyDen * 1000) / 10;
-          var _aP = Math.round((_pst.absentExcSec||0) / _studyDen * 1000) / 10;
+          var _wP = Math.round(((_pst.turtleSec||0)+(_pst.reclinedSec||0)) / _studyDen * 1000) / 10;
+          var _bP = Math.round(((_pst.bentSec||0)+(_pst.drowsySec||0)) / _studyDen * 1000) / 10;
+          var _aP = Math.round((_pst.absentSec||0) / _studyDen * 1000) / 10;
           var _oP = Math.round((_pst.overlapTotalSec||0) / _studyDen * 1000) / 10;
           var _todayGood = Math.round((100 - _wP - _bP - _aP - _oP) * 10) / 10;
           _todayDay.score = _todayGood;
@@ -4087,7 +4087,7 @@
         var _hasExc = (_psd.turtleExc !== undefined);
         var _rawBad, _psT;
         if (_hasExc) {
-          _rawBad = (_psd.turtleExc||0) + (_psd.reclinedExc||0) + (_psd.bentExc||0) + (_psd.drowsyExc||0) + (_psd.absentExc||0) + (_psd.overlapTotal||0);
+          _rawBad = (_psd.turtle||_psd.turtleExc||0) + (_psd.reclined||_psd.reclinedExc||0) + (_psd.bent||_psd.bentExc||0) + (_psd.drowsy||_psd.drowsyExc||0) + (_psd.absent||_psd.absentExc||0) + (_psd.overlapTotal||0);
           _psT = _getLiveStudySec() || _psd.total;
         } else {
           var _rw = Math.max(0, (_psd.turtle||0) + (_psd.reclined||0) - (_psd.turtleOverlap||0) - (_psd.reclinedOverlap||0));
@@ -4302,12 +4302,12 @@
       if (psHasDetail) {
         /* 분모: 실제 공부 시간 (자세 상태별 기록과 동일한 기준) */
         var psT = actualSec || _psTotal;
-        /* combo_stats 기반 exclusive 시간 사용 → 합이 totalSec을 초과하지 않음 */
+        /* raw total 시간 사용 → 각 자세의 실제 발생 시간 기준 */
         var hasExc = (psSec.turtleExc !== undefined);
         if (hasExc) {
-          var rawWarn   = (psSec.turtleExc   || 0) + (psSec.reclinedExc || 0);
-          var rawBad    = (psSec.bentExc     || 0) + (psSec.drowsyExc   || 0);
-          var rawAbsent = (psSec.absentExc   || 0);
+          var rawWarn   = (psSec.turtle   || psSec.turtleExc   || 0) + (psSec.reclined || psSec.reclinedExc || 0);
+          var rawBad    = (psSec.bent     || psSec.bentExc     || 0) + (psSec.drowsy   || psSec.drowsyExc   || 0);
+          var rawAbsent = (psSec.absent   || psSec.absentExc   || 0);
           var rawOv     = (psSec.overlapTotal || 0);
           psWarnPct   = Math.round(rawWarn   / psT * 1000) / 10;
           psBadPct    = Math.round(rawBad    / psT * 1000) / 10;
