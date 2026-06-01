@@ -2593,11 +2593,12 @@
         var _pst = data.postureStats;
         var _studyDen = data.totalStudySec || 0;
         if (_todayDay && _todayDay.mins > 0 && _studyDen > 0) {
-          /* good = 100 − 나머지 (각 항목 반올림 후) → 자세 bar와 동일하게 합 100 보장 */
-          var _wP = Math.round(((_pst.turtleExcSec||0)+(_pst.reclinedExcSec||0)) / _studyDen * 1000) / 10;
-          var _bP = Math.round(((_pst.bentExcSec||0)+(_pst.drowsyExcSec||0)) / _studyDen * 1000) / 10;
-          var _aP = Math.round((_pst.absentExcSec||0) / _studyDen * 1000) / 10;
-          var _oP = Math.round((_pst.overlapTotalSec||0) / _studyDen * 1000) / 10;
+          /* good = 100 − 나머지 (초 단위 정수 반올림 후) → 자세 bar/표시값과 동일하게 합 100 보장 */
+          var _ri2 = function(v){ return Math.round(v || 0); };
+          var _wP = Math.round((_ri2(_pst.turtleExcSec)+_ri2(_pst.reclinedExcSec)) / _studyDen * 1000) / 10;
+          var _bP = Math.round((_ri2(_pst.bentExcSec)+_ri2(_pst.drowsyExcSec)) / _studyDen * 1000) / 10;
+          var _aP = Math.round(_ri2(_pst.absentExcSec) / _studyDen * 1000) / 10;
+          var _oP = Math.round(_ri2(_pst.overlapTotalSec) / _studyDen * 1000) / 10;
           var _todayGood = Math.round((100 - _wP - _bP - _aP - _oP) * 10) / 10;
           _todayDay.score = _todayGood;
           var _wkActive = reportData['weekly'].days.filter(function(d){ return d.mins > 0; });
@@ -4087,7 +4088,8 @@
         var _hasExc = (_psd.turtleExc !== undefined);
         var _rawBad, _psT;
         if (_hasExc) {
-          _rawBad = (_psd.turtleExc||0) + (_psd.reclinedExc||0) + (_psd.bentExc||0) + (_psd.drowsyExc||0) + (_psd.absentExc||0) + (_psd.overlapTotal||0);
+          var _ri3 = function(v){ return Math.round(v || 0); };
+          _rawBad = _ri3(_psd.turtleExc) + _ri3(_psd.reclinedExc) + _ri3(_psd.bentExc) + _ri3(_psd.drowsyExc) + _ri3(_psd.absentExc) + _ri3(_psd.overlapTotal);
           _psT = _getLiveStudySec() || _psd.total;
         } else {
           var _rw = Math.max(0, (_psd.turtle||0) + (_psd.reclined||0) - (_psd.turtleOverlap||0) - (_psd.reclinedOverlap||0));
