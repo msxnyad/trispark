@@ -49,7 +49,7 @@
         [],
         []
       ],
-      "lastOpenTime": "2026-06-01T16:12:24.201Z",
+      "lastOpenTime": "2026-06-01T16:13:49.614Z",
       "totalStudySec": 343,
       "immersionScore": 42,
       "timeScore": 38,
@@ -57,7 +57,7 @@
       "pomodoroCount": 3,
       "pomodoroSeconds": 300,
       "totalPomodoroGoalSec": 900,
-      "sessionActive": false,
+      "sessionActive": true,
       "postureStats": {
         "absentCount": 0,
         "absentExcSec": 0,
