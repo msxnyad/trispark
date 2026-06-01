@@ -1557,15 +1557,6 @@
         <div class="settings-group-label">환경설정</div>
         <div class="settings-card">
           <div class="settings-row">
-            <div class="settings-row-label" data-i18n="s-lang">언어</div>
-            <button onclick="changeLang()" style="
-              background:var(--bg-btn);color:var(--txt-primary);
-              border:none;border-radius:10px;padding:6px 14px;
-              font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:800;
-              cursor:pointer;display:flex;align-items:center;gap:5px;
-            ">한국어 <span style="opacity:0.6;font-size:11px;">⇄</span></button>
-          </div>
-          <div class="settings-row">
             <div class="settings-row-label">테마</div>
             <select class="settings-select" id="theme-select">
               <option value="light">라이트</option>
@@ -1631,7 +1622,7 @@
 <script>
 
   /* ══════════ 테마 & 언어 (script 최상단에서 먼저 실행) ══════════ */
-  var currentLang = 'ko'; localStorage.setItem('app_lang', 'ko');
+  var currentLang = 'ko';
   var currentTheme = localStorage.getItem('app_theme')  || 'light';
 
   function applyTheme(theme) {
@@ -1678,45 +1669,10 @@
       'ex-title':'📊 예시 데이터 보는 중이에요','ex-sub':'실제 데이터가 쌓이면 이렇게 보여요!','ex-close':'✕ 닫기',
       'suffix':'님',
     },
-    en: {
-      'login-hello':'Hello!','login-id':'Username','login-pw':'Password',
-      'login-btn':'Log in','signup-link':'Sign up','signup-title':'Sign up',
-      'signup-id':'Username (letters+numbers, 4+ chars)','signup-nick':'Nickname',
-      'signup-pw':'Password (6+ chars)','signup-pw2':'Confirm password',
-      'signup-btn':'Create account','login-link':'Already have an account',
-      'home-pomo':'Pomodoro','home-eisen':'Eisenhower<br>Matrix',
-      'home-report':'Report','home-memo':'Flash-<br>cards',
-      'home-habit':'Habit Tracker','home-settings':'Settings',
-      'pomo-title':'Pomodoro','pomo-sub':'Set focus time',
-      'pomo-unit':'min','pomo-goal':'Daily focus goal','pomo-goal-sub':'Total daily target',
-      'pomo-confirm':'Confirm',
-      'eisen-title':'Eisenhower<br>Matrix','eisen-sub':'Manage tasks',
-      'eisen-top':'Urgency','eisen-left':'Importance',
-      'eisen-q0':'Urgent & Important','eisen-q1':'Urgent, Not Important',
-      'eisen-q2':'Important, Not Urgent','eisen-q3':'Not Urgent & Not Important',
-      'eisen-modal':'Add task','eisen-input':'Enter a task',
-      'memo-title':'Flashcards','memo-search':'Search',
-      'folder-modal':'Folder name','folder-input':'e.g. Vocab, Math','folder-btn':'Create',
-      'memo-modal':'Add item','memo-input':'Enter content to memorize',
-      'habit-title':'Habit Tracker','habit-modal':'Add habit','habit-input':'e.g. Morning run, Exercise',
-      'habit-week-title':'Habit Tracker','tab-week':'Weekly','tab-month':'Monthly',
-      'picker-title':'Select date','picker-btn':'Go',
-      'report-title':'Study Report','tab-daily':'Daily','tab-weekly':'Weekly','tab-monthly':'Monthly',
-      'settings-title':'Settings','s-account':'Account','s-nickname':'Nickname','s-nick-sub':'Tap to change',
-      's-prefs':'Preferences','s-lang':'Language','s-theme':'Theme',
-      's-light':'Light','s-dark':'Dark',
-      's-data':'Data','s-export':'Export data','s-export-sub':'Save report as CSV',
-      's-logout':'Log out','s-delete':'Delete account',
-      'btn-cancel':'Cancel','btn-add':'Add',
-      'dday-title':'Manage D-Days','dday-name':'Name (e.g. Exam)','dday-close':'Close',
-      'ex-title':'📊 Viewing example data','ex-sub':'Your real data will look like this!','ex-close':'✕ Close',
-      'suffix':'',
-    }
   };
 
   function applyLang(lang) {
     currentLang = lang;
-    localStorage.setItem('app_lang', lang);
     var t = i18n[lang] || i18n.ko;
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
       var key = el.getAttribute('data-i18n');
@@ -1725,14 +1681,8 @@
       if (attr) { el.setAttribute(attr, t[key]); }
       else { el.innerHTML = t[key]; }
     });
-    document.documentElement.lang = lang;
-    var sel = document.getElementById('lang-select');
-    if (sel) sel.value = lang;
-    /* 단위 갱신 */
-    var unit = document.querySelector('.unit');
-    if (unit) unit.textContent = t['pomo-unit'];
     var gd = document.getElementById('goal-display');
-    if (gd) gd.textContent = (typeof goalMinutes !== 'undefined' ? goalMinutes : 120) + (lang==='ko'?'분':'min');
+    if (gd) gd.textContent = (typeof goalMinutes !== 'undefined' ? goalMinutes : 120) + '분';
   }
 
   /* 즉시 테마 적용 (깜빡임 방지) */
@@ -2244,7 +2194,7 @@
     loadUserData();
     notifyLogin(id);
     syncToDashboard();
-    document.getElementById('home-greeting').innerHTML = nick + (currentLang==='ko'?'<span>님</span>':'');
+    document.getElementById('home-greeting').innerHTML = nick + ('<span>님</span>');
     document.getElementById('nickname-display').textContent = nick;
     updateDdayBadge();
     goTo('screen-home');
@@ -2457,7 +2407,7 @@
 
     /* 뽀모도로 목표 시간 */
     var gd = document.getElementById('goal-display');
-    if (gd) gd.textContent = goalMinutes + (currentLang==='ko'?'분':'min');
+    if (gd) gd.textContent = goalMinutes + ('분');
     /* 뽀모도로 설정 화면 슬라이더/입력값도 동기화 */
     var pomoVal = d.pomoMinutes || goalMinutes || 25;
     var ti = document.getElementById('time-input');
@@ -3207,7 +3157,7 @@
       loadUserData();
       notifyLogin(saved);
       syncToDashboard();
-      document.getElementById('home-greeting').innerHTML = currentUser.nick + (currentLang==='ko'?'<span>님</span>':'');
+      document.getElementById('home-greeting').innerHTML = currentUser.nick + ('<span>님</span>');
       document.getElementById('nickname-display').textContent = currentUser.nick;
       var _rt = sessionStorage.getItem('returnTo');
       if (_rt) { sessionStorage.removeItem('returnTo'); goTo(_rt); }
@@ -5873,12 +5823,12 @@
     inp.style.display = 'none';
     disp.style.display = 'block';
     var greet = document.getElementById('home-greeting');
-    if (greet) greet.innerHTML = (val || (currentUser ? currentUser.nick : 'TriSpark')) + (currentLang==='ko'?'<span>님</span>':'');
+    if (greet) greet.innerHTML = (val || (currentUser ? currentUser.nick : 'TriSpark')) + ('<span>님</span>');
   }
 
   function changeGoal(delta) {
     goalMinutes = Math.min(600, Math.max(30, goalMinutes + delta));
-    document.getElementById('goal-display').textContent = goalMinutes + (currentLang==='ko'?'분':'min');
+    document.getElementById('goal-display').textContent = goalMinutes + ('분');
     persistUserData();
   }
 
@@ -5892,13 +5842,8 @@
     a.click();
   }
 
-  /* ── 언어/테마 설정 이벤트 ── */
+  /* ── 테마 설정 이벤트 ── */
   document.getElementById('theme-select').addEventListener('change', function(){ applyTheme(this.value); });
-  function changeLang() {
-    localStorage.removeItem('lang_selected');
-    var base = location.href.replace(/[^\/]*$/, '');
-    location.href = base + 'study.html';
-  }
 
   /* ── 대시보드 체크 상태 폴링 (2초마다) ── */
   var _lastCompletedStr = '';
@@ -5986,57 +5931,7 @@
   /* 초기 언어 적용 */
   applyLang(currentLang);
 </script>
-  <!-- 언어 선택 팝업 -->
-  <div id="lang-popup" style="
-    display:none; position:fixed; inset:0; z-index:9999;
-    background:rgba(46,62,46,0.35);
-    align-items:center; justify-content:center;
-  ">
-    <div style="
-      background:var(--bg-surface,#FEFDF5);
-      border-radius:28px;
-      padding:40px 32px 32px;
-      width:280px;
-      text-align:center;
-      box-shadow:0 8px 40px rgba(46,62,46,0.15);
-    ">
-      <div style="font-size:11px;font-weight:800;color:#9aaa9a;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Study App</div>
-      <div style="font-size:20px;font-weight:800;color:var(--txt-primary,#2e3e2e);margin-bottom:4px;">언어를 선택하세요</div>
-      <div style="font-size:13px;color:#9aaa9a;margin-bottom:28px;">Choose your language</div>
-      <button onclick="selectLang('ko')" style="
-        display:block; width:100%; padding:14px;
-        border-radius:12px; border:1.5px solid #C4D9C4;
-        background:#eef4ee; color:#4a5e4a;
-        font-family:'Nanum Gothic',sans-serif;
-        font-size:15px; font-weight:800; cursor:pointer;
-        margin-bottom:10px;
-      ">한국어</button>
-      <button onclick="selectLang('en')" style="
-        display:block; width:100%; padding:14px;
-        border-radius:12px; border:1.5px solid #C4D9C4;
-        background:#eef4ee; color:#4a5e4a;
-        font-family:'Nanum Gothic',sans-serif;
-        font-size:15px; font-weight:800; cursor:pointer;
-      ">English</button>
-    </div>
-  </div>
-
   <script>
-    function selectLang(lang) {
-      document.getElementById('lang-popup').style.display = 'none';
-      localStorage.setItem('lang_selected', 'true');
-      if (lang === 'en') {
-        var base = location.href.replace(/[^\/]*$/, '');
-        location.href = base + 'study_en.html';
-      }
-    }
-
-    /* 최초 접속 시에만 팝업 표시 */
-    (function() {
-      if (!localStorage.getItem('lang_selected')) {
-        document.getElementById('lang-popup').style.display = 'flex';
-      }
-    })();
 
     /* ── 화면 크기에 맞게 phone 프레임 자동 스케일 ── */
     (function() {
