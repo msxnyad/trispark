@@ -60,7 +60,7 @@
       "pomodoroCount": 1,
       "pomodoroSeconds": 300,
       "totalPomodoroGoalSec": 300,
-      "sessionActive": false,
+      "sessionActive": true,
       "postureStats": {
         "absentCount": 0,
         "absentExcSec": 0,
