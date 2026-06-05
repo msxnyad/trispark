@@ -20,7 +20,9 @@
             "2026-05-30": true,
             "2026-05-31": false,
             "2026-06-01": false,
-            "2026-06-02": false
+            "2026-06-02": false,
+            "2026-06-03": false,
+            "2026-06-05": false
           }
         }
       ],
@@ -50,136 +52,43 @@
         [],
         []
       ],
-      "lastOpenTime": "2026-06-02T04:39:37.112Z",
-      "totalStudySec": 64,
-      "immersionScore": 31,
-      "timeScore": 11,
-      "postureScore": 51.6,
-      "pomodoroCount": 2,
+      "lastOpenTime": "2026-06-05T05:35:51.103Z",
+      "totalStudySec": 15,
+      "immersionScore": 53,
+      "timeScore": 5,
+      "postureScore": 100,
+      "pomodoroCount": 0,
       "pomodoroSeconds": 300,
-      "totalPomodoroGoalSec": 600,
-      "sessionActive": false,
+      "totalPomodoroGoalSec": 0,
+      "sessionActive": true,
       "postureStats": {
         "absentCount": 0,
         "absentExcSec": 0,
         "absentSec": 0,
-        "bentCount": 2,
+        "bentCount": 0,
         "bentExcSec": 0,
-        "bentOverlapSec": 6.8,
-        "bentSec": 6.8,
+        "bentOverlapSec": 0,
+        "bentSec": 0,
         "drowsyCount": 0,
         "drowsyExcSec": 0,
         "drowsyOverlapSec": 0,
         "drowsySec": 0,
-        "goodSec": 41.4,
-        "overlapTotalSec": 11.2,
-        "postureRatio": 51.6,
+        "goodSec": 14.1,
+        "overlapTotalSec": 0,
+        "postureRatio": 100,
         "proneCount": 0,
-        "reclinedCount": 2,
-        "reclinedExcSec": 20,
-        "reclinedOverlapSec": 11.2,
-        "reclinedSec": 31.200000000000003,
-        "totalSec": 72.6,
-        "turtleCount": 1,
+        "reclinedCount": 0,
+        "reclinedExcSec": 0,
+        "reclinedOverlapSec": 0,
+        "reclinedSec": 0,
+        "totalSec": 14.1,
+        "turtleCount": 0,
         "turtleExcSec": 0,
-        "turtleOverlapSec": 4.4,
-        "turtleSec": 4.4
+        "turtleOverlapSec": 0,
+        "turtleSec": 0
       },
-      "hourlyData": {
-        "10": {
-          "mins": 1.1,
-          "score": 51.6,
-          "secs": 64
-        }
-      },
-      "hourlySegments": {
-        "10": [
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "g",
-            "n",
-            "n"
-          ],
-          [
-            "n",
-            "n",
-            "n",
-            "n",
-            "n"
-          ]
-        ]
-      },
+      "hourlyData": {},
+      "hourlySegments": {},
       "weeklyStudyData": {
         "avgImmersion": 38,
         "avgPosturePct": {
