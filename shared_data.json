@@ -22,7 +22,7 @@
             "2026-06-01": false,
             "2026-06-02": false,
             "2026-06-03": false,
-            "2026-06-05": false
+            "2026-06-05": true
           }
         }
       ],
@@ -53,14 +53,14 @@
         []
       ],
       "lastOpenTime": "2026-06-05T05:35:51.103Z",
-      "totalStudySec": 126,
-      "immersionScore": 69,
-      "timeScore": 42,
-      "postureScore": 96.8,
+      "totalStudySec": 128,
+      "immersionScore": 59,
+      "timeScore": 21,
+      "postureScore": 96.9,
       "pomodoroCount": 1,
       "pomodoroSeconds": 300,
       "totalPomodoroGoalSec": 300,
-      "sessionActive": false,
+      "sessionActive": true,
       "postureStats": {
         "absentCount": 0,
         "absentExcSec": 0,
@@ -73,15 +73,15 @@
         "drowsyExcSec": 0,
         "drowsyOverlapSec": 0,
         "drowsySec": 0,
-        "goodSec": 122.2,
+        "goodSec": 124,
         "overlapTotalSec": 0,
-        "postureRatio": 96.8,
+        "postureRatio": 96.9,
         "proneCount": 0,
         "reclinedCount": 1,
         "reclinedExcSec": 3.7,
         "reclinedOverlapSec": 0,
         "reclinedSec": 3.7,
-        "totalSec": 126.2,
+        "totalSec": 128,
         "turtleCount": 0,
         "turtleExcSec": 0,
         "turtleOverlapSec": 0,
