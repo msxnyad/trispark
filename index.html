@@ -2573,7 +2573,8 @@
             immersion:  day.immersion   || 0,
             timeScore:  day.score       || 0,
             goalSec:    day.goalSec     || 0,
-            posturePct: day.posturePct  || null
+            posturePct: day.posturePct  || null,
+            postureSec: day.postureSec  || null
           };
         });
       }
@@ -2584,25 +2585,34 @@
       if (wd.avgPosturePct   !== undefined) reportData['weekly'].avgPosturePct = wd.avgPosturePct;
       if (wd.weekStart       !== undefined) reportData['weekly'].weekStart      = wd.weekStart;
       if (wd.totalPostureSec !== undefined) reportData['weekly'].postureSec     = wd.totalPostureSec;
-      /* 오늘 자세 점수를 daily 실시간 값으로 동기화 (주별은 세션 종료 시에만 저장되므로)
-         ★ data.postureScore(스칼라)는 카메라 totalSec 분모를 쓸 수 있어 부정확 →
-            postureStats ExcSec / totalStudySec 로 직접 계산 (자세 bar와 동일 공식) */
+      /* 오늘 자세 데이터를 daily 실시간 값으로 동기화 (주별은 세션 종료 시에만 저장되므로)
+         ★ 오늘 칸의 누적 초(postureSec)를 라이브 postureStats로 교체 후, 주 전체를
+            누적 초 기준(일별 게이지와 동일 공식)으로 재계산 → 이중합산 없이 실시간 반영 */
       if (data.postureStats && reportData['weekly'].days) {
         var _todayWI = (new Date().getDay() + 6) % 7; /* 0=Mon */
         var _todayDay = reportData['weekly'].days[_todayWI];
         var _pst = data.postureStats;
         var _studyDen = data.totalStudySec || 0;
         if (_todayDay && _todayDay.mins > 0 && _studyDen > 0) {
-          /* good = 100 − 나머지 (초 단위 정수 반올림 후) → 자세 bar/표시값과 동일하게 합 100 보장 */
-          var _ri2 = function(v){ return Math.round(v || 0); };
-          var _wP = Math.round((_ri2(_pst.turtleExcSec)+_ri2(_pst.reclinedExcSec)) / _studyDen * 1000) / 10;
-          var _bP = Math.round((_ri2(_pst.bentExcSec)+_ri2(_pst.drowsyExcSec)) / _studyDen * 1000) / 10;
-          var _aP = Math.round(_ri2(_pst.absentExcSec) / _studyDen * 1000) / 10;
-          var _oP = Math.round(_ri2(_pst.overlapTotalSec) / _studyDen * 1000) / 10;
-          var _todayGood = Math.round((100 - _wP - _bP - _aP - _oP) * 10) / 10;
-          _todayDay.score = _todayGood;
-          var _wkActive = reportData['weekly'].days.filter(function(d){ return d.mins > 0; });
-          reportData['weekly'].postureScore = Math.round(_wkActive.reduce(function(s,d){ return s+(d.score||0); }, 0) / _wkActive.length * 10) / 10;
+          /* 오늘 칸 postureSec = 라이브 누적 (분모 total = 오늘 총 공부초) */
+          _todayDay.postureSec = {
+            total:        _studyDen,
+            turtleExc:    _pst.turtleExcSec   || 0,
+            reclinedExc:  _pst.reclinedExcSec || 0,
+            bentExc:      _pst.bentExcSec      || 0,
+            drowsyExc:    _pst.drowsyExcSec    || 0,
+            absentExc:    _pst.absentExcSec    || 0,
+            overlapTotal: _pst.overlapTotalSec || 0
+          };
+          _todayDay.score = (_psPctFromSec(_todayDay.postureSec, _studyDen) || {good:0}).good;
+          /* 주 전체 누적 초 합산 → 시간가중 자세점수 (renderReport와 동일 기준) */
+          var _wkSec = {};
+          ['total','turtle','bent','reclined','absent','drowsy','overlapTotal',
+           'turtleExc','bentExc','reclinedExc','drowsyExc','absentExc'].forEach(function(k){
+            _wkSec[k] = reportData['weekly'].days.reduce(function(s,d){ return s + ((d.postureSec||{})[k]||0); }, 0);
+          });
+          reportData['weekly'].postureSec = _wkSec;
+          reportData['weekly'].postureScore = (_psPctFromSec(_wkSec, _wkSec.total || _studyDen) || {good:0}).good;
         }
       }
       if (wd.totalPosture) {
@@ -3937,6 +3947,24 @@
   var currentReportTab = 'daily';
   var _rawMonthlyData = {};
 
+  /* 누적 자세 초(seconds) → 자세 퍼센트 (일별 게이지와 동일 공식: 100 − 나머지%)
+     주별·월별을 하루치 % 단순평균이 아니라 누적 초 기준 시간가중으로 계산 */
+  function _psPctFromSec(sec, denom) {
+    if (!sec || !denom || denom <= 0) return null;
+    var ri = function(v){ return Math.round(v || 0); };
+    var _g = function(exc, base){ return sec[exc] != null ? sec[exc] : (sec[base] || 0); };
+    var warn = ri(_g('turtleExc','turtle')) + ri(_g('reclinedExc','reclined'));
+    var bad  = ri(_g('bentExc','bent'))     + ri(_g('drowsyExc','drowsy'));
+    var abs_ = ri(_g('absentExc','absent'));
+    var ov   = ri(sec.overlapTotal || 0);
+    var warnP = Math.round(warn / denom * 1000) / 10;
+    var badP  = Math.round(bad  / denom * 1000) / 10;
+    var absP  = Math.round(abs_ / denom * 1000) / 10;
+    var ovP   = Math.round(ov   / denom * 1000) / 10;
+    var goodP = Math.round((100 - warnP - badP - absP - ovP) * 10) / 10;
+    return {good: goodP, warn: warnP, bad: badP, absent: absP, overlap: ovP};
+  }
+
   function _applyMonthlyOffset() {
     if (!_rawMonthlyData || Object.keys(_rawMonthlyData).length === 0) return;
     var now = new Date();
@@ -3986,7 +4014,14 @@
       var wGoal = wDays.reduce(function(s, ed){ return s + (ed.goalSec || 0); }, 0);
       var wMins = wSecs / 60;
       var wImm  = wDays.length ? Math.round(wDays.reduce(function(s,ed){return s+(ed.immersion||0);},0)/wDays.length) : 0;
-      var wPs   = wDays.length ? Math.round(wDays.reduce(function(s,ed){return s+(ed.postureScore||0);},0)/wDays.length*10)/10 : 0;
+      /* 자세점수: 하루치 평균이 아니라 그 주 누적 초 기준(일별 게이지와 동일 공식) */
+      var _wkSecSum = {};
+      ['total','turtle','bent','reclined','absent','drowsy','overlapTotal',
+       'turtleExc','bentExc','reclinedExc','drowsyExc','absentExc'].forEach(function(k){
+        _wkSecSum[k] = wDays.reduce(function(s,ed){ return s + ((ed.postureSec||{})[k]||0); }, 0);
+      });
+      var _wkPct = _psPctFromSec(_wkSecSum, _wkSecSum.total || wSecs);
+      var wPs   = _wkPct ? _wkPct.good : 0;
       /* 시간점수: 누적 secs/goalSec로 직접 계산 → 소수점 1자리 */
       var wTs   = wGoal > 0 ? Math.min(100, Math.round(wSecs / wGoal * 1000) / 10) : 0;
       return {label: weekLabels[wi], mins: wMins, secs: wSecs, goalSec: wGoal, score: wPs, immersion: wImm, timeScore: wTs};
@@ -3994,20 +4029,8 @@
 
     var allDays = Object.keys(mData).map(function(k){ return mData[k]; }).filter(function(e){ return e.mins > 0; });
     reportData['monthly'].immersion    = allDays.length ? Math.round(allDays.reduce(function(s,e){return s+(e.immersion||0);},0)/allDays.length) : 0;
-    reportData['monthly'].postureScore = allDays.length ? Math.round(allDays.reduce(function(s,e){return s+(e.postureScore||0);},0)/allDays.length*10)/10 : 0;
     reportData['monthly'].totalGoalSec  = allDays.reduce(function(s,e){ return s+(e.goalSec||0); }, 0);
     reportData['monthly'].totalStudySec = allDays.reduce(function(s,e){ return s+(e.secs||Math.round(e.mins*60)); }, 0);
-
-    var daysWithPct = allDays.filter(function(e){ var p=e.posturePct; return p && (p.good>0||p.warn>0||p.bad>0||p.absent>0||p.overlap>0); });
-    if (daysWithPct.length > 0) {
-      var _mpk = ['warn','bad','absent','overlap'];
-      var _mavg = {};
-      _mpk.forEach(function(k) {
-        _mavg[k] = Math.round(daysWithPct.reduce(function(s,e){ return s+((e.posturePct||{})[k]||0); }, 0) / daysWithPct.length * 10) / 10;
-      });
-      _mavg.good = Math.round(daysWithPct.reduce(function(s,e){ return s+((e.posturePct||{}).good||0); }, 0) / daysWithPct.length * 10) / 10;
-      reportData['monthly'].avgPosturePct = _mavg;
-    }
 
     var posKeys = ['turtle','bent','reclined','absent','drowsy'];
     reportData['monthly'].posture = {};
@@ -4016,7 +4039,9 @@
         return s + ((mData[dk].posture||{})[k]||0);
       }, 0);
     });
-    var posSecKeys = ['turtle','bent','reclined','absent','drowsy','overlapTotal'];
+    /* 누적 자세 초 합산 ('total' = 분모(총 공부초) 포함) */
+    var posSecKeys = ['total','turtle','bent','reclined','absent','drowsy','overlapTotal',
+                      'turtleExc','bentExc','reclinedExc','drowsyExc','absentExc'];
     var mPosSecSum = {};
     posSecKeys.forEach(function(k) {
       mPosSecSum[k] = Object.keys(mData).reduce(function(s, dk){
@@ -4024,6 +4049,16 @@
       }, 0);
     });
     reportData['monthly'].postureSec = mPosSecSum;
+
+    /* 자세점수·자세바: 하루치 평균이 아니라 누적 초 기준(일별 게이지와 동일 공식) */
+    var _mDen = mPosSecSum.total || reportData['monthly'].totalStudySec || 0;
+    var _mPct = _psPctFromSec(mPosSecSum, _mDen);
+    if (_mPct) {
+      reportData['monthly'].avgPosturePct = _mPct;
+      reportData['monthly'].postureScore  = _mPct.good;
+    } else {
+      reportData['monthly'].postureScore  = 0;
+    }
   }
 
   function switchReportTab(tab, btn) {
@@ -4077,6 +4112,10 @@
       var _wPreSec  = d.totalStudySec || (d.days||[]).reduce(function(s,x){return s+(x.secs||Math.round(x.mins*60));},0);
       var _wPreGoal = d.totalGoalSec  || 0;
       var _wPreTs   = (_wPreGoal > 0) ? Math.min(100, Math.round(_wPreSec / _wPreGoal * 1000) / 10) : 0;
+      /* 자세점수·자세바: 하루치 평균이 아니라 누적 초 기준(일별 게이지와 동일 공식) */
+      var _wkPsSec  = d.postureSec;
+      var _wkPsPct  = _wkPsSec ? _psPctFromSec(_wkPsSec, _wkPsSec.total || _wPreSec) : null;
+      if (_wkPsPct) { d.avgPosturePct = _wkPsPct; }
       _weeklyPsGood = (d.avgPosturePct && d.avgPosturePct.good !== undefined) ? d.avgPosturePct.good : (d.postureScore || 0);
       _weeklyImPct  = Math.round((_wPreTs + _weeklyPsGood) / 2);
     }
@@ -5835,14 +5874,142 @@
     persistUserData();
   }
 
+  /* ── CSV 내보내기 ── */
+  function _csvCell(v){ v = (v==null?'':String(v)); return /[",\n\r]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+  function _csvRow(arr){ return arr.map(_csvCell).join(',') + '\r\n'; }
+  function _fmtClock(sec){ sec=Math.round(sec||0); var h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60; var o=''; if(h)o+=h+'시간'; if(m)o+=(o?' ':'')+m+'분'; if(s||!o)o+=(o?' ':'')+s+'초'; return o; }
+  /* 5분 세그먼트 → 자세별 '분' 집계 (하단 패널과 동일 방식) */
+  function _hourPostureMins(segs){
+    var g=0,y=0,r=0,o=0,a=0;
+    (segs||[]).forEach(function(seg){
+      if (_isCellArray(seg)) {
+        seg.forEach(function(c){ if(c==='g')g++; else if(c==='y')y++; else if(c==='r')r++; else if(c==='o')o++; else if(c==='a')a++; });
+      } else {
+        var sc=_segColor(seg), nr=Math.round(_segRatio(seg)*5);
+        if(sc==='g')g+=nr; else if(sc==='y')y+=nr; else if(sc==='r')r+=nr; else if(sc==='o')o+=nr; else if(sc==='a')a+=nr;
+      }
+    });
+    return {good:g, warn:y, bad:r, absent:a, overlap:o};
+  }
+  function _pp(p, k){ return (p && p[k] != null) ? p[k] : ''; }
+
   function exportData() {
-    var csv = '날짜,공부시간(분)\n';
-    csv += '2026-03-25,90\n2026-03-24,75\n2026-03-23,60\n';
-    var blob = new Blob([csv], {type:'text/csv'});
+    var DOW = ['일','월','화','수','목','금','토'];
+    var now = new Date();
+    var stamp = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+    var csv = '';
+    csv += _csvRow(['TriSpark 학습 리포트']);
+    csv += _csvRow(['내보낸 시각', now.toLocaleString('ko-KR')]);
+    csv += _csvRow(['사용자', (currentUser && currentUser.nick) || (currentUser && currentUser.id) || '-']);
+    csv += '\r\n';
+
+    /* ── ① 일별 요약 (저장된 모든 날짜) ── */
+    /* 시간점수(소수1자리) = 공부초/목표초 — 월별 요약과 동일 기준 */
+    var _ts1 = function(sec, goal){ return (goal && goal>0) ? Math.min(100, Math.round(sec/goal*1000)/10) : ''; };
+    /* 자세 '분' → 몇분 몇초 (0이면 '-') */
+    var _mClk = function(m){ return (m && m>0) ? _fmtClock(m*60) : '-'; };
+    var months = Object.keys(_rawMonthlyData || {}).sort();
+
+    /* ── ① 일별 요약 ── */
+    csv += _csvRow(['[일별 요약]']);
+    csv += _csvRow(['날짜','요일','공부시간','공부시간(초)','시간점수','자세점수','몰입점수',
+                    '바른자세%','주의%','위험%','미감지%','중복%','목표시간(초)']);
+    months.forEach(function(mk){
+      var md = _rawMonthlyData[mk] || {};
+      var yy = +mk.split('-')[0], mm = +mk.split('-')[1];
+      Object.keys(md).map(Number).sort(function(a,b){return a-b;}).forEach(function(dd){
+        var e = md[String(dd)]; if (!e || !(e.mins > 0)) return;
+        var dt = new Date(yy, mm-1, dd);
+        var p = e.posturePct || {};
+        var esec = e.secs||Math.round((e.mins||0)*60);
+        csv += _csvRow([
+          mk+'-'+String(dd).padStart(2,'0'), DOW[dt.getDay()],
+          _fmtClock(esec), esec,
+          _ts1(esec, e.goalSec), e.postureScore!=null?e.postureScore:'', e.immersion!=null?e.immersion:'',
+          _pp(p,'good'), _pp(p,'warn'), _pp(p,'bad'), _pp(p,'absent'), _pp(p,'overlap'),
+          e.goalSec||0
+        ]);
+      });
+    });
+    csv += '\r\n';
+
+    /* ── ② 시간대별 자세 상세 (오늘) ── */
+    var hrs = (reportData['daily'] && reportData['daily'].hours) || [];
+    var activeHrs = hrs.filter(function(h){ return h && h.mins > 0; });
+    if (activeHrs.length) {
+      csv += _csvRow(['[시간대별 자세 상세] '+stamp+' (오늘)']);
+      csv += _csvRow(['시간대','공부시간','자세점수','바른자세','주의','위험','미감지','중복']);
+      var _hh = function(h){ return (h.hr != null ? h.hr : h.hour); };
+      activeHrs.sort(function(a,b){return _hh(a)-_hh(b);}).forEach(function(h){
+        var hr = _hh(h), nh = (hr+1)%24;
+        var pm = _hourPostureMins(h.segs);
+        csv += _csvRow([
+          String(hr).padStart(2,'0')+':00~'+String(nh).padStart(2,'0')+':00',
+          _fmtClock(h.secs || Math.round((h.mins||0)*60)),
+          h.score!=null?h.score:'',
+          _mClk(pm.good), _mClk(pm.warn), _mClk(pm.bad), _mClk(pm.absent), _mClk(pm.overlap)
+        ]);
+      });
+      csv += '\r\n';
+    }
+
+    /* ── ③ 주별 요약 (이번 주) ── */
+    var wk = reportData['weekly'] || {};
+    if (wk.days && wk.days.some(function(x){return x.mins>0;})) {
+      csv += _csvRow(['[주별 요약] '+(wk.weekStart||'')+' 주']);
+      csv += _csvRow(['요일','공부시간','시간점수','자세점수','몰입점수']);
+      var _wkSec = 0, _wkGoal = 0;
+      wk.days.forEach(function(dy){
+        var dsec = dy.secs||Math.round((dy.mins||0)*60);
+        _wkSec += dsec; _wkGoal += (dy.goalSec||0);
+        csv += _csvRow([dy.label, _fmtClock(dsec),
+                        _ts1(dsec, dy.goalSec),
+                        dy.score!=null?dy.score:'', dy.immersion!=null?dy.immersion:'']);
+      });
+      var ap = wk.avgPosturePct || {};
+      csv += _csvRow(['주 평균', _fmtClock(_wkSec), _ts1(_wkSec, _wkGoal),
+                      ap.good!=null?ap.good:(wk.postureScore||''), wk.immersion!=null?wk.immersion:'']);
+      csv += '\r\n';
+    }
+
+    /* ── ④ 월별 요약 (월별 누적 초 기준 — 일별 게이지와 동일 공식) ── */
+    csv += _csvRow(['[월별 요약]']);
+    csv += _csvRow(['월','공부시간','시간점수','자세점수','몰입(평균)','바른자세%','주의%','위험%','미감지%','중복%']);
+    months.forEach(function(mk){
+      var md = _rawMonthlyData[mk] || {};
+      var days = Object.keys(md).map(function(k){return md[k];}).filter(function(e){return e.mins>0;});
+      if (!days.length) return;
+      var secKeys = ['total','turtle','bent','reclined','absent','drowsy','overlapTotal','turtleExc','bentExc','reclinedExc','drowsyExc','absentExc'];
+      var sumSec = {};
+      secKeys.forEach(function(k){ sumSec[k] = days.reduce(function(s,e){ return s + ((e.postureSec||{})[k]||0); }, 0); });
+      var totSec = days.reduce(function(s,e){ return s + (e.secs||Math.round(e.mins*60)); }, 0);
+      var totGoal = days.reduce(function(s,e){ return s + (e.goalSec||0); }, 0);
+      var imm = Math.round(days.reduce(function(s,e){return s+(e.immersion||0);},0)/days.length);
+      var pct = _psPctFromSec(sumSec, sumSec.total || totSec) || {};
+      csv += _csvRow([mk, _fmtClock(totSec), _ts1(totSec, totGoal), pct.good!=null?pct.good:'', imm,
+                      pct.good, pct.warn, pct.bad, pct.absent, pct.overlap]);
+    });
+
+    /* ── 저장/공유 (아이폰: 공유 시트, 데스크톱: 다운로드) ── */
+    var fname = 'trispark_report_'+stamp+'.csv';
+    var BOM = '﻿';                 // 엑셀/Numbers 한글 깨짐 방지
+    var blob = new Blob([BOM + csv], {type:'text/csv;charset=utf-8'});
+    try {
+      var file = new File([BOM + csv], fname, {type:'text/csv'});
+      if (navigator.canShare && navigator.canShare({files:[file]})) {
+        navigator.share({files:[file], title:'TriSpark 리포트'})
+          .catch(function(){ _downloadCsv(blob, fname); });
+        return;
+      }
+    } catch(e) {}
+    _downloadCsv(blob, fname);
+  }
+  function _downloadCsv(blob, fname){
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'study_report.csv';
-    a.click();
+    a.download = fname;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
   }
 
   /* ── 테마 설정 이벤트 ── */
